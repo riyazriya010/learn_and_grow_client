@@ -1,4 +1,4 @@
-const DOMAIN = 'http://localhost:8001'
+const DOMAIN = process.env.BACKEND_URL
 
 const USER_SERVICE_DOAMIN = DOMAIN
 
