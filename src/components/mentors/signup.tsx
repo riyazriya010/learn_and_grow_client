@@ -3,10 +3,10 @@
 import React from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { ToastContainer, toast, Bounce, ToastOptions } from "react-toastify";
-import Footer from "../footer"
-import Header from "../header"
+import Footer from "../loggedoutNav/footer"
 import { USER_SERVICE_URL } from "@/utils/constant";
 import axios from "axios";
+import LoggedOutHeader from "../loggedoutNav/header";
 
 
 const toastOptions: ToastOptions = {
@@ -21,7 +21,7 @@ const toastOptions: ToastOptions = {
     transition: Bounce,
 };
 
-const Signup = () => {
+const MentorSignup = () => {
 
     interface Credential {
         username: string,
@@ -61,12 +61,12 @@ const Signup = () => {
 
             <div className="min-h-screen flex flex-col justify-between bg-white">
                 {/* Header */}
-                <Header />
+                <LoggedOutHeader />
 
                 {/* Signup Form */}
                 <main className="flex-grow flex items-center justify-center px-4 py-8">
                     <div className="bg-[#F8F9FA] border-2 border-[#D6D1F0] w-[400px] p-6 shadow-md rounded-none">
-                        <h1 className="text-center text-2xl font-bold mb-6 text-[#433D8B]">User Signup</h1>
+                        <h1 className="text-center text-2xl font-bold mb-6 text-[#433D8B]">Mentor Signup</h1>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             {/* Name Input */}
                             <div className="mb-4">
@@ -197,7 +197,7 @@ const Signup = () => {
                         <div className="text-center mt-6">
                             <p className="text-black">
                                 Already have an account?{' '}
-                                <a href="#" className="text-[#433D8B] font-semibold hover:underline">
+                                <a href="/pages/mentor/login" className="text-[#433D8B] font-semibold hover:underline">
                                     Login
                                 </a>
                             </p>
@@ -212,4 +212,4 @@ const Signup = () => {
     )
 }
 
-export default Signup
+export default MentorSignup

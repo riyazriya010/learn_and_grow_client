@@ -1,6 +1,6 @@
 "use client"
 
-const Header = () => {
+const LoggedOutHeader = () => {
     return (
         <header className="bg-white shadow-md py-4 pl-[4rem] pr-[1rem]">
             <div className="max-w-6xl mx-auto flex items-center justify-between">
@@ -11,14 +11,14 @@ const Header = () => {
 
                 {/* Right Side: Navigation */}
                 <nav className="flex gap-x-8 text-black ml-4">
-                    <a href="#" className="hover:text-[#433D8B]">Home</a>
+                    <a href="/pages/home-page" className="hover:text-[#433D8B]">Home</a>
                     <a href="#" className="hover:text-[#433D8B]">Courses</a>
-                    <a href="#" className="hover:text-[#433D8B]">Login</a>
-                    <a href="#" className="hover:text-[#433D8B]">Signup</a>
+                    <a href="/pages/login-role" className="hover:text-[#433D8B]">Login</a>
+                    <a href="/pages/signup-role" className="hover:text-[#433D8B]">Signup</a>
                 </nav>
             </div>
         </header>
     );
 };
 
-export default Header;
+export default LoggedOutHeader;

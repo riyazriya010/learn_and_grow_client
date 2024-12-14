@@ -1,10 +1,11 @@
-import Login from "@/components/users/login";
+
+import MentorLogin from "@/components/mentors/login";
 import React from "react";
 
 const LoginPage = () => {
     return(
         <>
-        <Login />
+        <MentorLogin />
         </>
     ) 
 }

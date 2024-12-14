@@ -1,4 +1,4 @@
-const DOMAIN = process.env.BACKEND_URL
+const DOMAIN = process.env.NEXT_PUBLIC_BACKEND_URL
 
 const USER_SERVICE_DOAMIN = DOMAIN
 

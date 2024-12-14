@@ -2,10 +2,11 @@
 
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import Footer from "../footer";
-import Header from "../header";
+import Footer from "../loggedoutNav/footer";
+import Header from "../loggedoutNav/header";
 import { USER_SERVICE_URL } from "@/utils/constant";
 import axios from "axios";
+import LoggedOutHeader from "../loggedoutNav/header";
 
 
 const Login = () => {
@@ -31,13 +32,13 @@ const Login = () => {
 
             {/* Header */}
 
-            <Header />
+            <LoggedOutHeader />
 
 
             {/* Login Form */}
             <main className="flex-grow flex items-center justify-center px-4 py-8">
                 <div className="bg-[#F8F9FA] border-2 border-[#D6D1F0] w-[400px] p-6 shadow-md rounded-none">
-                    <h1 className="text-center text-2xl font-bold mb-6 text-[#433D8B]">User Login</h1>
+                    <h1 className="text-center text-2xl font-bold mb-6 text-[#433D8B]">Student Login</h1>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="mb-4">
                             <label htmlFor="email" className="block text-gray-700 font-semibold mb-2">
@@ -87,7 +88,7 @@ const Login = () => {
                     <div className="text-center mt-6">
                         <p className="text-black">
                             Don’t have an account?{' '}
-                            <a href="#" className="text-[#433D8B] font-semibold hover:underline">
+                            <a href="/pages/student/signup" className="text-[#433D8B] font-semibold hover:underline">
                                 Signup
                             </a>
                         </p>

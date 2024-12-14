@@ -33,6 +33,9 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        'Edu_NSW_ACT_Foundation': ['"Edu NSW ACT Foundation"', 'sans-serif'],
+      },
     },
   },
   plugins: [],
