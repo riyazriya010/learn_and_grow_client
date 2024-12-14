@@ -1,11 +1,31 @@
 "use client"
 
+import React, { useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
 import Footer from "../footer";
 import Header from "../header";
-
+import { USER_SERVICE_URL } from "@/utils/constant";
+import axios from "axios";
 
 
 const Login = () => {
+
+    interface Credential {
+        email: string,
+        password: string
+    }
+
+    const { register, handleSubmit, formState: {errors}, } = useForm<Credential>()
+
+    const onSubmit: SubmitHandler<Credential> = async (data) => {
+       try {
+        const userSerivceUrl = USER_SERVICE_URL
+        
+       } catch (error) {
+        
+       }
+    }
+
     return (
         <div className="min-h-screen flex flex-col justify-between bg-white">
 
@@ -18,7 +38,7 @@ const Login = () => {
             <main className="flex-grow flex items-center justify-center px-4 py-8">
                 <div className="bg-[#F8F9FA] border-2 border-[#D6D1F0] w-[400px] p-6 shadow-md rounded-none">
                     <h1 className="text-center text-2xl font-bold mb-6 text-[#433D8B]">User Login</h1>
-                    <form>
+                    <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="mb-4">
                             <label htmlFor="email" className="block text-gray-700 font-semibold mb-2">
                                 Enter your email:
@@ -48,7 +68,8 @@ const Login = () => {
                         </div>
                         <button
                             type="submit"
-                            className="w-full bg-[#433D8B] text-white py-3 rounded-[22px] hover:opacity-90">
+                            className="w-full bg-[#433D8B] text-white py-3 rounded-[22px] hover:opacity-90"
+                            >
                             Login
                         </button>
                     </form>
