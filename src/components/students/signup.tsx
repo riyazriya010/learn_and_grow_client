@@ -2,67 +2,59 @@
 
 import React from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
-import { ToastContainer, toast, Bounce, ToastOptions } from "react-toastify";
 import Footer from "../loggedoutNav/footer"
 import { USER_SERVICE_URL } from "@/utils/constant";
 import axios from "axios";
 import LoggedOutHeader from "../loggedoutNav/header";
+import { useRouter } from "next/navigation";
+import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { userApi } from "@/_api/userApi";
 
-
-const toastOptions: ToastOptions = {
-    position: "top-center",
-    autoClose: 1500,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "dark",
-    transition: Bounce,
-};
+export interface Credentials {
+    username: string,
+    email: string,
+    phone: string,
+    password: string,
+    confirmPassword: string;
+}
 
 const Signup = () => {
 
-    interface Credential {
-        username: string,
-        email: string,
-        phone: string,
-        password: string,
-        confirmPassword: string;
-    }
+    const router = useRouter()
 
-    const { register, handleSubmit, getValues, formState: { errors } } = useForm<Credential>()
+    const notify = () => toast.success("User Added To Database!");
 
-    const onSubmit: SubmitHandler<Credential> = async (data) => {
+    const { register, handleSubmit, getValues, formState: { errors } } = useForm<Credentials>()
+
+    const onSubmit: SubmitHandler<Credentials> = async (data) => {
         try {
-            console.log('data: ', data)
-            const userSerivceUrl = USER_SERVICE_URL
-            let response: any = await toast.promise(
-                axios.post(`${userSerivceUrl}/signup`, data),
-                {
-                    pending: "Signing up",
-                    success: "User registered successfully",
-                    error: "Failed to signup",
-                },
-                toastOptions
-            )
+            let response = await userApi.signup(data)
+            console.log('res: ', response)
+            if (response && response.data.success) {
+                notify()
+                setTimeout(() => { router.push('/pages/home-page') }, 4000)
+            }
         } catch (error: any) {
             console.error(error.message)
-            const errorMessage = error?.response?.data?.length 
-            ? error?.response.data
-            : "Internal server error"
-            toast.error(errorMessage, toastOptions);
         }
     }
 
     return (
         <>
-            <ToastContainer />
 
             <div className="min-h-screen flex flex-col justify-between bg-white">
                 {/* Header */}
                 <LoggedOutHeader />
 
+                <ToastContainer
+                    autoClose={2000}
+                    pauseOnHover={false}
+                    transition={Slide}
+                    hideProgressBar={false}
+                    closeOnClick={false}
+                    pauseOnFocusLoss={true}
+                />
                 {/* Signup Form */}
                 <main className="flex-grow flex items-center justify-center px-4 py-8">
                     <div className="bg-[#F8F9FA] border-2 border-[#D6D1F0] w-[400px] p-6 shadow-md rounded-none">
