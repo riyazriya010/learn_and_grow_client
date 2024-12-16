@@ -9,7 +9,8 @@ import LoggedOutHeader from "../loggedoutNav/header";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { userApi } from "@/_api/userApi";
+import { studentApis } from "@/api/studentApi";
+
 
 export interface Credentials {
     username: string,
@@ -23,17 +24,18 @@ const Signup = () => {
 
     const router = useRouter()
 
-    const notify = () => toast.success("User Added To Database!");
+    const notify = () => toast.success("Verification link sent! Check your email to verify.!");
 
-    const { register, handleSubmit, getValues, formState: { errors } } = useForm<Credentials>()
+    const { register, handleSubmit, reset, getValues, formState: { errors } } = useForm<Credentials>()
 
     const onSubmit: SubmitHandler<Credentials> = async (data) => {
         try {
-            let response = await userApi.signup(data)
+            let response = await studentApis.signup(data)
             console.log('res: ', response)
             if (response && response.data.success) {
                 notify()
-                setTimeout(() => { router.push('/pages/home-page') }, 4000)
+                reset()
+                setTimeout(() => { router.push('/pages/login-role') }, 6000)
             }
         } catch (error: any) {
             console.error(error.message)
@@ -48,7 +50,7 @@ const Signup = () => {
                 <LoggedOutHeader />
 
                 <ToastContainer
-                    autoClose={2000}
+                    autoClose={4000}
                     pauseOnHover={false}
                     transition={Slide}
                     hideProgressBar={false}

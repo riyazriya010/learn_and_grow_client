@@ -3,27 +3,42 @@
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Footer from "../loggedoutNav/footer";
-import Header from "../loggedoutNav/header";
-import { USER_SERVICE_URL } from "@/utils/constant";
-import axios from "axios";
 import LoggedOutHeader from "../loggedoutNav/header";
+import { studentApis } from "@/api/studentApi";
+import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from "next/navigation";
 
+
+export interface StudentLoginCredentials {
+    email: string,
+    password: string
+}
 
 const Login = () => {
 
-    interface Credential {
-        email: string,
-        password: string
-    }
+    const router = useRouter()
 
-    const { register, handleSubmit, formState: {errors}, } = useForm<Credential>()
+    const notify = () => toast.error("Invalid Credentials!");
 
-    const onSubmit: SubmitHandler<Credential> = async (data) => {
+    const { register, handleSubmit, formState: {errors}, } = useForm<StudentLoginCredentials>()
+
+    const onSubmit: SubmitHandler<StudentLoginCredentials> = async (data) => {
        try {
-        const userSerivceUrl = USER_SERVICE_URL
+        const response = await studentApis.login(data)
         
-       } catch (error) {
+        if(response && response?.data?.message === 'Invalid Credential'){
+            notify()
+        }else if(response && response?.data?.success){
+            router.push('/')
+        }
         
+       } catch (error: any) {
+        if (error.response?.data?.message === 'Invalid Credential') {
+            notify(); // Show notification for invalid credentials
+          } else {
+            notify(); // General error notification
+          }
        }
     }
 
@@ -34,6 +49,14 @@ const Login = () => {
 
             <LoggedOutHeader />
 
+            <ToastContainer
+                    autoClose={2000}
+                    pauseOnHover={false}
+                    transition={Slide}
+                    hideProgressBar={false}
+                    closeOnClick={false}
+                    pauseOnFocusLoss={true}
+                />
 
             {/* Login Form */}
             <main className="flex-grow flex items-center justify-center px-4 py-8">
@@ -49,6 +72,13 @@ const Login = () => {
                                 id="email"
                                 className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
                                 placeholder="Enter your email"
+                                {...register("email", {
+                                    required: "Email is required",
+                                    pattern: {
+                                        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                                        message: "Please enter a valid email address",
+                                    },
+                                })}
                             />
                         </div>
                         <div className="mb-4">
@@ -60,6 +90,15 @@ const Login = () => {
                                 id="password"
                                 className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
                                 placeholder="Enter your password"
+                                {...register("password", {
+                                    required: "Password is required",
+                                    pattern: {
+                                        value:
+                                            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*()_+~`|}{[\]:;?><,./-]).{8,}$/,
+                                        message:
+                                            "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character",
+                                    },
+                                })}
                             />
                         </div>
                         <div className="text-right mb-4">
