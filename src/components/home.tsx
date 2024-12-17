@@ -5,6 +5,7 @@ import Header from "./loggedoutNav/header"
 import faqData from "@/data"
 import { useState } from "react"
 import LoggedOutHeader from "./loggedoutNav/header"
+import LoggedInHeader from "./loggedInNav/header"
 
 
 const FAQItem: React.FC<{ question: string; answer: string }> = ({ question, answer }) => {
@@ -37,12 +38,18 @@ const FAQItem: React.FC<{ question: string; answer: string }> = ({ question, ans
 
 
 const LoggedOutHome = () => {
+
+    const [login, setLogin] = useState<boolean>(false)
+
     return (
         <>
             
 
             <div className="flex flex-col min-h-screen bg-white">
-            <LoggedOutHeader />
+                {
+                    login ? <LoggedInHeader /> : <LoggedOutHeader />
+                }
+
                 {/* First Layer */}
                 <section className="flex justify-between items-center px-8 py-16">
                     <div className="w-1/2">

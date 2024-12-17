@@ -24,21 +24,25 @@ const Signup = () => {
 
     const router = useRouter()
 
-    const notify = () => toast.success("Verification link sent! Check your email to verify.!");
+    // const notify = () => toast.success("Verification link sent! Check your email to verify.!");
 
     const { register, handleSubmit, reset, getValues, formState: { errors } } = useForm<Credentials>()
 
     const onSubmit: SubmitHandler<Credentials> = async (data) => {
         try {
             let response = await studentApis.signup(data)
-            console.log('res: ', response)
-            if (response && response.data.success) {
-                notify()
+            console.log('signup res: ', response)
+            if (response && response.data.status === 409) {
+                toast.error(response.data.message);
+                reset()
+            } else if (response && response.data.success) {
+                toast.success("Verification link sent! Check your email to verify.!")
                 reset()
                 setTimeout(() => { router.push('/pages/login-role') }, 6000)
             }
         } catch (error: any) {
-            console.error(error.message)
+            console.error("Unexpected error:", error.message);
+            toast.error("An unexpected error occurred. Please try again.");
         }
     }
 

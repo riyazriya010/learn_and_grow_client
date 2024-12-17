@@ -2,78 +2,43 @@
 
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import Footer from "../loggedoutNav/footer";
-import LoggedOutHeader from "../loggedoutNav/header";
 import { studentApis } from "@/api/studentApi";
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/navigation";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { app } from "@/lib/firebase/config";
+import AdminHeader from "./header";
+import AdminFooter from "./footer";
 
 
-export interface StudentLoginCredentials {
+export interface AdminLoginCredentials {
     email: string,
     password: string
 }
 
-const Login = () => {
+const AdminLogin = () => {
 
     const router = useRouter()
 
-    const { register, handleSubmit, reset, formState: { errors }, } = useForm<StudentLoginCredentials>()
+    // const notify = () => toast.error("Invalid Credentials!");
 
-    const onSubmit: SubmitHandler<StudentLoginCredentials> = async (data) => {
+    const { register, handleSubmit, formState: { errors }, } = useForm<AdminLoginCredentials>()
+
+    const onSubmit: SubmitHandler<AdminLoginCredentials> = async (data) => {
         try {
             const response = await studentApis.login(data)
-            if (response) {
-                if (response.data.success) {
-                    router.push('/')
-                }
+
+            if (response && response?.data?.message === 'Invalid Credential') {
+                toast.error('Invalid Credential')
+            } else if (response && response?.data?.success) {
+                router.push('/')
             }
 
         } catch (error: any) {
-            if (error.response?.status === 401) {
-                toast.error(error.response.data.message);  // Show error toast for invalid credentials
-                reset()
+            if (error.response?.data?.message === 'Invalid Credential') {
+                toast.error('Invalid Credential') // Show notification for invalid credentials
             } else {
-                console.log('error: ', error)
+                toast.error('Something Went Wrong') // General error notification
             }
-        }
-    }
-
-
-    const handleGoogleLogin = async () => {
-        const auth = getAuth(app)
-        const provider = new GoogleAuthProvider()
-        provider.setCustomParameters({ prompt: 'select_account' })
-
-        try {
-            console.log('try')
-            const result = await signInWithPopup(auth, provider)
-            console.log('result: ', result)
-            const user = result.user;
-            console.log("User Info:", user);
-
-            let response = await studentApis.googleLogin(user)
-
-            if (response) {
-                const googleUser = response.data.googleUser;
-                if (response.data.success) {
-                    localStorage.setItem("user", JSON.stringify(googleUser));
-                    toast.success("User Added");
-                    setTimeout(() => {
-                        router.push(`/`);
-                    }, 2000);
-                }
-
-                if (response.data.errorMessage === "User is blocked") {
-                    toast.error("You are blocked");
-                }
-            }
-
-        } catch (error) {
-            console.log(error)
         }
     }
 
@@ -82,7 +47,7 @@ const Login = () => {
 
             {/* Header */}
 
-            <LoggedOutHeader />
+            <AdminHeader />
 
             <ToastContainer
                 autoClose={4000}
@@ -96,7 +61,7 @@ const Login = () => {
             {/* Login Form */}
             <main className="flex-grow flex items-center justify-center px-4 py-8">
                 <div className="bg-[#F8F9FA] border-2 border-[#D6D1F0] w-[400px] p-6 shadow-md rounded-none">
-                    <h1 className="text-center text-2xl font-bold mb-6 text-[#433D8B]">Student Login</h1>
+                    <h1 className="text-center text-2xl font-bold mb-6 text-[#433D8B]">Admin Login</h1>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="mb-4">
                             <label htmlFor="email" className="block text-gray-700 font-semibold mb-2">
@@ -115,7 +80,6 @@ const Login = () => {
                                     },
                                 })}
                             />
-                            <p className="text-red-600">{errors.email?.message}</p>
                         </div>
                         <div className="mb-4">
                             <label htmlFor="password" className="block text-gray-700 font-semibold mb-2">
@@ -136,13 +100,8 @@ const Login = () => {
                                     },
                                 })}
                             />
-                            <p className="text-red-600">{errors.password?.message}</p>
                         </div>
-                        <div className="text-right mb-4">
-                            <a href="#" className="text-sm text-blue-600 hover:underline">
-                                Forget password?
-                            </a>
-                        </div>
+
                         <button
                             type="submit"
                             className="w-full bg-[#433D8B] text-white py-3 rounded-[22px] hover:opacity-90"
@@ -150,39 +109,14 @@ const Login = () => {
                             Login
                         </button>
                     </form>
-                    {/* Google Login Button */}
-                    <div className="flex justify-center items-center mt-6 mb-6">
-                        <button
-                            onClick={handleGoogleLogin}
-                            type="button"
-                            className="flex justify-center items-center w-12 h-12 rounded-full border-[3px] border-[#D9D9D9] bg-white text-[#757575] hover:opacity-90"
-                        >
-                            {/* <span className="text-xl font-bold">G+</span> */}
-                            <img
-                                src="/images/glogo.png"
-                                alt="Google logo"
-                                className="w-8 h-8"
-                            />
-                        </button>
-                    </div>
-
-
-                    <div className="text-center mt-6">
-                        <p className="text-black">
-                            Don’t have an account?{' '}
-                            <a href="/pages/student/signup" className="text-[#433D8B] font-semibold hover:underline">
-                                Signup
-                            </a>
-                        </p>
-                    </div>
                 </div>
             </main>
 
             {/* Footer */}
-            <Footer />
+            <AdminFooter />
 
         </div>
     );
 }
 
-export default Login
+export default AdminLogin

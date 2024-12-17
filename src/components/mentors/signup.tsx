@@ -2,66 +2,64 @@
 
 import React from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
-import { ToastContainer, toast, Bounce, ToastOptions } from "react-toastify";
 import Footer from "../loggedoutNav/footer"
-import { USER_SERVICE_URL } from "@/utils/constant";
-import axios from "axios";
 import LoggedOutHeader from "../loggedoutNav/header";
+import { mentorApis } from "@/api/mentorApi";
+import { useRouter } from "next/navigation";
+import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
-const toastOptions: ToastOptions = {
-    position: "top-center",
-    autoClose: 1500,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "dark",
-    transition: Bounce,
-};
+export interface MentorSignUpCredential {
+    username: string,
+    email: string,
+    phone: string,
+    password: string,
+    expertise: string,
+    skills: string,
+    confirmPassword: string;
+}
 
 const MentorSignup = () => {
 
-    interface Credential {
-        username: string,
-        email: string,
-        phone: string,
-        password: string,
-        confirmPassword: string;
-    }
+    const router = useRouter()
 
-    const { register, handleSubmit, getValues, formState: { errors } } = useForm<Credential>()
+    const { register, handleSubmit, getValues, reset, formState: { errors } } = useForm<MentorSignUpCredential>()
 
-    const onSubmit: SubmitHandler<Credential> = async (data) => {
+    const onSubmit: SubmitHandler<MentorSignUpCredential> = async (data) => {
         try {
-            console.log('data: ', data)
-            const userSerivceUrl = USER_SERVICE_URL
-            let response: any = await toast.promise(
-                axios.post(`${userSerivceUrl}/signup`, data),
-                {
-                    pending: "Signing up",
-                    success: "User registered successfully",
-                    error: "Failed to signup",
-                },
-                toastOptions
-            )
+            const response = await mentorApis.signUp(data)
+            if (response) {
+                toast.success("Verification link sent! Check your email to verify.!")
+                reset()
+                setTimeout(() => { router.push('/pages/login-role') }, 10000)
+            }
         } catch (error: any) {
-            console.error(error.message)
-            const errorMessage = error?.response?.data?.length 
-            ? error?.response.data
-            : "Internal server error"
-            toast.error(errorMessage, toastOptions);
+            if (error.response?.status === 409) {
+                toast.error(error.response.data.message);  // Show error toast for invalid credentials
+                reset()
+            } else {
+                console.log('error: ', error)
+            }
         }
     }
 
     return (
         <>
-            <ToastContainer />
+
 
             <div className="min-h-screen flex flex-col justify-between bg-white">
                 {/* Header */}
                 <LoggedOutHeader />
+
+                <ToastContainer
+                    autoClose={8000}
+                    pauseOnHover={false}
+                    transition={Slide}
+                    hideProgressBar={false}
+                    closeOnClick={false}
+                    pauseOnFocusLoss={true}
+                />
 
                 {/* Signup Form */}
                 <main className="flex-grow flex items-center justify-center px-4 py-8">
@@ -131,6 +129,48 @@ const MentorSignup = () => {
                                 <p className="text-red-600">{errors.phone?.message}</p>
                             </div>
 
+                            {/* Expertise Input */}
+                            <div className="mb-4">
+                                <label htmlFor="expertise" className="block text-gray-700 font-semibold mb-2">
+                                    Enter your Expertise Area:
+                                </label>
+                                <input
+                                    type="text"
+                                    id="expertise"
+                                    className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
+                                    placeholder="Enter your Expertise Area"
+                                    {...register("expertise", {
+                                        required: "expertise area required",
+                                        pattern: {
+                                            value: /^(?=.{1,15}$)[A-Za-z][A-Za-z0-9._]*$/,
+                                            message: "expertise can only contain letters, numbers, periods, and underscores. It must start with a letter.",
+                                        },
+                                    })}
+                                />
+                                <p className="text-red-600">{errors.expertise?.message}</p>
+                            </div>
+
+                            {/* Skills Input */}
+                            <div className="mb-4">
+                                <label htmlFor="skills" className="block text-gray-700 font-semibold mb-2">
+                                    Enter your skills:
+                                </label>
+                                <input
+                                    type="text"
+                                    id="skills"
+                                    className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
+                                    placeholder="Enter your Expertise Area"
+                                    {...register("skills", {
+                                        required: "skills required",
+                                        pattern: {
+                                            value: /^(?=.{1,15}$)[A-Za-z][A-Za-z0-9._]*$/,
+                                            message: "skills can only contain letters, numbers, periods, and underscores. It must start with a letter.",
+                                        },
+                                    })}
+                                />
+                                <p className="text-red-600">{errors.skills?.message}</p>
+                            </div>
+
                             {/* Password Input */}
                             <div className="mb-4">
                                 <label htmlFor="password" className="block text-gray-700 font-semibold mb-2">
@@ -182,16 +222,6 @@ const MentorSignup = () => {
                                 Signup
                             </button>
                         </form>
-
-                        {/* Google Login Button */}
-                        <div className="flex justify-center items-center mt-6 mb-6">
-                            <button
-                                type="button"
-                                className="flex justify-center items-center w-12 h-12 rounded-full border-[3px] border-[#D9D9D9] bg-white text-[#757575] hover:opacity-90"
-                            >
-                                <span className="text-xl font-bold">G+</span>
-                            </button>
-                        </div>
 
                         {/* Already have an account */}
                         <div className="text-center mt-6">
