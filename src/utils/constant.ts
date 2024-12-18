@@ -17,3 +17,7 @@ export const STORAGEBUCKET = process.env.NEXT_PUBLIC_STORAGEBUCKET
 export const MESSAGINGSENDER_ID = process.env.NEXT_PUBLIC_MESSAGINGSENDER_ID
 export const APP_ID = process.env.NEXT_PUBLIC_APP_ID
 export const MEASUREMENT_ID = process.env.NEXT_PUBLIC_MEASUREMENT_ID
+
+
+// jwt
+export const JWT_SECRET = process.env.NEXT_PUBLIC_JWT_SECRET
