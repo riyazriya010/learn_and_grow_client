@@ -3,13 +3,16 @@
 import React from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import Footer from "../loggedoutNav/footer"
-import { USER_SERVICE_URL } from "@/utils/constant";
-import axios from "axios";
 import LoggedOutHeader from "../loggedoutNav/header";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { studentApis } from "@/api/studentApi";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { app } from "@/lib/firebase/config";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/slices/userSlice";
+import Navbar from "../navbar";
 
 
 export interface Credentials {
@@ -20,47 +23,108 @@ export interface Credentials {
     confirmPassword: string;
 }
 
+export interface UserDetails {
+    username: string,
+    email: string,
+    phone: string
+}
+
 const Signup = () => {
 
     const router = useRouter()
+    const dispatch = useDispatch()
 
-    // const notify = () => toast.success("Verification link sent! Check your email to verify.!");
-
+    // Signup Form Functionality
     const { register, handleSubmit, reset, getValues, formState: { errors } } = useForm<Credentials>()
-
     const onSubmit: SubmitHandler<Credentials> = async (data) => {
         try {
             let response = await studentApis.signup(data)
-            console.log('signup res: ', response)
-            if (response && response.data.status === 409) {
-                toast.error(response.data.message);
+
+            if (response && response.data.success) {
+                toast.success(response?.data?.message)
                 reset()
-            } else if (response && response.data.success) {
-                toast.success("Verification link sent! Check your email to verify.!")
-                reset()
-                setTimeout(() => { router.push('/pages/login-role') }, 6000)
+                dispatch(
+                    setUser({
+                        userId: response.data.user._id,
+                        username: response.data.user.username,
+                        email: response.data.user.email,
+                        role: response.data.user.role
+                    }),
+                )
+                setTimeout(() => { 
+                    // router.push('/pages/student/verify-alert') 
+                    window.location.replace('/pages/student/verify-alert');
+                }, 1000)
             }
         } catch (error: any) {
+            if (error.response?.status === 409) {
+                toast.error(error.response.data.message)
+                reset()
+            }
             console.error("Unexpected error:", error.message);
             toast.error("An unexpected error occurred. Please try again.");
         }
     }
 
+
+
+    // Google signup functionality
+    const handleGoogleSignUp = async () => {
+        const auth = getAuth(app)
+        const provider = new GoogleAuthProvider()
+        provider.setCustomParameters({ prompt: 'select_account' })
+
+        try {
+            const result = await signInWithPopup(auth, provider)
+            const user = result.user;
+
+            let response = await studentApis.googleSignup(user)
+
+            if (response) {
+                const googleUser = response.data.googleUser;
+                if (response.data.success) {
+                    toast.success("You were Logged");
+                    dispatch(
+                        setUser({
+                            userId: response.data.user._id,
+                            username: response.data.user.username,
+                            email: response.data.user.email,
+                            role: response.data.user.role
+                        }),
+                    )
+                    setTimeout(() => {
+                        // router.push(`/pages/home`);
+                        window.location.replace('/pages/home');
+                    }, 2000);
+                }
+            }
+
+        } catch (error: any) {
+            if (error && error.response?.status === 403) {
+                toast.warn(error.response?.data?.message)
+            } else if (error.response?.status === 409) {
+                toast.error(error.response.data.message)
+            }
+            console.log(error)
+        }
+    }
+
     return (
         <>
-
             <div className="min-h-screen flex flex-col justify-between bg-white">
                 {/* Header */}
-                <LoggedOutHeader />
+                {/* <LoggedOutHeader /> */}
+                <Navbar />
 
                 <ToastContainer
-                    autoClose={4000}
+                    autoClose={1000}
                     pauseOnHover={false}
                     transition={Slide}
                     hideProgressBar={false}
                     closeOnClick={false}
                     pauseOnFocusLoss={true}
                 />
+
                 {/* Signup Form */}
                 <main className="flex-grow flex items-center justify-center px-4 py-8">
                     <div className="bg-[#F8F9FA] border-2 border-[#D6D1F0] w-[400px] p-6 shadow-md rounded-none">
@@ -184,10 +248,16 @@ const Signup = () => {
                         {/* Google Login Button */}
                         <div className="flex justify-center items-center mt-6 mb-6">
                             <button
+                                onClick={handleGoogleSignUp}
                                 type="button"
                                 className="flex justify-center items-center w-12 h-12 rounded-full border-[3px] border-[#D9D9D9] bg-white text-[#757575] hover:opacity-90"
                             >
-                                <span className="text-xl font-bold">G+</span>
+                                {/* <span className="text-xl font-bold">G+</span> */}
+                                <img
+                                    src="/images/glogo.png"
+                                    alt="Google logo"
+                                    className="w-8 h-8"
+                                />
                             </button>
                         </div>
 

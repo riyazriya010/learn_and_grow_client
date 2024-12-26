@@ -2,45 +2,44 @@
 
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { studentApis } from "@/api/studentApi";
+import Footer from "../loggedoutNav/footer";
+import LoggedOutHeader from "../loggedoutNav/header";
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/navigation";
-import AdminHeader from "./header";
-import AdminFooter from "./footer";
-import { adminApis } from "@/api/adminApis";
+import { mentorApis } from "@/api/mentorApi";
 
 
-export interface AdminLoginCredentials {
+export interface MentorForgetCredentials {
     email: string,
-    password: string
+    password: string,
+    confirmPassword: string
 }
 
-const AdminLogin = () => {
+const MentorForgetPassword = () => {
 
     const router = useRouter()
 
-    // const notify = () => toast.error("Invalid Credentials!");
+    const { register, handleSubmit, reset, getValues, formState: { errors }, } = useForm<MentorForgetCredentials>()
 
-    const { register, handleSubmit, formState: { errors }, } = useForm<AdminLoginCredentials>()
-
-    const onSubmit: SubmitHandler<AdminLoginCredentials> = async (data) => {
+    const onSubmit: SubmitHandler<MentorForgetCredentials> = async (data) => {
         try {
-            const response = await adminApis.login(data)
-
-            if (response && response?.data?.message === 'Invalid Credential') {
-                toast.error('Invalid Credential')
-            } else if (response && response?.data?.success) {
-                // router.push('/pages/dashboard')
-                window.location.replace('/pages/dashboard');
+            const response = await mentorApis.forgetPass(data)
+            if (response) {
+                console.log(response)
+                if (response.data.success) {
+                    toast.success('Password Updated Successfully')
+                    setTimeout(() => {
+                        router.push('/pages/mentor/login')
+                    }, 1000)
+                }
             }
-
         } catch (error: any) {
-            if (error && error.response?.status === 409) {
-                toast.error('Invalid Credential') // Show notification for invalid credentials
-            } else {
-                toast.error('Something Went Wrong') // General error notification
+            if(error && error.response?.status === 401){
+                toast.error(error.response.data.message)
+                return
             }
+            console.log(error)
         }
     }
 
@@ -48,6 +47,8 @@ const AdminLogin = () => {
         <div className="min-h-screen flex flex-col justify-between bg-white">
 
             {/* Header */}
+
+            <LoggedOutHeader />
 
             <ToastContainer
                 autoClose={2000}
@@ -61,7 +62,7 @@ const AdminLogin = () => {
             {/* Login Form */}
             <main className="flex-grow flex items-center justify-center px-4 py-8">
                 <div className="bg-[#F8F9FA] border-2 border-[#D6D1F0] w-[400px] p-6 shadow-md rounded-none">
-                    <h1 className="text-center text-2xl font-bold mb-6 text-[#433D8B]">Admin Login</h1>
+                    <h1 className="text-center text-2xl font-bold mb-6 text-[#433D8B]">Update Password</h1>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="mb-4">
                             <label htmlFor="email" className="block text-gray-700 font-semibold mb-2">
@@ -104,21 +105,41 @@ const AdminLogin = () => {
                             <p className="text-red-600">{errors.password?.message}</p>
                         </div>
 
+                         {/* Confirm Password Input */}
+                         <div className="mb-4">
+                                <label htmlFor="confirmPassword" className="block text-gray-700 font-semibold mb-2">
+                                    Confirm your password:
+                                </label>
+                                <input
+                                    type="password"
+                                    id="confirmPassword"
+                                    className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
+                                    placeholder="Confirm your password"
+                                    {...register("confirmPassword", {
+                                        validate: (value) => {
+                                            const { password } = getValues();
+                                            return password === value || "Passwords should match!";
+                                        },
+                                    })}
+                                />
+                                <p className="text-red-600">{errors.confirmPassword?.message}</p>
+                            </div>
+
                         <button
                             type="submit"
                             className="w-full bg-[#433D8B] text-white py-3 rounded-[22px] hover:opacity-90"
                         >
-                            Login
+                            Update
                         </button>
                     </form>
                 </div>
             </main>
 
             {/* Footer */}
-            <AdminFooter />
+            <Footer />
 
         </div>
     );
 }
 
-export default AdminLogin
+export default MentorForgetPassword

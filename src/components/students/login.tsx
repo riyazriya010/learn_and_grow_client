@@ -10,6 +10,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/navigation";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { app } from "@/lib/firebase/config";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/slices/userSlice";
+import Navbar from "../navbar";
 
 
 export interface StudentLoginCredentials {
@@ -20,21 +23,37 @@ export interface StudentLoginCredentials {
 const Login = () => {
 
     const router = useRouter()
+    const dispatch = useDispatch();
 
+
+
+    // signup Functionality
     const { register, handleSubmit, reset, formState: { errors }, } = useForm<StudentLoginCredentials>()
-
     const onSubmit: SubmitHandler<StudentLoginCredentials> = async (data) => {
         try {
             const response = await studentApis.login(data)
             if (response) {
-                if (response.data.success) {
-                    router.push('/')
+                console.log('ressss log: ', response.data)
+                if (response.data && response.data.success) {
+                    dispatch(
+                        setUser({
+                            userId: response.data.user._id,
+                            username: response.data.user.username,
+                            email: response.data.user.email,
+                            role: response.data.user.role
+                        }),
+                    )
+                    // router.push('/pages/home')
+                    window.location.replace('/pages/home');
                 }
             }
 
         } catch (error: any) {
             if (error.response?.status === 401) {
                 toast.error(error.response.data.message);  // Show error toast for invalid credentials
+                reset()
+            } else if (error && error.response?.status === 403) {
+                toast.warn('Your Account Was Blocked')
                 reset()
             } else {
                 console.log('error: ', error)
@@ -43,38 +62,50 @@ const Login = () => {
     }
 
 
+    // Google Login Functionality
     const handleGoogleLogin = async () => {
         const auth = getAuth(app)
         const provider = new GoogleAuthProvider()
         provider.setCustomParameters({ prompt: 'select_account' })
 
         try {
-            console.log('try')
             const result = await signInWithPopup(auth, provider)
-            console.log('result: ', result)
             const user = result.user;
-            console.log("User Info:", user);
 
             let response = await studentApis.googleLogin(user)
 
             if (response) {
                 const googleUser = response.data.googleUser;
                 if (response.data.success) {
-                    localStorage.setItem("user", JSON.stringify(googleUser));
-                    toast.success("User Added");
+                    dispatch(
+                        setUser({
+                            userId: response.data.user._id,
+                            username: response.data.user.username,
+                            email: response.data.user.email,
+                            role: response.data.user.role
+                        })
+                    )
+                    // localStorage.setItem("user", JSON.stringify(googleUser));
+                    toast.success("You were Logged");
                     setTimeout(() => {
-                        router.push(`/`);
+                        // router.push(`/pages/home`);
+                        window.location.replace('/pages/home');
                     }, 2000);
-                }
-
-                if (response.data.errorMessage === "User is blocked") {
-                    toast.error("You are blocked");
                 }
             }
 
-        } catch (error) {
+        } catch (error: any) {
+            if (error && error.response?.status === 403) {
+                toast.warn(error.response?.data?.message)
+            }
             console.log(error)
         }
+    }
+
+
+    // forget Password Functionality
+    const forgetPassword = () => {
+        router.push('/pages/student/forget-password')
     }
 
     return (
@@ -82,10 +113,11 @@ const Login = () => {
 
             {/* Header */}
 
-            <LoggedOutHeader />
+            {/* <LoggedOutHeader /> */}
+            <Navbar />
 
             <ToastContainer
-                autoClose={4000}
+                autoClose={2000}
                 pauseOnHover={false}
                 transition={Slide}
                 hideProgressBar={false}
@@ -139,7 +171,9 @@ const Login = () => {
                             <p className="text-red-600">{errors.password?.message}</p>
                         </div>
                         <div className="text-right mb-4">
-                            <a href="#" className="text-sm text-blue-600 hover:underline">
+                            <a href="#" className="text-sm text-blue-600 hover:underline"
+                                onClick={forgetPassword}
+                            >
                                 Forget password?
                             </a>
                         </div>

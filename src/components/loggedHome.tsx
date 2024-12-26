@@ -1,12 +1,9 @@
 "use client"
 import Image from "next/image"
 import Footer from "./loggedoutNav/footer"
-import Header from "./loggedoutNav/header"
 import faqData from "@/data"
 import { useState } from "react"
-import LoggedOutHeader from "./loggedoutNav/header"
 import LoggedInHeader from "./loggedInNav/header"
-import Navbar from "./navbar"
 
 
 const FAQItem: React.FC<{ question: string; answer: string }> = ({ question, answer }) => {
@@ -38,16 +35,16 @@ const FAQItem: React.FC<{ question: string; answer: string }> = ({ question, ans
 };
 
 
-const LoggedOutHome = () => {
-
-    // const [login, setLogin] = useState<boolean>(false)
+const LoggedInHome = () => {
 
     return (
         <>
             
 
             <div className="flex flex-col min-h-screen bg-white">
-                <Navbar />
+                
+                <LoggedInHeader />
+                
 
                 {/* First Layer */}
                 <section className="flex justify-between items-center px-8 py-16">
@@ -217,4 +214,4 @@ const LoggedOutHome = () => {
         </>
     )
 }
-export default LoggedOutHome
+export default LoggedInHome

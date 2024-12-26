@@ -3,28 +3,101 @@
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Footer from "../loggedoutNav/footer";
-import { USER_SERVICE_URL } from "@/utils/constant";
-import axios from "axios";
 import LoggedOutHeader from "../loggedoutNav/header";
+import { mentorApis } from "@/api/mentorApi";
+import { useRouter } from "next/navigation";
+import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { app } from "@/lib/firebase/config";
+import { setUser } from "@/redux/slices/mentorSlice";
+import { useDispatch } from "react-redux";
 
+
+export interface MentorLoginCredentials {
+    email: string,
+    password: string
+}
 
 const MentorLogin = () => {
 
-    interface Credential {
-        email: string,
-        password: string
+    const router = useRouter()
+    const dispatch = useDispatch()
+
+    // login functionality
+    const { register, handleSubmit, reset, formState: { errors }, } = useForm<MentorLoginCredentials>()
+    const onSubmit: SubmitHandler<MentorLoginCredentials> = async (data) => {
+        try {
+            const response = await mentorApis.login(data)
+            if (response) {
+                if (response.data.success) {
+                    dispatch(
+                        setUser({
+                            userId: response.data.user._id,
+                            username: response.data.user.username,
+                            email: response.data.user.email,
+                            role: response.data.user.role
+                        }),
+                    )
+                    // router.push('/pages/mentor/dashboard')
+                    window.location.replace('/pages/mentor/dashboard');
+                }
+            }
+        } catch (error: any) {
+            if (error && error.response?.status === 401) {
+                toast.error(error.response.data.message);  // Show error toast for invalid credentials
+                reset()
+            } else if (error && error.response?.status === 403) {
+                toast.warn('Your Account Was Blocked')
+                reset()
+            } else {
+                console.log('error: ', error)
+            }
+        }
     }
 
-    const { register, handleSubmit, formState: {errors}, } = useForm<Credential>()
+    // Google Login
+    const handleGoogleLogin = async () => {
+        const auth = getAuth(app)
+        const provider = new GoogleAuthProvider()
+        provider.setCustomParameters({ prompt: 'select_account' })
 
-    const onSubmit: SubmitHandler<Credential> = async (data) => {
-       try {
-        const userSerivceUrl = USER_SERVICE_URL
-        
-       } catch (error) {
-        
-       }
+        try {
+            const result = await signInWithPopup(auth, provider)
+            const user = result.user;
+
+            let response = await mentorApis.googleLogin(user)
+
+            if (response) {
+                const googleUser = response.data.googleUser;
+                if (response.data.success) {
+                    // localStorage.setItem("user", JSON.stringify(googleUser));
+                    toast.success("You were Logged");
+                    dispatch(
+                        setUser({
+                            userId: response.data.user._id,
+                            username: response.data.user.username,
+                            email: response.data.user.email,
+                            role: response.data.user.role
+                        })
+                    )
+                    setTimeout(() => {
+                        // router.push(`/pages/home`);
+                        window.location.replace('/pages/mentor/dashboard');
+                    }, 2000);
+                }
+            }
+
+        } catch (error: any) {
+            if (error && error.response?.status === 403) {
+                toast.warn(error.response?.data?.message)
+            }
+            console.log(error)
+        }
     }
+
+
+
 
     return (
         <div className="min-h-screen flex flex-col justify-between bg-white">
@@ -33,6 +106,14 @@ const MentorLogin = () => {
 
             <LoggedOutHeader />
 
+            <ToastContainer
+                autoClose={2000}
+                pauseOnHover={false}
+                transition={Slide}
+                hideProgressBar={false}
+                closeOnClick={false}
+                pauseOnFocusLoss={true}
+            />
 
             {/* Login Form */}
             <main className="flex-grow flex items-center justify-center px-4 py-8">
@@ -48,7 +129,15 @@ const MentorLogin = () => {
                                 id="email"
                                 className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
                                 placeholder="Enter your email"
+                                {...register("email", {
+                                    required: "Email is required",
+                                    pattern: {
+                                        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                                        message: "Please enter a valid email address",
+                                    },
+                                })}
                             />
+                            <p className="text-red-600">{errors.email?.message}</p>
                         </div>
                         <div className="mb-4">
                             <label htmlFor="password" className="block text-gray-700 font-semibold mb-2">
@@ -59,34 +148,52 @@ const MentorLogin = () => {
                                 id="password"
                                 className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
                                 placeholder="Enter your password"
+                                {...register("password", {
+                                    required: "Password is required",
+                                    pattern: {
+                                        value:
+                                            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*()_+~`|}{[\]:;?><,./-]).{8,}$/,
+                                        message:
+                                            "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character",
+                                    },
+                                })}
                             />
+                            <p className="text-red-600">{errors.password?.message}</p>
                         </div>
                         <div className="text-right mb-4">
-                            <a href="#" className="text-sm text-blue-600 hover:underline">
+                            <a href="#" className="text-sm text-blue-600 hover:underline"
+                                onClick={() => router.push('/pages/mentor/forget-password')}
+                            >
                                 Forget password?
                             </a>
                         </div>
                         <button
                             type="submit"
                             className="w-full bg-[#433D8B] text-white py-3 rounded-[22px] hover:opacity-90"
-                            >
+                        >
                             Login
                         </button>
                     </form>
                     {/* Google Login Button */}
                     <div className="flex justify-center items-center mt-6 mb-6">
                         <button
+                            onClick={handleGoogleLogin}
                             type="button"
                             className="flex justify-center items-center w-12 h-12 rounded-full border-[3px] border-[#D9D9D9] bg-white text-[#757575] hover:opacity-90"
                         >
-                            <span className="text-xl font-bold">G+</span>
+                            {/* <span className="text-xl font-bold">G+</span> */}
+                            <img
+                                src="/images/glogo.png"
+                                alt="Google logo"
+                                className="w-8 h-8"
+                            />
                         </button>
                     </div>
 
 
                     <div className="text-center mt-6">
                         <p className="text-black">
-                            Don’t have an account?{' '}
+                            Don't have an account?{' '}
                             <a href="/pages/mentor/signup" className="text-[#433D8B] font-semibold hover:underline">
                                 Signup
                             </a>
@@ -97,7 +204,7 @@ const MentorLogin = () => {
 
             {/* Footer */}
             <Footer />
-            
+
         </div>
     );
 }

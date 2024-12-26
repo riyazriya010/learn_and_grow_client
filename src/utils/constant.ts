@@ -6,6 +6,7 @@ const USER_SERVICE_DOAMIN = DOMAIN
 //back end api services
 export const USER_SERVICE_URL = `${USER_SERVICE_DOAMIN}/api/user-service`;
 export const MENTOR_SERVICE_URL = `${USER_SERVICE_DOAMIN}/api/mentor-service`;
+export const ADMIN_SERVICE_URL = `${USER_SERVICE_DOAMIN}/api/admin-service`;
 
 
 
