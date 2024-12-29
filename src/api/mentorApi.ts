@@ -1,3 +1,4 @@
+// import { AddCourseFormInputs } from "@/components/mentors/addCourse";
 import { MentorLoginCredentials } from "@/components/mentors/login";
 import { MentorProfile } from "@/components/mentors/profile";
 import { MentorSignUpCredential } from "@/components/mentors/signup";
@@ -6,6 +7,8 @@ import axios from "axios";
 import { User } from "firebase/auth"
 
 export const mentorApis = {
+
+    /* ------------------------------- WEEK 1 ---------------------------*/
 
     login: async (data: MentorLoginCredentials) => {
         try {
@@ -143,6 +146,41 @@ export const mentorApis = {
                 throw error
             }
         }
-    }
+    },
 
+    /* ------------------------------- WEEK 2 ---------------------------*/
+
+    addCourse: async (data: FormData) => {
+        try {
+          const response = await axios.post(`${MENTOR_SERVICE_URL}/mentor/course-upload`, data, {
+            headers: {
+              'Content-Type': 'multipart/form-data', // Axios auto-handles this but explicit is good
+            },
+            withCredentials: true, // Include credentials if needed
+          });
+          return response.data;
+        } catch (error) {
+          console.error("API Error:", error);
+          throw error; // Rethrow error to handle it in the calling function
+        }
+      },
+
+
+      
+    addChapter: async (data: FormData) => {
+        try {
+            const courseId = '67710140df708808ce0fd712'
+          const response = await axios.post(`${MENTOR_SERVICE_URL}/mentor/chapter-upload?courseId=${courseId}`, data, {
+            headers: {
+              'Content-Type': 'multipart/form-data', // Axios auto-handles this but explicit is good
+            },
+            withCredentials: true, // Include credentials if needed
+          });
+          return response.data;
+        } catch (error) {
+          console.error("API Error:", error);
+          throw error; // Rethrow error to handle it in the calling function
+        }
+      }
+      
 }

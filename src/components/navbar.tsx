@@ -109,6 +109,9 @@ const Navbar = () => {
               <a href="/pages/mentor/dashboard" className="hover:text-[#433D8B]">
                 Dashboard
               </a>
+              <a href="/pages/mentor/courses" className="hover:text-[#433D8B]">
+                Courses
+              </a>
             </nav>
 
             {/* User Profile Section */}

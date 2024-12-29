@@ -1,8 +1,8 @@
-import Sample from "@/components/sample"
+import SampleTableUsage from "@/components/sample"
 
 const SamplePage = () => {
     return(
-        <Sample />
+        <SampleTableUsage />
     )
 }
 

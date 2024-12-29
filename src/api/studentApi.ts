@@ -143,5 +143,28 @@ export const studentApis = {
                 throw error
             }
         }
+    },
+
+    /* ---------------------------- WEEK - 2 -------------------------*/
+    fetchAllCourse: async () => {
+        try{
+            const response = await axios.get(`${USER_SERVICE_URL}/get/all-course`,{
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            console.log(error)
+        }
+    },
+
+    getCourse: async (id: string) => {
+        try{
+            const response = await axios.get(`${USER_SERVICE_URL}/get/course?courseId=${id}`,{
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            console.log(error)
+        }
     }
 }

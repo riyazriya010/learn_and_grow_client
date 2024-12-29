@@ -18,7 +18,10 @@ export const adminApis = {
             })
             return response
         } catch (error: any) {
+            console.log('e: ',error)
             if (error && error.response.status === 409) {
+                throw error
+            } else if(error.code === 'ERR_NETWORK'){
                 throw error
             }
         }

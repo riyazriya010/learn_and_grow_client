@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import AdminHeader from "./header";
 import AdminFooter from "./footer";
 import { adminApis } from "@/api/adminApis";
+import axios from "axios";
 
 
 export interface AdminLoginCredentials {
@@ -37,9 +38,12 @@ const AdminLogin = () => {
 
         } catch (error: any) {
             if (error && error.response?.status === 409) {
-                toast.error('Invalid Credential') // Show notification for invalid credentials
+                toast.error('Invalid Credential')
+            }else if (axios.isAxiosError(error) && error.code === 'ERR_NETWORK') {
+                toast.error('Server is not running or cannot be reached');
             } else {
-                toast.error('Something Went Wrong') // General error notification
+                console.log('e ', error.message)
+                toast.error('Something Went Wrong')
             }
         }
     }
