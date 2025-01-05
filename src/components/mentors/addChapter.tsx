@@ -1,25 +1,43 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Navbar from '../navbar';
 import MentorFooter from './footer';
-import { mentorApis } from '@/api/mentorApi';
+import { mentorApis } from '@/app/api/mentorApi';
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSearchParams } from 'next/navigation';
 
-interface FormValues {
+export interface FormValues {
     title: string;
     description: string;
     chapterVideo: File | null;
 }
 
 const AddChapter: React.FC = () => {
+        const [courseId, setCourseId] = useState<string | null>(null);
+        const [isLoading, setIsLoading] = useState<boolean>(true);
+        const searchParams = useSearchParams()
+
     const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
+
+
+     useEffect(() => {
+            const getCourseId = searchParams.get('courseId')
+    
+            if (getCourseId) {
+                setCourseId(getCourseId);
+                setIsLoading(false);
+                console.log('id: ', courseId)
+            } else {
+                setIsLoading(false);
+            }
+
+        }, [searchParams]);
 
     const onSubmit: SubmitHandler<FormValues> = async (data: any) => {
         try {
-            console.log('data: ', data)
 
             const formData = new FormData()
 
@@ -39,7 +57,7 @@ const AddChapter: React.FC = () => {
                 console.log(`${key}:`, value);
             }
 
-            const response = await mentorApis.addChapter(formData)
+            const response = await mentorApis.addChapter(formData, String(courseId))
             console.log('res ', response)
 
 

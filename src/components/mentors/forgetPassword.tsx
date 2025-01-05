@@ -7,7 +7,7 @@ import LoggedOutHeader from "../loggedoutNav/header";
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/navigation";
-import { mentorApis } from "@/api/mentorApi";
+import { mentorApis } from "@/app/api/mentorApi";
 
 
 export interface MentorForgetCredentials {

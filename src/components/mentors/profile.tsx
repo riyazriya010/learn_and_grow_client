@@ -9,10 +9,11 @@ import Cookies from "js-cookie";
 import jwt from "jsonwebtoken";
 import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { mentorApis } from "@/api/mentorApi";
+import { mentorApis } from "@/app/api/mentorApi";
 import Navbar from "../navbar";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/slices/mentorSlice";
+import Footer from "../loggedoutNav/footer";
 
 
 export interface MentorProfile {
@@ -182,18 +183,18 @@ const MentorProfile = () => {
         {/* Profile Section */}
         <div className="flex-1 p-6 flex justify-center items-start">
           <form
-            className="bg-white shadow-lg rounded-lg p-6 max-w-lg w-full"
+            className="bg-white border-2 border-[#D6D1F0] shadow-lg w-[500px] p-6 rounded-lg"
             onSubmit={handleSubmit(onSubmit)}
           >
             {/* Profile Picture */}
             <div className="flex flex-col items-center mb-6 relative">
               <div
-                className={`w-24 h-24 rounded-full flex items-center justify-center ${isVerified ? "border-4 border-blue-500" : "bg-gray-300"
+                className={`w-24 h-24 rounded-full flex items-center justify-center ${isVerified ? "border-4 border-[#6E40FF]" : "bg-gray-300"
                   }`}
               >
                 <span className="text-gray-500 text-lg">Profile Pic</span>
                 {isVerified && (
-                  <div className="absolute top-0 right-0 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white">
+                  <div className="absolute top-0 right-0 w-8 h-8 bg-[#6E40FF] rounded-full flex items-center justify-center border-2 border-white">
                     <span className="text-white text-xl font-bold">✔</span>
                   </div>
                 )}
@@ -279,7 +280,7 @@ const MentorProfile = () => {
               <div className="text-center">
                 <button
                   type="submit"
-                  className="bg-[#433D8B] text-white px-6 py-2 rounded-lg hover:bg-[#2f296b] focus:outline-none focus:ring-2 focus:ring-[#433D8B]"
+                  className="bg-[#6E40FF] text-white px-14 py-2 rounded-[0px] focus:outline-none focus:ring-2 focus:ring-[#433D8B]"
                 >
                   Update
                 </button>
@@ -290,7 +291,9 @@ const MentorProfile = () => {
       </div>
 
       {/* Footer */}
-      <MentorFooter />
+      {/* <MentorFooter /> */}
+
+      <Footer />
     </>
   );
 };

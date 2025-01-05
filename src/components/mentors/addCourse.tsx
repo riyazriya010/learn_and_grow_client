@@ -1,13 +1,13 @@
 'use client'
 
-import { mentorApis } from "@/api/mentorApi";
+import { mentorApis } from "@/app/api/mentorApi";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Navbar from "../navbar";
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/navigation";
-import LoadingModal from "../loadingModal";
+import LoadingModal from "../re-usable/loadingModal";
 
 interface Chapters {
   title: string;
@@ -100,6 +100,7 @@ const AddCourse = () => {
         />
 
         <div className="min-h-screen bg-gray-100 flex items-center justify-center py-10">
+          
           <div className="w-full max-w-3xl bg-white rounded-lg shadow-md p-6">
             <h1 className="text-3xl text-[#433D8B] font-bold text-center mb-6">Add Course</h1>
 
@@ -217,6 +218,7 @@ const AddCourse = () => {
             </form>
 
           </div>
+
         </div>
       </div>
     </>

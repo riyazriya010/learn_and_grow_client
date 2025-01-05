@@ -4,6 +4,7 @@ import { Credentials } from "@/components/students/signup"
 import { USER_SERVICE_URL } from "@/utils/constant"
 import axios from "axios"
 import { User } from "firebase/auth"
+import { headers } from "next/headers"
 
 export const studentApis = {
 
@@ -146,25 +147,92 @@ export const studentApis = {
     },
 
     /* ---------------------------- WEEK - 2 -------------------------*/
-    fetchAllCourse: async () => {
-        try{
-            const response = await axios.get(`${USER_SERVICE_URL}/get/all-course`,{
+    // fetchAllCourse: async () => {
+    //     try{
+    //         const response = await axios.get(`${USER_SERVICE_URL}/get/all-course`,{
+    //             withCredentials: true
+    //         })
+    //         return response
+    //     }catch(error: any){
+    //         console.log(error)
+    //     }
+    // },
+
+
+    fetchAllCourse: async (filters: { page: number; limit: number }) => {
+        try {
+            const { page, limit } = filters;
+            const response = await axios.get(`${USER_SERVICE_URL}/get/all-course`, {
+                params: { page, limit },
+                withCredentials: true
+            });
+            return response;
+        } catch (error: any) {
+            console.log(error);
+        }
+    },
+
+
+    getCourse: async (id: string) => {
+        try {
+            const response = await axios.get(`${USER_SERVICE_URL}/get/course?courseId=${id}`, {
                 withCredentials: true
             })
             return response
-        }catch(error: any){
+        } catch (error: any) {
             console.log(error)
         }
     },
 
-    getCourse: async (id: string) => {
+
+    getChapters: async () => {
+        try {
+            const courseId = '67713238c901f382c99d8a46'
+            const response = await axios.get(`${USER_SERVICE_URL}/get/course/play?courseId=${courseId}`, {
+                withCredentials: true
+            })
+            return response
+        } catch (error: any) {
+            console.log(error)
+        }
+    },
+
+    filterData: async (filters: { page: number, limit: number, selectedCategory: string, selectedLevel: string, searchTerm: string }) => {
+        try {
+            console.log('filter: ', filters)
+            const response = await axios.get(`${USER_SERVICE_URL}/filter/data`, {
+                params: filters,
+                withCredentials: true
+            })
+            return response
+        } catch (error: any) {
+            throw error
+        }
+    },
+
+
+    payment: async (courseId: string, txnid: string) => {
         try{
-            const response = await axios.get(`${USER_SERVICE_URL}/get/course?courseId=${id}`,{
+            const response = await axios.get(`${USER_SERVICE_URL}/payment?courseId=${courseId}&txnid=${txnid}`, {
                 withCredentials: true
             })
             return response
         }catch(error: any){
-            console.log(error)
+            throw error
+        }
+    },
+
+
+    isVerified: async () => {
+        try{
+            const response = await axios.get(`${USER_SERVICE_URL}/check/verify`,{
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
         }
     }
+
+
 }

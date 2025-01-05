@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Footer from "../loggedoutNav/footer";
 import LoggedOutHeader from "../loggedoutNav/header";
-import { studentApis } from "@/api/studentApi";
+import { studentApis } from "@/app/api/studentApi";
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/navigation";
@@ -43,8 +43,8 @@ const Login = () => {
                             role: response.data.user.role
                         }),
                     )
-                    // router.push('/pages/home')
-                    window.location.replace('/pages/home');
+                    router.replace('/pages/home')
+                    // window.location.replace('/pages/home');
                 }
             }
 
@@ -109,113 +109,250 @@ const Login = () => {
     }
 
     return (
+        // <div className="min-h-screen flex flex-col justify-between bg-white">
+
+        //     {/* Header */}
+
+        //     {/* <LoggedOutHeader /> */}
+        //     <Navbar />
+
+        //     <ToastContainer
+        //         autoClose={2000}
+        //         pauseOnHover={false}
+        //         transition={Slide}
+        //         hideProgressBar={false}
+        //         closeOnClick={false}
+        //         pauseOnFocusLoss={true}
+        //     />
+
+        //     {/* Login Form */}
+        //     <main className="flex-grow flex items-center justify-center px-4 py-8">
+        //         <div className="bg-[#F8F9FA] border-2 border-[#D6D1F0] w-[400px] p-6 shadow-md rounded-none">
+        //             <h1 className="text-center text-2xl font-bold mb-6 text-[#433D8B]">Student Login</h1>
+        //             <form onSubmit={handleSubmit(onSubmit)}>
+        //                 <div className="mb-4">
+        //                     <label htmlFor="email" className="block text-gray-700 font-semibold mb-2">
+        //                         Enter your email:
+        //                     </label>
+        //                     <input
+        //                         type="email"
+        //                         id="email"
+        //                         className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
+        //                         placeholder="Enter your email"
+        //                         {...register("email", {
+        //                             required: "Email is required",
+        //                             pattern: {
+        //                                 value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        //                                 message: "Please enter a valid email address",
+        //                             },
+        //                         })}
+        //                     />
+        //                     <p className="text-red-600">{errors.email?.message}</p>
+        //                 </div>
+        //                 <div className="mb-4">
+        //                     <label htmlFor="password" className="block text-gray-700 font-semibold mb-2">
+        //                         Enter your password:
+        //                     </label>
+        //                     <input
+        //                         type="password"
+        //                         id="password"
+        //                         className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
+        //                         placeholder="Enter your password"
+        //                         {...register("password", {
+        //                             required: "Password is required",
+        //                             pattern: {
+        //                                 value:
+        //                                     /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*()_+~`|}{[\]:;?><,./-]).{8,}$/,
+        //                                 message:
+        //                                     "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character",
+        //                             },
+        //                         })}
+        //                     />
+        //                     <p className="text-red-600">{errors.password?.message}</p>
+        //                 </div>
+        //                 <div className="text-right mb-4">
+        //                     <a href="#" className="text-sm text-blue-600 hover:underline"
+        //                         onClick={forgetPassword}
+        //                     >
+        //                         Forget password?
+        //                     </a>
+        //                 </div>
+        //                 <button
+        //                     type="submit"
+        //                     className="w-full bg-[#6E40FF] text-white py-3 rounded-[22px] hover:opacity-90"
+        //                 >
+        //                     Login
+        //                 </button>
+        //             </form>
+        //             {/* Google Login Button */}
+        //             <div className="flex justify-center items-center mt-6 mb-6">
+        //                 {/* <button
+        //                     onClick={handleGoogleLogin}
+        //                     type="button"
+        //                     className="flex justify-center items-center w-12 h-12 rounded-full border-[3px] border-[#D9D9D9] bg-white text-[#757575] hover:opacity-90"
+        //                 >
+                            
+        //                     <img
+        //                         src="/images/glogo.png"
+        //                         alt="Google logo"
+        //                         className="w-8 h-8"
+        //                     />
+        //                 </button> */}
+
+
+        //                 {/* Divider */}
+        //                 <div className="flex items-center my-6">
+        //                     <div className="flex-grow border-t border-gray-500"></div>
+        //                     <span className="mx-3 text-sm text-gray-500">or</span>
+        //                     <div className="flex-grow border-t border-gray-500"></div>
+        //                 </div>
+
+
+        //                 <button
+        //                     onClick={handleGoogleLogin}
+        //                     type="button"
+        //                     className="w-full flex items-center justify-center py-2 px-4 border border-gray-500 rounded-md bg-white text-gray-700 hover:bg-gray-200 transition"
+        //                 >
+        //                     <img
+        //                         src="/images/glogo.png"
+        //                         alt="Google"
+        //                         className="w-5 h-5 mr-2"
+        //                     />
+        //                     Login with Google
+        //                 </button>
+        //             </div>
+
+
+        //             <div className="text-center mt-6">
+        //                 <p className="text-black">
+        //                     Don’t have an account?{' '}
+        //                     <a href="/pages/student/signup" className="text-[#433D8B] font-semibold hover:underline">
+        //                         Signup
+        //                     </a>
+        //                 </p>
+        //             </div>
+        //         </div>
+        //     </main>
+
+        //     {/* Footer */}
+        //     <Footer />
+
+        // </div>
+
         <div className="min-h-screen flex flex-col justify-between bg-white">
 
-            {/* Header */}
+    {/* Header */}
+    {/* <LoggedOutHeader /> */}
+    <Navbar />
 
-            {/* <LoggedOutHeader /> */}
-            <Navbar />
+    <ToastContainer
+        autoClose={2000}
+        pauseOnHover={false}
+        transition={Slide}
+        hideProgressBar={false}
+        closeOnClick={false}
+        pauseOnFocusLoss={true}
+    />
 
-            <ToastContainer
-                autoClose={2000}
-                pauseOnHover={false}
-                transition={Slide}
-                hideProgressBar={false}
-                closeOnClick={false}
-                pauseOnFocusLoss={true}
-            />
-
-            {/* Login Form */}
-            <main className="flex-grow flex items-center justify-center px-4 py-8">
-                <div className="bg-[#F8F9FA] border-2 border-[#D6D1F0] w-[400px] p-6 shadow-md rounded-none">
-                    <h1 className="text-center text-2xl font-bold mb-6 text-[#433D8B]">Student Login</h1>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="mb-4">
-                            <label htmlFor="email" className="block text-gray-700 font-semibold mb-2">
-                                Enter your email:
-                            </label>
-                            <input
-                                type="email"
-                                id="email"
-                                className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
-                                placeholder="Enter your email"
-                                {...register("email", {
-                                    required: "Email is required",
-                                    pattern: {
-                                        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                                        message: "Please enter a valid email address",
-                                    },
-                                })}
-                            />
-                            <p className="text-red-600">{errors.email?.message}</p>
-                        </div>
-                        <div className="mb-4">
-                            <label htmlFor="password" className="block text-gray-700 font-semibold mb-2">
-                                Enter your password:
-                            </label>
-                            <input
-                                type="password"
-                                id="password"
-                                className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
-                                placeholder="Enter your password"
-                                {...register("password", {
-                                    required: "Password is required",
-                                    pattern: {
-                                        value:
-                                            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*()_+~`|}{[\]:;?><,./-]).{8,}$/,
-                                        message:
-                                            "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character",
-                                    },
-                                })}
-                            />
-                            <p className="text-red-600">{errors.password?.message}</p>
-                        </div>
-                        <div className="text-right mb-4">
-                            <a href="#" className="text-sm text-blue-600 hover:underline"
-                                onClick={forgetPassword}
-                            >
-                                Forget password?
-                            </a>
-                        </div>
-                        <button
-                            type="submit"
-                            className="w-full bg-[#433D8B] text-white py-3 rounded-[22px] hover:opacity-90"
-                        >
-                            Login
-                        </button>
-                    </form>
-                    {/* Google Login Button */}
-                    <div className="flex justify-center items-center mt-6 mb-6">
-                        <button
-                            onClick={handleGoogleLogin}
-                            type="button"
-                            className="flex justify-center items-center w-12 h-12 rounded-full border-[3px] border-[#D9D9D9] bg-white text-[#757575] hover:opacity-90"
-                        >
-                            {/* <span className="text-xl font-bold">G+</span> */}
-                            <img
-                                src="/images/glogo.png"
-                                alt="Google logo"
-                                className="w-8 h-8"
-                            />
-                        </button>
-                    </div>
-
-
-                    <div className="text-center mt-6">
-                        <p className="text-black">
-                            Don’t have an account?{' '}
-                            <a href="/pages/student/signup" className="text-[#433D8B] font-semibold hover:underline">
-                                Signup
-                            </a>
-                        </p>
-                    </div>
+    {/* Login Form */}
+    <main className="flex-grow flex items-center justify-center px-4 py-8">
+        <div className="bg-white border-2 border-[#D6D1F0] shadow-lg w-[400px] p-6 rounded-lg">
+            <h1 className="text-center text-2xl font-bold mb-6 text-[#6E40FF]">Student Login</h1>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="mb-4">
+                    <label htmlFor="email" className="block text-gray-700 font-semibold mb-2">
+                        Enter your email:
+                    </label>
+                    <input
+                        type="email"
+                        id="email"
+                        className="w-full p-3 border border-[#333333] bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
+                        placeholder="Enter your email"
+                        {...register("email", {
+                            required: "Email is required",
+                            pattern: {
+                                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                                message: "Please enter a valid email address",
+                            },
+                        })}
+                    />
+                    <p className="text-red-600">{errors.email?.message}</p>
                 </div>
-            </main>
+                <div className="mb-4">
+                    <label htmlFor="password" className="block text-gray-700 font-semibold mb-2">
+                        Enter your password:
+                    </label>
+                    <input
+                        type="password"
+                        id="password"
+                        className="w-full p-3 border border-[#333333] bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
+                        placeholder="Enter your password"
+                        {...register("password", {
+                            required: "Password is required",
+                            pattern: {
+                                value:
+                                    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*()_+~`|}{[\]:;?><,./-]).{8,}$/,
+                                message:
+                                    "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character",
+                            },
+                        })}
+                    />
+                    <p className="text-red-600">{errors.password?.message}</p>
+                </div>
+                <div className="text-right mb-4">
+                    <a href="#" className="text-sm text-blue-600 hover:underline"
+                        onClick={forgetPassword}
+                    >
+                        Forget password?
+                    </a>
+                </div>
+                <button
+                    type="submit"
+                    className="w-full bg-[#6E40FF] text-white py-3 rounded-[0px] hover:opacity-90"
+                >
+                    Login
+                </button>
+            </form>
 
-            {/* Footer */}
-            <Footer />
+            {/* Google Login Button */}
+            <div className="flex justify-center items-center mt-1 mb-8">
+                {/* Divider */}
+                <div className="flex items-center my-6 w-full">
+                    <div className="flex-grow border-t border-gray-300"></div>
+                    <span className="mx-3 text-sm text-gray-500">or</span>
+                    <div className="flex-grow border-t border-gray-300"></div>
+                </div>
+            </div>
+            
+            <button
+                    onClick={handleGoogleLogin}
+                    type="button"
+                    className="w-full flex items-center justify-center py-2 px-4 border border-gray-500 rounded-[0px] bg-white text-gray-700 hover:bg-gray-200 transition mt-[-7%]"
+                >
+                    <img
+                        src="/images/glogo.png"
+                        alt="Google"
+                        className="w-5 h-5 mr-2"
+                    />
+                    Login with Google
+                </button>
 
+            <div className="text-center mt-6">
+                <p className="text-sm text-black">
+                    Don’t have an account?{' '}
+                    <a href="/pages/student/signup" className="text-base text-[#6E40FF] font-semibold hover:underline">
+                        Signup
+                    </a>
+                </p>
+            </div>
         </div>
+    </main>
+
+    {/* Footer */}
+    <Footer />
+
+</div>
+
     );
 }
 

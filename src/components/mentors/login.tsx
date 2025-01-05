@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Footer from "../loggedoutNav/footer";
 import LoggedOutHeader from "../loggedoutNav/header";
-import { mentorApis } from "@/api/mentorApi";
+import { mentorApis } from "@/app/api/mentorApi";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,6 +12,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { app } from "@/lib/firebase/config";
 import { setUser } from "@/redux/slices/mentorSlice";
 import { useDispatch } from "react-redux";
+import Navbar from "../navbar";
 
 
 export interface MentorLoginCredentials {
@@ -104,7 +105,9 @@ const MentorLogin = () => {
 
             {/* Header */}
 
-            <LoggedOutHeader />
+            {/* <LoggedOutHeader /> */}
+
+            <Navbar />
 
             <ToastContainer
                 autoClose={2000}
@@ -117,8 +120,8 @@ const MentorLogin = () => {
 
             {/* Login Form */}
             <main className="flex-grow flex items-center justify-center px-4 py-8">
-                <div className="bg-[#F8F9FA] border-2 border-[#D6D1F0] w-[400px] p-6 shadow-md rounded-none">
-                    <h1 className="text-center text-2xl font-bold mb-6 text-[#433D8B]">Mentor Login</h1>
+                <div className="bg-white border-2 border-[#D6D1F0] shadow-lg w-[400px] p-6 rounded-lg">
+                    <h1 className="text-center text-2xl font-bold mb-6 text-[#6E40FF]">Mentor Login</h1>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="mb-4">
                             <label htmlFor="email" className="block text-gray-700 font-semibold mb-2">
@@ -127,7 +130,7 @@ const MentorLogin = () => {
                             <input
                                 type="email"
                                 id="email"
-                                className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
+                                className="w-full p-3 border border-[#333333] bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                 placeholder="Enter your email"
                                 {...register("email", {
                                     required: "Email is required",
@@ -146,7 +149,7 @@ const MentorLogin = () => {
                             <input
                                 type="password"
                                 id="password"
-                                className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
+                                className="w-full p-3 border border-[#333333] bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                 placeholder="Enter your password"
                                 {...register("password", {
                                     required: "Password is required",
@@ -169,32 +172,55 @@ const MentorLogin = () => {
                         </div>
                         <button
                             type="submit"
-                            className="w-full bg-[#433D8B] text-white py-3 rounded-[22px] hover:opacity-90"
+                            className="w-full bg-[#6E40FF] text-white py-3 rounded-[0px] hover:opacity-90"
                         >
                             Login
                         </button>
                     </form>
+
+                    <div className="flex justify-center items-center mt-1 mb-8">
+                        {/* Divider */}
+                        <div className="flex items-center my-6 w-full">
+                            <div className="flex-grow border-t border-gray-300"></div>
+                            <span className="mx-3 text-sm text-gray-500">or</span>
+                            <div className="flex-grow border-t border-gray-300"></div>
+                        </div>
+                    </div>
+
                     {/* Google Login Button */}
-                    <div className="flex justify-center items-center mt-6 mb-6">
+                    {/* <div className="flex justify-center items-center mt-6 mb-6">
                         <button
                             onClick={handleGoogleLogin}
                             type="button"
                             className="flex justify-center items-center w-12 h-12 rounded-full border-[3px] border-[#D9D9D9] bg-white text-[#757575] hover:opacity-90"
                         >
-                            {/* <span className="text-xl font-bold">G+</span> */}
+                           
                             <img
                                 src="/images/glogo.png"
                                 alt="Google logo"
                                 className="w-8 h-8"
                             />
                         </button>
-                    </div>
+                    </div> */}
+
+                    <button
+                    onClick={handleGoogleLogin}
+                    type="button"
+                    className="w-full flex items-center justify-center py-2 px-4 border border-gray-500 rounded-[0px] bg-white text-gray-700 hover:bg-gray-200 transition mt-[-7%]"
+                >
+                    <img
+                        src="/images/glogo.png"
+                        alt="Google"
+                        className="w-5 h-5 mr-2"
+                    />
+                    Login with Google
+                </button>
 
 
                     <div className="text-center mt-6">
-                        <p className="text-black">
+                        <p className="text-sm text-black">
                             Don't have an account?{' '}
-                            <a href="/pages/mentor/signup" className="text-[#433D8B] font-semibold hover:underline">
+                            <a href="/pages/mentor/signup" className="text-base text-[#6E40FF] font-semibold hover:underline">
                                 Signup
                             </a>
                         </p>

@@ -2,13 +2,13 @@
 
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { studentApis } from "@/api/studentApi";
+import { studentApis } from "@/app/api/studentApi";
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/navigation";
 import AdminHeader from "./header";
 import AdminFooter from "./footer";
-import { adminApis } from "@/api/adminApis";
+import { adminApis } from "@/app/api/adminApis";
 import axios from "axios";
 
 

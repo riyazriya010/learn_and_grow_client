@@ -207,7 +207,7 @@
 import React, { useEffect, useState } from "react";
 import AdminHeader from "./header";
 import AdminFooter from "./footer";
-import { adminApis } from "@/api/adminApis";
+import { adminApis } from "@/app/api/adminApis";
 import Swal from "sweetalert2";
 import { FaLock, FaUnlock } from "react-icons/fa";
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';

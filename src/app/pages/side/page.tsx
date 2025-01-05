@@ -1,4 +1,4 @@
-import SideNav from "@/components/side"
+import SideNav from "@/components/re-usable/side"
 
 const SideNavBar = () => {
     return <SideNav />

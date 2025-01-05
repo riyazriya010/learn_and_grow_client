@@ -1,4 +1,5 @@
 // import { AddCourseFormInputs } from "@/components/mentors/addCourse";
+import { IQuizForm } from "@/components/mentors/addQuizz";
 import { MentorLoginCredentials } from "@/components/mentors/login";
 import { MentorProfile } from "@/components/mentors/profile";
 import { MentorSignUpCredential } from "@/components/mentors/signup";
@@ -139,10 +140,10 @@ export const mentorApis = {
             })
             return response
         } catch (error: any) {
-            if(error && error.response?.status === 403){
+            if (error && error.response?.status === 403) {
                 throw error
             }
-            if(error && error.response?.status === 401){
+            if (error && error.response?.status === 401) {
                 throw error
             }
         }
@@ -152,35 +153,148 @@ export const mentorApis = {
 
     addCourse: async (data: FormData) => {
         try {
-          const response = await axios.post(`${MENTOR_SERVICE_URL}/mentor/course-upload`, data, {
-            headers: {
-              'Content-Type': 'multipart/form-data', // Axios auto-handles this but explicit is good
-            },
-            withCredentials: true, // Include credentials if needed
-          });
-          return response.data;
+            const response = await axios.post(`${MENTOR_SERVICE_URL}/mentor/course-upload`, data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data', // Axios auto-handles this but explicit is good
+                },
+                withCredentials: true, // Include credentials if needed
+            });
+            return response.data;
         } catch (error) {
-          console.error("API Error:", error);
-          throw error; // Rethrow error to handle it in the calling function
+            console.error("API Error:", error);
+            throw error; // Rethrow error to handle it in the calling function
         }
-      },
+    },
 
 
-      
-    addChapter: async (data: FormData) => {
+
+    addChapter: async (data: FormData, courseId: string) => {
         try {
-            const courseId = '67710140df708808ce0fd712'
-          const response = await axios.post(`${MENTOR_SERVICE_URL}/mentor/chapter-upload?courseId=${courseId}`, data, {
-            headers: {
-              'Content-Type': 'multipart/form-data', // Axios auto-handles this but explicit is good
-            },
-            withCredentials: true, // Include credentials if needed
-          });
-          return response.data;
+            // const courseId = '67710140df708808ce0fd712'
+            const response = await axios.post(`${MENTOR_SERVICE_URL}/mentor/chapter-upload?courseId=${courseId}`, data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data', // Axios auto-handles this but explicit is good
+                },
+                withCredentials: true, // Include credentials if needed
+            });
+            return response.data;
         } catch (error) {
-          console.error("API Error:", error);
-          throw error; // Rethrow error to handle it in the calling function
+            console.error("API Error:", error);
+            throw error; // Rethrow error to handle it in the calling function
         }
-      }
-      
+    },
+
+
+    getAllCourses: async () => {
+        try {
+            const response = await axios.get(`${MENTOR_SERVICE_URL}/get/all-course`, {
+                withCredentials: true
+            })
+            return response
+        } catch (error) {
+            console.log(error)
+        }
+    },
+
+
+    getCourse: async (courseId: string) => {
+        try {
+            const response = await axios.get(`${MENTOR_SERVICE_URL}/get/course?courseId=${courseId}`, {
+                withCredentials: true
+            })
+            return response
+        } catch (error: any) {
+            throw error
+        }
+    },
+
+    getCategories: async () => {
+        try {
+            const response = await axios.get(`${MENTOR_SERVICE_URL}/get/categories`, {
+                withCredentials: true
+            })
+            return response
+        } catch (error: any) {
+            throw error
+        }
+    },
+
+
+    getAllChapters: async (courseId: string) => {
+        try{
+            const response = await axios.get(`${MENTOR_SERVICE_URL}/get/all-chapters?courseId=${courseId}`,{
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
+    addQuizz: async (data: IQuizForm, courseId: string) => {
+        try{
+            const response = await axios.post(`${MENTOR_SERVICE_URL}/add/quizz?courseId=${courseId}`, data, {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
+    getAllQuizz: async (courseId: string) => {
+        try{
+            const response = await axios.get(`${MENTOR_SERVICE_URL}/get/all-quizz?courseId=${courseId}`,{
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
+
+    deleteQuizz: async (quizId: string, courseId: string) => {
+        try{
+            const response = await axios.delete(`${MENTOR_SERVICE_URL}/delete/quizz?courseId=${courseId}&quizId=${quizId}`,{
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
+
+    editCourseWithFiles: async (formData: any, courseId: string) => {
+        try{
+            const response = await axios.patch(`${MENTOR_SERVICE_URL}/edit/course?courseId=${courseId}`, formData, {
+                headers: {
+                    "Content-Type": 'multipart/form-data'
+                },
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
+    // editCourseWithoutFiles: async (formData: any, courseId: string) => {
+    //     try{
+    //         const response = await axios.patch(`${MENTOR_SERVICE_URL}/edit-data/course?courseId=${courseId}`, formData, {
+    //             headers: {
+    //                 "Content-Type": 'multipart/form-data'
+    //             },
+    //             withCredentials: true
+    //         })
+    //         return response
+    //     }catch(error: any){
+    //         throw error
+    //     }
+    // }
+
 }

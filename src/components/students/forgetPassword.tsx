@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Footer from "../loggedoutNav/footer";
 import LoggedOutHeader from "../loggedoutNav/header";
-import { studentApis } from "@/api/studentApi";
+import { studentApis } from "@/app/api/studentApi";
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/navigation";

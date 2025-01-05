@@ -1,6 +1,6 @@
 'use client'
 
-import { mentorApis } from "@/api/mentorApi";
+import { mentorApis } from "@/app/api/mentorApi";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Navbar from "../navbar";

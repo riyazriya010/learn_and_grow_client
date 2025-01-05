@@ -66,7 +66,7 @@ const LoggedOutHome = () => {
                         <h3 className="text-4xl font-normal mt-2">Online Learning Experience Better</h3>
 
                         <button
-                            className="mt-6 px-9 py-3 bg-[#433D8B] text-white rounded-[19px] text-lg font-medium shadow-lg hover:bg-[#322D6B] transition-all"
+                            className="mt-6 px-9 py-3 bg-[#6E40FF] text-white rounded-[0px] text-lg font-medium shadow-lg transition-all"
                         >
                             Subscription
                         </button>

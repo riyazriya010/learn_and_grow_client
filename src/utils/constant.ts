@@ -22,3 +22,8 @@ export const MEASUREMENT_ID = process.env.NEXT_PUBLIC_MEASUREMENT_ID
 
 // jwt
 export const JWT_SECRET = process.env.NEXT_PUBLIC_JWT_SECRET
+
+
+//payU
+export const PAYU_MERCHANT_KEY = process.env.NEXT_PUBLIC_PAYU_MERCHANT_KEY
+export const PAYU_MERCHANT_SALT = process.env.NEXT_PUBLIC_MERCHANT_PAYU_SALT

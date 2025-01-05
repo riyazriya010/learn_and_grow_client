@@ -1,7 +1,7 @@
 // Footer.js
 const Footer = () => {
     return (
-        <footer className="bg-[#433D8B] text-white py-6">
+        <footer className="bg-[#6E40FF] text-white py-6">
             <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-8 px-4">
                 {/* About Section */}
                 <div className="text-center sm:text-left">

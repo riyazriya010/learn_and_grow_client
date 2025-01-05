@@ -4,7 +4,7 @@ import React from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import Footer from "../loggedoutNav/footer"
 import LoggedOutHeader from "../loggedoutNav/header";
-import { mentorApis } from "@/api/mentorApi";
+import { mentorApis } from "@/app/api/mentorApi";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -45,7 +45,7 @@ const MentorSignup = () => {
                         role: response.data.user.role
                     }),
                 )
-                setTimeout(() => { 
+                setTimeout(() => {
                     // router.push('/pages/mentor/verify-alert')
                     window.location.replace('/pages/mentor/verify-alert');
                 }, 1000)
@@ -104,7 +104,7 @@ const MentorSignup = () => {
             } else if (error.response?.status === 409) {
                 toast.error(error.response.data.message)
             }
-            console.log(error)
+            // console.log(error)
         }
     }
 
@@ -129,8 +129,8 @@ const MentorSignup = () => {
 
                 {/* Signup Form */}
                 <main className="flex-grow flex items-center justify-center px-4 py-8">
-                    <div className="bg-[#F8F9FA] border-2 border-[#D6D1F0] w-[400px] p-6 shadow-md rounded-none">
-                        <h1 className="text-center text-2xl font-bold mb-6 text-[#433D8B]">Mentor Signup</h1>
+                    <div className="bg-white border-2 border-[#D6D1F0] shadow-lg w-[400px] p-6 rounded-lg">
+                        <h1 className="text-center text-2xl font-bold mb-6 text-[#6E40FF]">Mentor Signup</h1>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             {/* Name Input */}
                             <div className="mb-4">
@@ -140,7 +140,7 @@ const MentorSignup = () => {
                                 <input
                                     type="text"
                                     id="username"
-                                    className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
+                                    className="w-full p-3 border border-black bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                     placeholder="Enter your name"
                                     {...register("username", {
                                         required: "username required",
@@ -161,7 +161,7 @@ const MentorSignup = () => {
                                 <input
                                     type="email"
                                     id="email"
-                                    className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
+                                    className="w-full p-3 border border-black bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                     placeholder="Enter your email"
                                     {...register("email", {
                                         required: "Email is required",
@@ -182,7 +182,7 @@ const MentorSignup = () => {
                                 <input
                                     type="text"
                                     id="phone"
-                                    className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
+                                    className="w-full p-3 border border-black bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                     placeholder="Enter your phone number"
                                     {...register("phone", {
                                         required: "Phone number is required",
@@ -203,7 +203,7 @@ const MentorSignup = () => {
                                 <input
                                     type="text"
                                     id="expertise"
-                                    className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
+                                    className="w-full p-3 border border-black bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                     placeholder="Enter your Expertise Area"
                                     {...register("expertise", {
                                         required: "expertise area required",
@@ -224,7 +224,7 @@ const MentorSignup = () => {
                                 <input
                                     type="text"
                                     id="skills"
-                                    className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
+                                    className="w-full p-3 border border-black bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                     placeholder="Enter your Expertise Area"
                                     {...register("skills", {
                                         required: "skills required",
@@ -245,7 +245,7 @@ const MentorSignup = () => {
                                 <input
                                     type="password"
                                     id="password"
-                                    className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
+                                    className="w-full p-3 border border-black bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                     placeholder="Enter your password"
                                     {...register("password", {
                                         required: "Enter a password",
@@ -268,7 +268,7 @@ const MentorSignup = () => {
                                 <input
                                     type="password"
                                     id="confirmPassword"
-                                    className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
+                                    className="w-full p-3 border border-black bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                     placeholder="Confirm your password"
                                     {...register("confirmPassword", {
                                         validate: (value) => {
@@ -283,33 +283,38 @@ const MentorSignup = () => {
                             {/* Signup Button */}
                             <button
                                 type="submit"
-                                className="w-full bg-[#433D8B] text-white py-3 rounded-[22px] hover:opacity-90"
+                                className="w-full bg-[#6E40FF] text-white py-3 rounded-[0px] hover:opacity-90"
                             >
                                 Signup
                             </button>
                         </form>
 
-                        {/* Google Login Button */}
-                        <div className="flex justify-center items-center mt-6 mb-6">
-                            <button
-                                onClick={handleGoogleSignUp}
-                                type="button"
-                                className="flex justify-center items-center w-12 h-12 rounded-full border-[3px] border-[#D9D9D9] bg-white text-[#757575] hover:opacity-90"
-                            >
-                                {/* <span className="text-xl font-bold">G+</span> */}
-                                <img
-                                    src="/images/glogo.png"
-                                    alt="Google logo"
-                                    className="w-8 h-8"
-                                />
-                            </button>
+                        {/* Divider */}
+                        <div className="flex items-center my-6">
+                            <div className="flex-grow border-t border-gray-300"></div>
+                            <span className="mx-3 text-sm text-gray-500">or</span>
+                            <div className="flex-grow border-t border-gray-300"></div>
                         </div>
+
+                        {/* Google Signup Button */}
+                        <button
+                            onClick={handleGoogleSignUp}
+                            type="button"
+                            className="w-full flex items-center justify-center py-2 px-4 border border-gray-500 rounded-[0px] bg-white text-gray-700 hover:bg-gray-200 transition"
+                        >
+                            <img
+                                src="/images/glogo.png"
+                                alt="Google logo"
+                                className="w-5 h-5 mr-2"
+                            />
+                            Signup with Google
+                        </button>
 
                         {/* Already have an account */}
                         <div className="text-center mt-6">
-                            <p className="text-black">
+                            <p className="text-sm text-black">
                                 Already have an account?{' '}
-                                <a href="/pages/mentor/login" className="text-[#433D8B] font-semibold hover:underline">
+                                <a href="/pages/mentor/login" className="text-base text-[#6E40FF] font-semibold hover:underline">
                                     Login
                                 </a>
                             </p>
