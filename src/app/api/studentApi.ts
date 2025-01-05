@@ -212,20 +212,68 @@ export const studentApis = {
 
 
     payment: async (courseId: string, txnid: string) => {
-        try{
+        try {
             const response = await axios.get(`${USER_SERVICE_URL}/payment?courseId=${courseId}&txnid=${txnid}`, {
                 withCredentials: true
             })
             return response
-        }catch(error: any){
+        } catch (error: any) {
             throw error
         }
     },
 
 
     isVerified: async () => {
+        try {
+            const response = await axios.get(`${USER_SERVICE_URL}/check/verify`, {
+                withCredentials: true
+            })
+            return response
+        } catch (error: any) {
+            throw error
+        }
+    },
+
+
+    getPurchasedCourses: async () => {
+        try {
+            const response = await axios.get(`${USER_SERVICE_URL}/get/buyedCourses`, {
+                withCredentials: true
+            })
+            return response
+        } catch (error: any) {
+            throw error
+        }
+    },
+
+
+    coursePlay: async (buyedId: string) => {
+        try {
+            const response = await axios.get(`${USER_SERVICE_URL}/course-play?buyedId=${buyedId}`, {
+                withCredentials: true
+            })
+            return response
+        } catch (error: any) {
+            throw error
+        }
+    },
+
+
+    chapterVideoEnd: async (chapterId: string) => {
+        try {
+            const response = await axios.get(`${USER_SERVICE_URL}/chapter-end?chapterId=${chapterId}`, {
+                withCredentials: true
+            })
+            return response
+        } catch (error: any) {
+            throw error
+        }
+    },
+
+
+    getCertificate: async (certificateId: string) => {
         try{
-            const response = await axios.get(`${USER_SERVICE_URL}/check/verify`,{
+            const response = await axios.get(`${USER_SERVICE_URL}/get/certificate?certificateId=${certificateId}`,{
                 withCredentials: true
             })
             return response

@@ -7,7 +7,7 @@ import Link from "next/link";
 import ReusableTable from "../re-usable/table";
 import Image from "next/image";
 import { FaLock, FaUnlock } from "react-icons/fa";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { mentorApis } from "@/app/api/mentorApi";
 
 interface ChapterData {
@@ -23,10 +23,10 @@ const Chapters = () => {
       const [isLoading, setIsLoading] = useState<boolean>(true);
       const [courseId, setCourseId] = useState<string | null>(null);
       const router = useRouter()
+      const searchParams = useSearchParams()
 
       useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const courseId = urlParams.get("courseId");
+        const courseId = searchParams.get("courseId");
         if(courseId){
             setCourseId(courseId)
             setIsLoading(false)

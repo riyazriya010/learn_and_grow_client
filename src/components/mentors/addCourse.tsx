@@ -70,7 +70,8 @@ const AddCourse = () => {
       // Make the API call
       const response = await mentorApis.addCourse(formData);
       console.log("Server Response:", response);
-      if (response && response.data) {
+      if (response) {
+        reset()
         toast.success('Course Uploaded Successfully')
         setTimeout(() => {
           router.push('/pages/mentor/courses')

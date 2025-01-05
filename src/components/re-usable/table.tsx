@@ -101,7 +101,7 @@ const ReusableTable: React.FC<TableProps> = ({ headers, data, handlers, buttonSt
         }`}
       >
         <table className="w-full border-collapse table-fixed">
-          <thead className="bg-[#433D8B] text-white">
+          <thead className="bg-[#6E40FF] text-white">
             <tr>
               {headers.map((header, index) => (
                 <th key={index} className="py-2 px-4 text-left">{header}</th>
@@ -139,7 +139,7 @@ const ReusableTable: React.FC<TableProps> = ({ headers, data, handlers, buttonSt
                     <button
                     key={handlerIndex}
                     className={`mt-1 flex items-center justify-center ${
-                      buttonStyles || "bg-[#433D8B] text-white px-3 py-1 rounded"
+                      buttonStyles || "bg-[#6E40FF] text-white px-3 py-1 rounded-[0px]"
                     }`}
                     onClick={handlerObj.handler}
                     style={{
