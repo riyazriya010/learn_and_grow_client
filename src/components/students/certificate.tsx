@@ -1,155 +1,99 @@
-'use client';
+'use client'
 
-import React, { useEffect, useRef, useState } from 'react';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
-import { ToastContainer, toast, Slide } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Footer from '../loggedoutNav/footer';
-import Navbar from '../navbar';
-import { useSearchParams } from 'next/navigation';
-import { studentApis } from '@/app/api/studentApi';
-import LoadingModal from '../re-usable/loadingModal';
+import { studentApis } from "@/app/api/studentApi";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react"
+import LoadingModal from "../re-usable/loadingModal";
+import MentorFooter from "../mentors/footer";
+import Navbar from "../navbar";
+import Image from "next/image";
+import ReusableTable from "../re-usable/table";
 
 interface CertificateData {
+    _id?: string;
+    userId: string;
+    courseId: string;
     courseName: string;
-    userName: string;
-    mentorName?: string;
     issuedDate: Date;
 }
 
-const CertificatePage = () => {
-    const searchParams = useSearchParams();
-    const [isloading, setIsLoading] = useState<boolean>(true);
-    const [certificate, setCertificate] = useState<CertificateData>();
-    const certificateRef = useRef<HTMLDivElement>(null);
+const Certificates = () => {
+    const headers = ['Course Name', 'Issued Date']
+    const [certificate, setCertificate] = useState<CertificateData[] | []>([])
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const router = useRouter()
 
     useEffect(() => {
-        // const certificateId = searchParams.get('certificateId')
-        const certificateId = '677ad2212ef5c23f03ab7421';
-
-        if (certificateId) {
-            const fetchData = async () => {
-                try {
-                    const response = await studentApis.getCertificate(certificateId);
-                    if (response) {
-                        console.log('res certificate: ', response);
-                        setCertificate(response?.data?.data);
-                        setIsLoading(false);
-                    }
-                } catch (error: any) {
-                    console.log(error);
-                } finally {
-                    setIsLoading(false);
+        setIsLoading(false)
+        const fetchData = async () => {
+            try {
+                const response = await studentApis.getCertificates()
+                if (response) {
+                    console.log('res certificate: ', response)
+                    setCertificate(response?.data?.data)
                 }
-            };
-            fetchData();
+            } catch (error) {
+                console.log(error)
+            } finally {
+                setIsLoading(false)
+            }
         }
-    }, []);
+        fetchData()
+    }, [])
 
-    const handleDownload = async () => {
-        if (certificateRef.current) {
-            const canvas = await html2canvas(certificateRef.current, {
-                scale: 2,
-                useCORS: true,
-            });
-            const imgData = canvas.toDataURL('image/png');
+    const viewCertificate = (id: string) => {
+        // console.log('Idd: ', id)
+        router.push(`/pages/student/certificate-view?certificateId=${id}`)
+    }
 
-            const pdf = new jsPDF({
-                orientation: 'landscape',
-                unit: 'px',
-                format: [canvas.width + 50, canvas.height + 50], // Added extra space
-            });
-            pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-            pdf.save('LearnAndGrow_Certificate.pdf');
-        }
-    };
+    if (isLoading) return <LoadingModal isOpen={isLoading} message="Please wait..." />
 
-    if (isloading) return <LoadingModal isOpen={isloading} message="please wait" />;
     return (
         <>
-            <div className="flex flex-col min-h-screen">
-                <Navbar />
-                <ToastContainer
-                    autoClose={2000}
-                    pauseOnHover={false}
-                    transition={Slide}
-                    hideProgressBar={false}
-                    closeOnClick={false}
-                    pauseOnFocusLoss={true}
-                />
-                <div className="min-h-screen flex items-center justify-center py-10 bg-white-100">
-                    <div className="min-h-screen flex flex-col items-center bg-white-100 py-10 px-4">
-                        <h1 className="text-3xl font-bold text-gray-800 mb-6">Your Certificate</h1>
-                        <button
-                            onClick={handleDownload}
-                            className="mb-8 px-8 py-3 text-white bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg shadow-md hover:from-indigo-500 hover:to-purple-500 focus:ring focus:ring-indigo-300"
-                        >
-                            Download Certificate
-                        </button>
+        <div className="flex flex-col min-h-screen">
+        <Navbar />
 
-                        <div
-                            ref={certificateRef}
-                            className="w-full max-w-5xl aspect-video border-8 border-blue-300 bg-white shadow-2xl rounded-lg p-8 relative min-h-[600px]" // Added min-h-[600px]
-                        >
-                            <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-blue-100"></div>
-                            <div className="relative z-10 flex flex-col items-center justify-center h-full">
-                                {/* Certificate Header */}
-                                <h2 className="text-5xl font-extrabold text-blue-700 tracking-widest uppercase">
-                                    Certificate
-                                </h2>
-                                <p className="text-2xl font-semibold text-gray-600 mt-2 tracking-wide">
-                                    Of Achievement
-                                </p>
+        {/* Content Section */}
+      <main className="flex-grow px-8 py-4">
 
-                                {/* Decorative Divider */}
-                                <div className="h-1 w-3/4 bg-blue-400 rounded-full mt-4 mb-8"></div>
+        {certificate.length === 0 ? (
+          <div className="flex flex-col justify-center items-center h-96 bg-gray-100 rounded-lg shadow-lg p-6">
+            <Image
+              src="/images/undraw_no-data_ig65.svg" // Path to your illustration
+              alt="No Courses"
+              width={128}
+              height={128}
+              className="mb-4"
+            />
+            <h2 className="text-2xl font-semibold text-gray-800">No Certificates Buyed Yet</h2>
+            <p className="text-gray-600 mt-2">It looks like you haven't completed any courses.</p>
+          </div>
+        ) : (
+          <ReusableTable
+            headers={headers}
+            data={certificate.map((c) => ({
+                "_id": c._id,
+              "Course Name": c.courseName,
+              'Issued Date': new Date(c?.issuedDate).toLocaleDateString()
+            }))}
+            handlers={(row) => [
+                
+              {
+                handler: () => viewCertificate(row._id),
+                name: "View"
+              },
+            ]}
+            buttonStyles="bg-[#433D8B] text-white text-sm font-medium rounded hover:opacity-90"
+            tableWidth="max-w-[650px]"
+          />
+        )}
+      </main>
 
-                                {/* Recipient's Name */}
-                                <p className="text-lg text-gray-500">This Certificate is Presented To</p>
-                                <h1 className="text-4xl font-bold text-blue-600 italic mt-4 font-serif tracking-wider mb-6">
-                                    {certificate?.userName}
-                                </h1>
 
-                                {/* Decorative Underline for Name */}
-                                <div className="w-1/2 border-b-4 border-dashed border-blue-400 mt-2 mb-6"></div>
-
-                                {/* Certificate Content */}
-                                <p className="text-md text-gray-600 max-w-3xl text-center">
-                                    In recognition of their outstanding dedication and exceptional performance
-                                    in successfully completing the course{' '}
-                                    <span className="font-semibold">{certificate?.courseName}</span>.
-                                </p>
-
-                                {/* Signature and Date Section */}
-                                <div className="flex justify-between w-full px-10 mt-12">
-                                    {/* Date Section */}
-                                    <div className="text-left">
-                                        <p className="px-5">
-                                            {certificate?.issuedDate
-                                                ? new Date(certificate?.issuedDate).toLocaleDateString()
-                                                : 'Date not available'}
-                                        </p>
-                                        <div className="h-1 w-35 bg-gray-300 rounded-full"></div>
-                                        <p className="text-sm text-gray-500 mt-2">Date of Completion</p>
-                                    </div>
-
-                                    {/* Mentor's Signature */}
-                                    <div className="text-right">
-                                        <p className="text-xl italic font-signature text-gray-700">
-                                            Riyas
-                                        </p>
-                                        <p className="text-sm text-gray-500">Mentor's Signature</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <Footer />
-            </div>
+        <MentorFooter />
+        </div>
         </>
-    );
-};
+    )
+}
 
-export default CertificatePage;
+export default Certificates

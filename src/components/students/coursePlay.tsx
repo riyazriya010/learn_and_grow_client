@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import MentorFooter from "../mentors/footer";
 import Navbar from "../navbar";
 import LoadingModal from "../re-usable/loadingModal";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { studentApis } from "@/app/api/studentApi";
 
 interface Chapter {
@@ -43,8 +43,10 @@ const CoursePlay = () => {
     const [course, setCourse] = useState<Course | null>(null);
     const [chapters, setChapters] = useState<Chapter[]>([]);
     const [purchasedCourse, setPurchasedCourse] = useState<PurchasedCourse | null>(null);
+    const [courseId, setCourseId] = useState<string | null>(null);
     const [currentChapterIndex, setCurrentChapterIndex] = useState<number>(0);
     const searchParams = useSearchParams();
+    const router = useRouter()
 
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [showControls, setShowControls] = useState<boolean>(false);
@@ -62,6 +64,7 @@ const CoursePlay = () => {
                     setChapters(data.chapters);
                     setCourse(data.course);
                     setPurchasedCourse(data.purchasedCourse);
+                    setCourseId(data?.purchasedCourse?.courseId?._id)
                 } catch (error) {
                     console.error("Error fetching course data:", error);
                 } finally {
@@ -117,7 +120,8 @@ const CoursePlay = () => {
 
     const handleQuizButtonClick = () => {
         if (isAllChaptersCompleted) {
-            console.log("Redirecting to quiz...");
+            // console.log("Redirecting to quiz...", courseId);
+            router.push(`/pages/student/quizz?courseId=${courseId}`)
         }
     };
 

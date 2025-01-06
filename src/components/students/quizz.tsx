@@ -3,38 +3,86 @@
 import { useState, useEffect } from "react";
 import Navbar from "../navbar";
 import Footer from "../loggedoutNav/footer";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { studentApis } from "@/app/api/studentApi";
+import Image from "next/image";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 interface QuizzData {
     _id: string;
-    questions: { question: string; options: string[]; }[];
+    questions: { question: string; options: string[]; correct_answer: string }[];
 }
 
+
+const shuffleArray = (array: any[]) => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+};
+
+
 const StudentQuizz = () => {
+    const [restart, setRestart] = useState<boolean>(true)
+    const [courseId, setCourseId] = useState<string | null>(null)
+    const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
     const [quizz, setQuizz] = useState<QuizzData | null>(null);
-    const [answers, setAnswers] = useState<string[]>([]); // To store selected answers
+    const [corretAnswers, setCorrectAnswers] = useState<string[]>([]);
+    const [wrongAnswers, setwrongAnswers] = useState<string[]>([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0); // To track current question
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [quizCompleted, setQuizCompleted] = useState<boolean | null>(null);
     const router = useRouter();
+    const searchParams = useSearchParams()
+    // const username = useSelector((state: RootState) => state.user.username);
+    const username = 'Leo Das'
 
     useEffect(() => {
-        // Simulating fetching quiz data
-        const mockQuiz: QuizzData = {
-            _id: "123",
-            questions: [
-                { question: "What is 2 + 2?", options: ["3", "4"] },
-                { question: "Which planet is known as the Red Planet?", options: ["Earth", "Mars"] },
-                { question: "What is the capital of France?", options: ["Berlin", "Paris"] },
-                { question: "What is the largest mammal?", options: ["Elephant", "Blue Whale"] },
-                { question: "Which is the largest ocean?", options: ["Atlantic Ocean", "Pacific Ocean"] }
-            ]
-        };
-        setQuizz(mockQuiz);
-        setIsLoading(false); // Set loading to false after fetching mock data
-    }, []);
+        setRestart(false)
+        const getCourseId = searchParams.get('courseId')
+        // const courseId = '67710140df708808ce0fd712'
+        if (getCourseId) {
+            setCourseId(getCourseId)
+            const fetchQuizz = async () => {
+                try {
+                    const response = await studentApis.getQuizz(String(getCourseId))
+                    console.log('response 1 : ', response)
+
+                    const shuffledArray = shuffleArray(response?.data?.data?.questions)
+                    const newQuizz = { ...response?.data?.data, questions: shuffledArray }
+                    console.log('newQuizz: ', newQuizz)
+                    setQuizz(newQuizz);
+                    setIsLoading(false);
+                } catch (error: any) {
+                    console.log(error)
+                } finally {
+                    setIsLoading(false)
+                }
+            }
+            fetchQuizz()
+        }
+
+    }, [restart]);
+
+    const handleOption = (option: string, currentQuestionIndex: any) => {
+        if (selectedAnswers[currentQuestionIndex]) return;
+
+        setSelectedAnswers((prev) => ({
+            ...prev,
+            [currentQuestionIndex]: option,
+        }));
+
+        if (quizz?.questions[currentQuestionIndex].correct_answer === option) {
+            setCorrectAnswers((prev) => [...prev, option])
+        } else {
+            setwrongAnswers((prev) => [...prev, option])
+        }
+    }
 
     const handleNextQuestion = () => {
         if (currentQuestionIndex < quizz?.questions.length! - 1) {
@@ -43,28 +91,42 @@ const StudentQuizz = () => {
     };
 
     const handleSubmitQuiz = async () => {
-        if (answers.length === quizz?.questions.length) {
+        console.log(corretAnswers)
+        console.log(wrongAnswers)
+        if (wrongAnswers.length !== 0) {
+            toast.warn(`Your'e not completed the quizz, please try again`)
+            setCorrectAnswers([])
+            setwrongAnswers([])
+            setCurrentQuestionIndex(0)
+            setQuizCompleted(false);
+            setSelectedAnswers({})
+            setRestart(true)
+            return
+        }
+        if ((corretAnswers.length + wrongAnswers.length) === quizz?.questions.length) {
             // Mock response for submission
-            const response = { success: true }; 
-            if (response.success) {
-                setQuizCompleted(true);
-                toast.success("Quiz completed successfully! Click to view your certificate.");
-                setTimeout(() => {
-                    router.push("/pages/certificate");
-                }, 2000);
+            const response = await studentApis.completeCourse(String(courseId))
+            if (response) {
+                console.log('succes: ', response)
+                const courseName = response?.data?.data?.courseName
+                const mentorName = 'Riyas'
+                const data = {
+                    username,
+                    courseName,
+                    mentorName,
+                    courseId,
+                }
+                const createCertificate = await studentApis.createCertificate(data)
+                if (createCertificate) {
+                    console.log('certi: ', createCertificate)
+                    toast.success("Quiz completed successfully!!");
+                    setQuizCompleted(true);
+                }
+
             } else {
                 setQuizCompleted(false);
                 toast.error("You didn't complete the quiz successfully. Try again.");
             }
-        }
-    };
-
-    const handleOptionChange = (option: string) => {
-        // Prevent changing the answer once selected
-        if (answers[currentQuestionIndex] === undefined) {
-            const newAnswers = [...answers];
-            newAnswers[currentQuestionIndex] = option;
-            setAnswers(newAnswers);
         }
     };
 
@@ -84,45 +146,105 @@ const StudentQuizz = () => {
                     {isLoading ? (
                         <p>Loading quiz...</p>
                     ) : (
-                        <div className="bg-white border-2 border-[#D6D1F0] shadow-lg w-[400px] p-6 rounded-lg">
-                            <h1 className="text-center text-2xl font-bold mb-6 text-[#6E40FF]">Question {currentQuestionIndex + 1}</h1>
-
-                            {/* Display current question */}
-                            <div className="text-center text-xl mb-4">
-                                {quizz?.questions[currentQuestionIndex].question}
-                            </div>
-
-                            {/* Display options */}
-                            <div className="flex justify-around mb-6">
-                                {quizz?.questions[currentQuestionIndex].options.map((option, index) => (
+                        quizCompleted ?
+                            <>
+                                <div className="flex flex-col items-center justify-center bg-gradient-to-r from-purple-500 to-indigo-600 text-white p-6 rounded-lg shadow-lg">
+                                    <h2 className="text-2xl font-bold mb-4">🎉 Congratulations! 🎉</h2>
+                                    <p className="text-lg mb-6 text-center">
+                                        You have successfully completed your course. Your dedication and hard work have paid off!
+                                    </p>
+                                    <p className="text-md mb-6 text-center">
+                                        Keep pushing forward and continue your learning journey. The knowledge you've gained will open up new opportunities.
+                                    </p>
                                     <button
-                                        key={index}
-                                        onClick={() => handleOptionChange(option)}
-                                        className="w-[40%] bg-[#6E40FF] text-white py-3 rounded-lg hover:opacity-80"
+                                        className="bg-white text-indigo-600 py-3 px-6 rounded-full font-semibold hover:bg-indigo-100 transition-all"
+                                        onClick={() => router.push('/pages/student/get-certificates')}
                                     >
-                                        {option}
+                                        View Certificate
                                     </button>
-                                ))}
-                            </div>
+                                    <button
+                                        className="mt-4 text-white underline hover:text-indigo-300"
+                                    // onClick={handleShareCertificate}
+                                    >
+                                        Share Your Achievement
+                                    </button>
+                                </div>
 
-                            {/* Display Next Button */}
-                            {currentQuestionIndex < quizz?.questions.length! - 1 ? (
-                                <button
-                                    onClick={handleNextQuestion}
-                                    className="w-full bg-[#6E40FF] text-white py-3 rounded-[22px] hover:opacity-90"
-                                >
-                                    Next
-                                </button>
-                            ) : (
-                                <button
-                                    onClick={handleSubmitQuiz}
-                                    className="w-full bg-[#6E40FF] text-white py-3 rounded-[22px] hover:opacity-90"
-                                >
-                                    Submit Quiz
-                                </button>
-                            )}
-                        </div>
+                            </>
+                            :
+                            !quizz
+                                ? <div className="flex flex-col items-center justify-center mt-10">
+                                    <Image
+                                        src="/images/undraw_no-data_ig65.svg"
+                                        alt="No Courses"
+                                        width={128}
+                                        height={128}
+                                        className="mb-4"
+                                    />
+                                    <p className="text-gray-500 text-lg">No quizz available</p>
+                                    <p className="text-gray-600 mt-2">It looks like you haven't completed any courses</p>
+                                </div>
+                                :
+                                <div className="bg-white border-2 border-[#D6D1F0] shadow-lg w-[400px] p-6 rounded-lg">
+                                    <h1 className="text-center text-2xl font-bold mb-6 text-[#6E40FF]">Question {currentQuestionIndex + 1}</h1>
+
+                                    {/* Display current question */}
+                                    <div className="text-center text-xl mb-4">
+                                        {quizz?.questions[currentQuestionIndex].question}
+                                    </div>
+
+                                    {/* Display options */}
+                                    <div className="flex justify-around mb-6">
+                                        {quizz?.questions[currentQuestionIndex].options.map((option, index) => (
+                                            <button
+                                                key={index}
+                                                onClick={() => handleOption(option, currentQuestionIndex)}
+                                                disabled={!!selectedAnswers[currentQuestionIndex]} // Disable if already answered
+                                                className={`w-[40%] py-3 rounded-lg hover:opacity-80 ${selectedAnswers[currentQuestionIndex] === option
+                                                    ? quizz?.questions[currentQuestionIndex].correct_answer === option
+                                                        ? 'bg-green-500'
+                                                        : 'bg-red-500'
+                                                    : 'bg-[#6E40FF] text-white'
+                                                    }`}
+                                            >
+                                                {option}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    {/* Display Next Button */}
+                                    {currentQuestionIndex < quizz?.questions.length! - 1 ? (
+                                        <button
+                                            onClick={handleNextQuestion}
+                                            disabled={!selectedAnswers[currentQuestionIndex]}
+                                            className="w-full bg-[#6E40FF] text-white py-3 rounded-[22px] hover:opacity-90"
+                                        >
+                                            Next
+                                        </button>
+                                    ) : (
+                                        <>
+                                            {wrongAnswers.length + corretAnswers.length === quizz?.questions.length && wrongAnswers.length > 0 ? (
+                                                <button
+                                                    onClick={handleSubmitQuiz}
+                                                    disabled={!selectedAnswers[currentQuestionIndex]}
+                                                    className="w-full bg-red-500 text-white py-3 rounded-[22px] hover:opacity-90"
+                                                >
+                                                    Retry
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={handleSubmitQuiz}
+                                                    disabled={!selectedAnswers[currentQuestionIndex]}
+                                                    className="w-full bg-[#6E40FF] text-white py-3 rounded-[22px] hover:opacity-90"
+                                                >
+                                                    Submit Quiz
+                                                </button>
+                                            )}
+                                        </>
+                                    )}
+                                </div>
                     )}
+
                 </div>
                 <Footer />
             </div>

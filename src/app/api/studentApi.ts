@@ -280,6 +280,58 @@ export const studentApis = {
         }catch(error: any){
             throw error
         }
+    },
+
+
+    getQuizz: async (courseId: string) => {
+        try{
+            const response = await axios.get(`${USER_SERVICE_URL}/get/quizz?courseId=${courseId}`,{
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
+
+    completeCourse: async (courseId: string) => {
+        try{
+            const response = await axios.get(`${USER_SERVICE_URL}/complete/course?courseId=${courseId}`, {
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
+
+    createCertificate: async (data: any) => {
+        try{
+            const response = await axios.post(`${USER_SERVICE_URL}/create/certificate`, data, {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                withCredentials: true
+             })
+             return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
+
+
+    getCertificates: async () => {
+        try{
+            const response = await axios.get(`${USER_SERVICE_URL}/get/certificates`,{
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
     }
 
 
