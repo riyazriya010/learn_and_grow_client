@@ -213,8 +213,7 @@ const Navbar = () => {
     dispatch(clearMentor());
 
     // Redirect to homepage
-    // router.push("/");
-    window.location.replace('/')
+    router.replace("/");
   };
 
   // Helper function to generate initials

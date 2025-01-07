@@ -7,8 +7,12 @@ import MentorFooter from "./footer";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { mentorApis } from "@/app/api/mentorApi";
-import { FaLock, FaUnlock } from "react-icons/fa"; // Import icons for list/unlist
+import { FaLock, FaUnlock } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import Pagination from "../re-usable/pagination";
+import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Swal from "sweetalert2";
 
 interface CoursesData {
   _id?: string;
@@ -16,71 +20,135 @@ interface CoursesData {
   duration: string;
   level: string;
   price: string;
-  isPublished: boolean; // Add isPublished to the interface
+  isPublished: boolean;
 }
 
 const MentorCourses = () => {
   const headers = ['Course Name', 'Duration', 'Level', 'Price'];
   const [courses, setCourses] = useState<CoursesData[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("")
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
 
   const router = useRouter()
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await mentorApis.getAllCourses();
-        if (response && response?.data?.result) {
-          console.log('res: ', response);
-          setCourses(response?.data?.result);
-        }
-      } catch (error: any) {
-        console.log(error);
+  const fetchData = async (page: number) => {
+    try {
+      const filters = { page, limit: 4 };
+      const response = await mentorApis.getAllCourses(filters);
+      if (response && response?.data?.result) {
+        console.log('res: ', response);
+        setCourses(response?.data?.result?.courses);
+        setCurrentPage(response?.data?.result.currentPage);
+        setTotalPages(response?.data?.result.totalPages);
       }
-    };
-    fetchData();
-  }, []);
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(currentPage);
+  }, [currentPage]);
+
 
   const handleListUnlist = async (courseId: string, isPublished: boolean) => {
     try {
+      let result;
+
       if (isPublished) {
-        // Unlist the course
-        // await mentorApis.unlistCourse(courseId);
-        console.log(`Course ${courseId} has been unlisted.`);
+        result = await Swal.fire({
+          title: "Are you sure?",
+          text: "You want to unPublish this course.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Yes, unPublish it!",
+        });
+        if (result.isConfirmed) {
+          const response = await mentorApis.unPublish(String(courseId))
+          if (response) {
+            fetchData(currentPage);
+          }
+        }
       } else {
-        // List the course
-        // await mentorApis.listCourse(courseId);
-        console.log(`Course ${courseId} has been listed.`);
-      }
-      // Refresh the course list after the action
-      const response = await mentorApis.getAllCourses();
-      if (response && response?.data?.result) {
-        setCourses(response.data.result);
+        result = await Swal.fire({
+          title: "Are you sure?",
+          text: "You want to Publish this course.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, Publish it!",
+        });
+        if (result.isConfirmed) {
+          const response = await mentorApis.publish(String(courseId))
+          if (response) {
+            fetchData(currentPage);
+          }
+        }
       }
     } catch (error: any) {
       console.error("Error updating course status:", error);
     }
+
   };
+
+
+  const handleSearch = async () => {
+    try {
+      const filter: any = {}
+      if (searchTerm) {
+        filter.searchTerm = searchTerm
+        filter.page = 1
+        filter.limit = 4
+        const response = await mentorApis.filterCourse(filter)
+        if (response) {
+          console.log('res search: ', response)
+          setCourses(response?.data?.result?.courses);
+          setCurrentPage(response?.data?.result.currentPage);
+          setTotalPages(response?.data?.result.totalPages);
+        }
+      } else {
+        return
+      }
+    } catch (error: any) {
+      if (error && error?.response?.status === 404) {
+        toast.warn('Course Not Found')
+        setCourses([]);
+      }
+    }
+
+  }
+
 
   const editCourse = async (courseId: string) => {
     router.push(`/pages/mentor/edit-course?courseId=${courseId}`)
   }
 
   const Chapters = (courseId: string) => {
-    // console.log('Add Chapter for Course ID:', courseId);
-    // router.push(`/pages/mentor/add-chapter?courseId=${courseId}`)
     router.push(`/pages/mentor/chapters?courseId=${courseId}`)
-    // Implement the logic to add a chapter
   };
 
   const Quizz = (courseId: string) => {
     console.log('Add Quiz for Course ID:', courseId);
-    // Implement the logic to add a quiz
     router.push(`/pages/mentor/quizz?courseId=${courseId}`)
   };
 
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
+
+      <ToastContainer
+        autoClose={2000}
+        pauseOnHover={false}
+        transition={Slide}
+        hideProgressBar={false}
+        closeOnClick={false}
+        pauseOnFocusLoss={true}
+      />
 
       {/* Content Section */}
       <main className="flex-grow px-8 py-4">
@@ -91,6 +159,23 @@ const MentorCourses = () => {
               Add Course
             </button>
           </Link>
+        </div>
+
+        {/* Search Bar */}
+        <div className="flex items-center gap-2 mb-3">
+          <input
+            type="text"
+            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#6E40FF] focus:border-transparent"
+            placeholder="Search courses..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button
+            className="px-4 py-2 bg-[#6E40FF] text-white rounded-[0px]"
+            onClick={handleSearch}
+          >
+            Search
+          </button>
         </div>
 
         {courses.length === 0 ? (
@@ -109,7 +194,7 @@ const MentorCourses = () => {
           <ReusableTable
             headers={headers}
             data={courses.map(course => ({
-                "_id": course._id,
+              "_id": course._id,
               "Course Name": course.courseName, // Map headers to data keys
               "Duration": course.duration,
               "Level": course.level,
@@ -136,29 +221,19 @@ const MentorCourses = () => {
               }
             ]}
           />
-
-
-        //   <ReusableTable
-        //                 headers={headers}
-        //                 data={courses}
-        //                 handlers={(row) => [
-        //                     {
-        //                         handler: () => handleListUnlist(row._id, row.isPublished),
-        //                         name: row.isPublished ? 'Unlist' : 'List',
-        //                         icon: row.isPublished ? <FaLock /> : <FaUnlock />
-        //                     },
-        //                     {
-        //                         handler: () => addChapter(row._id),
-        //                         name: 'Add Chapter',
-        //                     },
-        //                     {
-        //                         handler: () => addQuizz(row._id),
-        //                         name: 'Add Quiz',
-        //                     },
-        //                 ]}
-        //             />
-
         )}
+        {/* Pagination */}
+        <div className="flex justify-center mt-6">
+          <Pagination
+            nextPage={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            directClick={(pageNumber) => {
+              setCurrentPage(pageNumber);
+            }}
+            previousPage={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            currentPage={currentPage}
+            totalPages={totalPages}
+          />
+        </div>
       </main>
 
       <MentorFooter />

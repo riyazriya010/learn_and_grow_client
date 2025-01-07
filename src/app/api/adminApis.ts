@@ -1,5 +1,5 @@
 import { CategoryFormData } from "@/components/admin/addCategory"
-import { ADMIN_SERVICE_URL } from "@/utils/constant"
+import { ADMIN_SERVICE_URL, USER_SERVICE_URL } from "@/utils/constant"
 import axios from "axios"
 
 
@@ -28,18 +28,24 @@ export const adminApis = {
         }
     },
 
-    getUsers: async () => {
+    getUsers: async (filters: {page: number, limit: number}) => {
         try {
-            const response = await axios.get(`${ADMIN_SERVICE_URL}/get/users`,)
+            const response = await axios.get(`${ADMIN_SERVICE_URL}/get/users`,{
+                params: filters,
+                withCredentials: true
+            })
             return response
         } catch (error: any) {
             console.log(error.message)
         }
     },
 
-    getMentors: async () => {
+    getMentors: async (filters: {page: number, limit: number}) => {
         try {
-            const response = await axios.get(`${ADMIN_SERVICE_URL}/get/mentors`,)
+            const response = await axios.get(`${ADMIN_SERVICE_URL}/get/mentors`,{
+                params: filters,
+                withCredentials: true
+            })
             return response
         } catch (error: any) {
             console.log(error.message)
@@ -100,10 +106,12 @@ export const adminApis = {
     /* ------------------------------------ WEEK - 2 ------------------------------------*/
 
 
-    getAllCategory: async () => {
+    getAllCategory: async (filters: {page: number, limit: number}) => {
         try{
-            const response = await axios.get(`${ADMIN_SERVICE_URL}/get/categories`, // Include an empty object for the body
-                { withCredentials: true })
+            const response = await axios.get(`${ADMIN_SERVICE_URL}/get/categories`,{
+                params: filters,
+                withCredentials: true
+            })
                 return response
         }catch(error: any){
             console.log(error)
@@ -139,9 +147,72 @@ export const adminApis = {
                 withCredentials: true
             })
             return response
-        }catch(error){
-            console.log(error)
+        }catch(error: any){
+            throw error
         }
-    }
+    },
+
+
+    getAllCourses: async (filters: {page: number, limit: number}) => {
+        try{
+            const response = await axios.get(`${ADMIN_SERVICE_URL}/get/all-course`,{
+                params: filters,
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
+
+    unListCategory: async (categoryId: string) => {
+        try{
+            const response = await axios.patch(`${ADMIN_SERVICE_URL}/unList/category?categoryId=${categoryId}`,{}, {
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
+
+    listCategory: async (categoryId: string) => {
+        try{
+            const response = await axios.patch(`${ADMIN_SERVICE_URL}/list/category?categoryId=${categoryId}`,{}, {
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
+
+
+    courseUnList: async (courseId: string): Promise<any> => {
+        try{
+            const response = await axios.patch(`${ADMIN_SERVICE_URL}/unlist/course?courseId=${courseId}`,{
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
+
+
+    courseList: async (courseId: string): Promise<any> => {
+        try{
+            const response = await axios.patch(`${ADMIN_SERVICE_URL}/list/course?courseId=${courseId}`,{
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
 
 }

@@ -217,18 +217,8 @@ const EditChapter: React.FC = () => {
 
             formData.append("title", data.title);
             formData.append("description", data.description);
-
-            let response;
-
-            if (data.chapterVideo && data.chapterVideo.length > 0) {
-                response = await mentorApis.addChapter(formData, String(chapterId));
-            } else {
-                // response = await mentorApis.updateChapterWithoutVideo(
-                //     { title: data.title, description: data.description },
-                //     String(chapterId)
-                // );
-            }
-
+            console.log('formdata: ', formData)
+            const response = await mentorApis.editChapter(formData, String(chapterId));
             if (response && response?.data) {
                 toast.success('Chapter updated successfully');
                 localStorage.removeItem('chapterTitle');
@@ -236,7 +226,7 @@ const EditChapter: React.FC = () => {
                 localStorage.removeItem('chapterVideoUrl');
                 reset();
                 setTimeout(() => {
-                    router.push('/pages/mentor/chapters');
+                    router.push('/pages/mentor/courses');
                 }, 2000);
             }
         } catch (error) {

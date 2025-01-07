@@ -40,8 +40,7 @@ const MentorLogin = () => {
                             role: response.data.user.role
                         }),
                     )
-                    // router.push('/pages/mentor/dashboard')
-                    window.location.replace('/pages/mentor/dashboard');
+                    router.replace('/pages/mentor/dashboard')
                 }
             }
         } catch (error: any) {
@@ -84,7 +83,7 @@ const MentorLogin = () => {
                     )
                     setTimeout(() => {
                         // router.push(`/pages/home`);
-                        window.location.replace('/pages/mentor/dashboard');
+                        router.replace('/pages/mentor/dashboard');
                     }, 2000);
                 }
             }

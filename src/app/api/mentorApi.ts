@@ -130,11 +130,11 @@ export const mentorApis = {
         }
     },
 
-    profileUpdate: async (data: MentorProfile) => {
+    profileUpdate: async (data: FormData) => {
         try {
             const response = await axios.patch(`${MENTOR_SERVICE_URL}/mentor/profile-update`, data, {
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "multipart/form-data"
                 },
                 withCredentials: true
             })
@@ -167,6 +167,43 @@ export const mentorApis = {
     },
 
 
+    unPublish: async (courseId: string) => {
+        try{
+            const response = await axios.patch(`${MENTOR_SERVICE_URL}/unPublish/course?courseId=${courseId}`,{},{
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
+
+    publish: async (courseId: string) => {
+        try{
+            const response = await axios.patch(`${MENTOR_SERVICE_URL}/publish/course?courseId=${courseId}`,{},{
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
+
+    filterCourse: async (filter: { searchTerm: string, page: number, limit: number }) => {
+        try{
+            const response = await axios.get(`${MENTOR_SERVICE_URL}/filter/course`, {
+                params: filter,
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
+
 
     addChapter: async (data: FormData, courseId: string) => {
         try {
@@ -185,9 +222,26 @@ export const mentorApis = {
     },
 
 
-    getAllCourses: async () => {
+    editChapter: async (data: FormData, chapterId: string) => {
+        try{
+            const response = await axios.patch(`${MENTOR_SERVICE_URL}/edit/chapter?chapterId=${chapterId}`, data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data', // Axios auto-handles this but explicit is good
+                },
+                withCredentials: true, // Include credentials if needed
+            })
+            return response
+        }catch(error: any) {
+            throw error
+        }
+    },
+
+
+    getAllCourses: async (filters: { page: number; limit: number }) => {
         try {
+            const { page, limit } = filters;
             const response = await axios.get(`${MENTOR_SERVICE_URL}/get/all-course`, {
+                params: { page, limit },
                 withCredentials: true
             })
             return response

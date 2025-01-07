@@ -127,11 +127,11 @@ export const studentApis = {
         }
     },
 
-    profileUpdate: async (data: UserProfile) => {
+    profileUpdate: async (data: FormData) => {
         try {
             const response = await axios.patch(`${USER_SERVICE_URL}/student/profile-update`, data, {
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "multipart/form-data"
                 },
                 withCredentials: true
             })
@@ -147,17 +147,6 @@ export const studentApis = {
     },
 
     /* ---------------------------- WEEK - 2 -------------------------*/
-    // fetchAllCourse: async () => {
-    //     try{
-    //         const response = await axios.get(`${USER_SERVICE_URL}/get/all-course`,{
-    //             withCredentials: true
-    //         })
-    //         return response
-    //     }catch(error: any){
-    //         console.log(error)
-    //     }
-    // },
-
 
     fetchAllCourse: async (filters: { page: number; limit: number }) => {
         try {
@@ -199,7 +188,6 @@ export const studentApis = {
 
     filterData: async (filters: { page: number, limit: number, selectedCategory: string, selectedLevel: string, searchTerm: string }) => {
         try {
-            console.log('filter: ', filters)
             const response = await axios.get(`${USER_SERVICE_URL}/filter/data`, {
                 params: filters,
                 withCredentials: true
@@ -211,9 +199,9 @@ export const studentApis = {
     },
 
 
-    payment: async (courseId: string, txnid: string) => {
+    payment: async (courseId: string, txnid: string, amountPaid: number, courseName: string) => {
         try {
-            const response = await axios.get(`${USER_SERVICE_URL}/payment?courseId=${courseId}&txnid=${txnid}`, {
+            const response = await axios.get(`${USER_SERVICE_URL}/payment?courseId=${courseId}&txnid=${txnid}&amount=${amountPaid}&courseName=${courseName}`, {
                 withCredentials: true
             })
             return response
@@ -235,9 +223,10 @@ export const studentApis = {
     },
 
 
-    getPurchasedCourses: async () => {
+    getPurchasedCourses: async (filters: {page: number, limit: number}) => {
         try {
             const response = await axios.get(`${USER_SERVICE_URL}/get/buyedCourses`, {
+                params: filters,
                 withCredentials: true
             })
             return response

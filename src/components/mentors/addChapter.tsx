@@ -60,7 +60,6 @@ const AddChapter: React.FC = () => {
             const response = await mentorApis.addChapter(formData, String(courseId))
             console.log('res ', response)
 
-
         } catch (error) {
             console.error("Error submitting form:", error);
         }

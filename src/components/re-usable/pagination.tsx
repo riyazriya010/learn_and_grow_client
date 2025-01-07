@@ -1,13 +1,14 @@
 'use client'
 
 interface PaginationProps {
+  directClick: (pageNumber: number) => void;
   nextPage: () => void;
   previousPage: () => void;
   currentPage: number;
   totalPages: number;
 }
 
-const Pagination = ({ nextPage, previousPage, currentPage, totalPages }: PaginationProps) => {
+const Pagination = ({ directClick, nextPage, previousPage, currentPage, totalPages }: PaginationProps) => {
   return (
     <div className="flex items-center justify-center space-x-4">
       <button
@@ -25,7 +26,8 @@ const Pagination = ({ nextPage, previousPage, currentPage, totalPages }: Paginat
           return (
             <button
               key={pageNumber}
-              onClick={() => window.location.href = `?page=${pageNumber}`}
+              // onClick={() => window.location.href = `?page=${pageNumber}`}
+              onClick={() => directClick(pageNumber)}
               className={`w-10 h-10 flex items-center justify-center rounded-md border-2 ${
                 currentPage === pageNumber
                   ? 'bg-[#6E40FF] text-white shadow-lg'

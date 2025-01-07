@@ -9,11 +9,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/navigation";
 import LoadingModal from "../re-usable/loadingModal";
 
-interface Chapters {
-  title: string;
-  description: string;
-  video: File | null;
-}
+// interface Chapters {
+//   title: string;
+//   description: string;
+//   video: File | null;
+// }
 
 interface FormValues {
   courseName: string;
@@ -27,7 +27,7 @@ interface FormValues {
 }
 
 const AddCourse = () => {
-  const [chapters, setChapters] = useState<Chapters[]>([]);
+  // const [chapters, setChapters] = useState<Chapters[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const {

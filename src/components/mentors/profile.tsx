@@ -19,17 +19,17 @@ import Footer from "../loggedoutNav/footer";
 export interface MentorProfile {
   username: string,
   phone: string
+  profile: File | null;
 }
 
 const MentorProfile = () => {
-  // const navLink = [{field: "Login Role", link: '/pages/login-role'}, {field: "Signup Role", link: '/pages/signup-role'}];
-
   const [isVerified, setIsVerified] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [user, setLocalUser] = useState({
+  const [localUser, setLocalUser] = useState({
     email: "",
     username: "",
     phone: "",
+    profileImage: "",
   });
 
   const router = useRouter()
@@ -58,6 +58,7 @@ const MentorProfile = () => {
                   email: fetchedUser.email || "",
                   username: fetchedUser.username || "",
                   phone: fetchedUser.phone || "",
+                  profileImage: fetchedUser.profilePicUrl || "", 
                 });
                 setIsVerified(fetchedUser.isVerified);
 
@@ -124,11 +125,32 @@ const MentorProfile = () => {
 
 
   // update profile
-  const onSubmit: SubmitHandler<MentorProfile> = async (data) => {
+  const onSubmit: SubmitHandler<MentorProfile> = async (data: any) => {
     try {
       console.log('d: ', data)
-      const response = await mentorApis.profileUpdate(data)
 
+      const formData = new FormData();
+
+      // Check if profile image exists and append it to form data
+      if (data.profile && data.profile) {
+        formData.append("profile", data.profile);
+      }
+
+      // Append other fields
+      for (const key of Object.keys(data)) {
+        if (key !== "profile") {
+          formData.append(key, data[key]);
+        }
+      }
+
+      // Log form data for debugging
+      for (const [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+
+      const response = await mentorApis.profileUpdate(formData)
+      console.log('profile update: ', response)
       if (response && response.data && response.data.success) {
         toast.success('Profile Updated')
         dispatch(setUser({
@@ -138,9 +160,17 @@ const MentorProfile = () => {
           role: response.data.user.role,
         }));
 
+        setLocalUser({
+          email: response.data.user.email,
+          username: response.data.user.username,
+          phone: response.data.user.phone,
+          profileImage: response.data.user.profilePicUrl, // Update the profile picture
+        });
+
         reset({
-          username: response.data.updatedUser.username,
-          phone: response.data.updatedUser.phone,
+          username: response.data.user.username,
+          phone: response.data.user.phone,
+          profile: response.data.user.profilePicUrl,
         });
       }
     } catch (error: any) {
@@ -162,6 +192,25 @@ const MentorProfile = () => {
       }
     }
   }
+
+
+   // Handle profile image change
+   const handleProfileImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]; // Get the selected file
+    if (file) {
+      // Create a URL for the selected image
+      const imageUrl = URL.createObjectURL(file);
+
+      // Update the localUser state with the new profile image URL
+      setLocalUser((prev) => ({
+        ...prev,
+        profileImage: imageUrl, // Store the image URL for display
+      }));
+
+      // Set the profile image in the form data for upload
+      setValue("profile", file); // Correctly set the file object here, not a string
+    }
+  };
 
 
   return (
@@ -186,13 +235,29 @@ const MentorProfile = () => {
             className="bg-white border-2 border-[#D6D1F0] shadow-lg w-[500px] p-6 rounded-lg"
             onSubmit={handleSubmit(onSubmit)}
           >
-            {/* Profile Picture */}
-            <div className="flex flex-col items-center mb-6 relative">
+           <div className="flex flex-col items-center mb-6 relative">
               <div
-                className={`w-24 h-24 rounded-full flex items-center justify-center ${isVerified ? "border-4 border-[#6E40FF]" : "bg-gray-300"
-                  }`}
+                className={`w-24 h-24 rounded-full flex items-center justify-center ${isVerified ? "border-4 border-[#6E40FF]" : "bg-gray-300"}`}
+                onClick={() => document.getElementById('profile-input')?.click()}
               >
-                <span className="text-gray-500 text-lg">Profile Pic</span>
+                {localUser.profileImage || "" ? (
+                  <img
+                    src={localUser.profileImage || ""} 
+                    alt="Profile"
+                    className="w-full h-full rounded-full object-cover"
+                    width={96}  
+                    height={96}
+                  />
+                ) : (
+                  <span className="text-white-500 text-sm">No Profile</span>
+                )}
+                <input
+                  id="profile-input"
+                  type="file"
+                  {...register('profile')}
+                  onChange={handleProfileImageChange}
+                  className="hidden"
+                />
                 {isVerified && (
                   <div className="absolute top-0 right-0 w-8 h-8 bg-[#6E40FF] rounded-full flex items-center justify-center border-2 border-white">
                     <span className="text-white text-xl font-bold">✔</span>
@@ -211,7 +276,7 @@ const MentorProfile = () => {
                 <input
                   id="email"
                   type="text"
-                  value={user.email}
+                  value={localUser.email}
                   readOnly
                   className="w-full px-4 py-2 bg-gray-100 border-2 border-gray-300 rounded-md cursor-not-allowed"
                 />
@@ -271,7 +336,7 @@ const MentorProfile = () => {
                     onClick={handleVerify}
                     className="bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-400"
                   >
-                    Verify Your Account
+                    Verify Your Account !!!
                   </button>
                 </div>
               )}

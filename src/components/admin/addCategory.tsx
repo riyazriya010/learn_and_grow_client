@@ -2,10 +2,10 @@
 
 import { adminApis } from "@/app/api/adminApis";
 import MentorFooter from "../mentors/footer";
-import Navbar from "../navbar";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AdminHeader from "./header";
 
 export interface CategoryFormData {
     categoryName: string;
@@ -41,7 +41,7 @@ const AddCategory = () => {
             <div className="flex flex-col min-h-screen bg-white">
                 {/* Header */}
                 <header>
-                    <Navbar />
+                <AdminHeader />
                 </header>
 
                 <ToastContainer

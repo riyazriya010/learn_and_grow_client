@@ -30,6 +30,8 @@ const AdminHeader = () => {
                         <a href="/pages/dashboard" className="hover:text-[#433D8B]">Dashboard</a>
                         <a href="/pages/userManagement" className="hover:text-[#433D8B]">User Management</a>
                         <a href="/pages/mentorManagement" className="hover:text-[#433D8B]">Mentor Management</a>
+                        <a href="/pages/category-management" className="hover:text-[#433D8B]">Category Management</a>
+                        <a href="/pages/course-management" className="hover:text-[#433D8B]">Course Management</a>
                     </nav>
 
                     {/* Logout Button */}

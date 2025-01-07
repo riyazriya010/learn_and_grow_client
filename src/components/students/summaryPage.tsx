@@ -817,7 +817,6 @@ const SummaryPage = () => {
     const { userId, username, email } = userDetails
 
     const phone = '8525010630';
-    const price = '509';
 
     const generateTxnid = () => 'txn' + new Date().getTime();
 

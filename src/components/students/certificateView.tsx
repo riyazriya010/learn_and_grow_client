@@ -26,7 +26,6 @@ const CertificatePage = () => {
 
     useEffect(() => {
         const certificateId = searchParams.get('certificateId')
-        // const certificateId = '677ad2212ef5c23f03ab7421';
 
         if (certificateId) {
             const fetchData = async () => {

@@ -32,7 +32,7 @@ const PaymentSuccess = () => {
             setCourseId(getCourseId)
             const payment = async () => {
                 try {
-                    const response = await studentApis.payment(String(getCourseId), String(txnid))
+                    const response = await studentApis.payment(String(getCourseId), String(txnid) , Number(amountPaid), String(courseName))
                     if (response) {
                         console.log('res ', response)
                         toast.success('You Have Purchased the course')
@@ -62,7 +62,7 @@ const PaymentSuccess = () => {
                     <p className="text-lg text-gray-700 mb-6">Thank you for your purchase. Your payment was successful.</p>
                     <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
                         <div className="mb-4">
-                            <p className="font-medium text-gray-800">Course Name: <span className="text-[#6E40FF]">{courseName}</span></p>
+                            {/* <p className="font-medium text-gray-800">Course Name: <span className="text-[#6E40FF]">{courseName}</span></p> */}
                             <p className="font-medium text-gray-800">Course ID: <span className="text-[#6E40FF]">{courseId}</span></p>
                             <p className="font-medium text-gray-800">Transaction ID: <span className="text-[#6E40FF]">{txnid}</span></p>
                             <p className="font-medium text-gray-800">Amount Paid: <span className="text-[#6E40FF]">₹{amountPaid}</span></p>

@@ -39,8 +39,7 @@ const StudentQuizz = () => {
     const [quizCompleted, setQuizCompleted] = useState<boolean | null>(null);
     const router = useRouter();
     const searchParams = useSearchParams()
-    // const username = useSelector((state: RootState) => state.user.username);
-    const username = 'Leo Das'
+    const username = useSelector((state: RootState) => state.user.username);
 
     useEffect(() => {
         setRestart(false)
@@ -106,10 +105,15 @@ const StudentQuizz = () => {
         if ((corretAnswers.length + wrongAnswers.length) === quizz?.questions.length) {
             // Mock response for submission
             const response = await studentApis.completeCourse(String(courseId))
+            console.log('succes: ', response)
             if (response) {
-                console.log('succes: ', response)
+                if(response?.data?.message === 'Course Already Completed'){
+                    toast.warn('You Already Completed The Course')
+                    router.push('/pages/student/get-certificates')
+                    return
+                }
                 const courseName = response?.data?.data?.courseName
-                const mentorName = 'Riyas'
+                const mentorName = response?.data?.data?.mentorName
                 const data = {
                     username,
                     courseName,
