@@ -215,4 +215,17 @@ export const adminApis = {
         }
     },
 
+
+    getWallet: async (filters: { page: number, limit: number }) => {
+        try{
+            const response = await axios.get(`${ADMIN_SERVICE_URL}/get/wallet`,{
+                params: filters,
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
 }

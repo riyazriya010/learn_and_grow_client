@@ -32,6 +32,7 @@ const AdminHeader = () => {
                         <a href="/pages/mentorManagement" className="hover:text-[#433D8B]">Mentor Management</a>
                         <a href="/pages/category-management" className="hover:text-[#433D8B]">Category Management</a>
                         <a href="/pages/course-management" className="hover:text-[#433D8B]">Course Management</a>
+                        <a href="/pages/wallet" className="hover:text-[#433D8B]">Wallet</a>
                     </nav>
 
                     {/* Logout Button */}

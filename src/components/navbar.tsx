@@ -295,6 +295,9 @@ const Navbar = () => {
               <a href="/pages/mentor/courses" className="inline-block py-1 px-4 hover:bg-[#6E40FF] hover:text-white hover:decoration-[#6E40FF] hover:decoration-4 rounded-lg transition-all">
                 Courses
               </a>
+              <a href="/pages/mentor/wallet" className="inline-block py-1 px-4 hover:bg-[#6E40FF] hover:text-white hover:decoration-[#6E40FF] hover:decoration-4 rounded-lg transition-all">
+                Wallet
+              </a>
             </nav>
 
             {/* User Profile Section */}
