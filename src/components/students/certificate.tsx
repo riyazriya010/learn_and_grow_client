@@ -74,7 +74,7 @@ const Certificates = () => {
             data={certificate.map((c) => ({
                 "_id": c._id,
               "Course Name": c.courseName,
-              'Issued Date': new Date(c?.issuedDate).toLocaleDateString()
+              'Issued Date': new Date(c?.issuedDate).toISOString().split('T')[0]
             }))}
             handlers={(row) => [
                 

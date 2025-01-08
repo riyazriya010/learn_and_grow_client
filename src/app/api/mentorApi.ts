@@ -337,6 +337,19 @@ export const mentorApis = {
         }
     },
 
+
+    getWallet: async (filters: { page: number, limit: number }) => {
+        try{
+            const response = await axios.get(`${MENTOR_SERVICE_URL}/get/wallet`,{
+                params: filters,
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
     // editCourseWithoutFiles: async (formData: any, courseId: string) => {
     //     try{
     //         const response = await axios.patch(`${MENTOR_SERVICE_URL}/edit-data/course?courseId=${courseId}`, formData, {
