@@ -10,6 +10,7 @@ import Navbar from '../navbar';
 import { useSearchParams } from 'next/navigation';
 import { studentApis } from '@/app/api/studentApi';
 import LoadingModal from '../re-usable/loadingModal';
+import Cookies from "js-cookie";
 
 interface CertificateData {
     courseName: string;
@@ -33,11 +34,32 @@ const CertificatePage = () => {
                     const response = await studentApis.getCertificate(certificateId);
                     if (response) {
                         console.log('res certificate: ', response);
-                        setCertificate(response?.data?.data);
+                        setCertificate(response?.data?.result);
                         setIsLoading(false);
                     }
                 } catch (error: any) {
-                    console.log(error);
+                    if (error && error.response?.status === 401) {
+                        toast.warn(error.response.data.message);
+                        Cookies.remove('accessToken');
+                        localStorage.clear();
+                        setTimeout(() => {
+                          window.location.replace('/pages/student/login');
+                        }, 3000);
+                        return;
+                      }
+                      if (
+                        error &&
+                        error?.response?.status === 403 &&
+                        error?.response?.data?.message === 'Student Blocked'
+                      ) {
+                        toast.warn(error?.response?.data?.message);
+                        Cookies.remove('accessToken');
+                        localStorage.clear();
+                        setTimeout(() => {
+                          window.location.replace('/pages/student/login');
+                        }, 3000);
+                        return;
+                      }
                 } finally {
                     setIsLoading(false);
                 }

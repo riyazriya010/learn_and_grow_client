@@ -922,7 +922,7 @@ const SummaryPage = () => {
                 <div className="md:w-full p-8">
                     <div className="md:flex rounded-[0px] shadow-[0_4px_10px_rgba(0,0,0,10)]">
                         {/* Course Summary */}
-                        <div className="md:w-1/2 bg-gradient-to-tr from-indigo-500 to-purple-500 text-white p-8 flex flex-col justify-between">
+                        <div className="md:w-1/2 bg-[#22177A] text-white p-8 flex flex-col justify-between">
                             <h3 className="text-2xl font-bold mb-4">Course Summary</h3>
                             <div className="space-y-4">
                                 <div className="flex justify-between">
@@ -955,7 +955,7 @@ const SummaryPage = () => {
                                 <h4 className="text-lg font-semibold text-gray-800 mb-2">Wallet Balance</h4>
                                 <div className="flex items-center justify-between">
                                     <span className="text-gray-600">Available Balance:</span>
-                                    <span className="text-indigo-600 font-bold">₹ 1,200</span>
+                                    <span className="text-[#22177A] font-bold">₹ 1,200</span>
                                 </div>
                             </div>
 
@@ -998,7 +998,7 @@ const SummaryPage = () => {
 
                                 <button
                                     onClick={handlePayment}
-                                    className="mt-6 w-full bg-[#6E40FF] text-white py-3 rounded-[0px] shadow-lg"
+                                    className="mt-6 w-full bg-[#22177A] text-white py-3 rounded-[0px] shadow-lg"
                                 >
                                     Pay Now
                                 </button>

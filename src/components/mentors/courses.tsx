@@ -13,6 +13,7 @@ import Pagination from "../re-usable/pagination";
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from "sweetalert2";
+import Cookies from "js-cookie";
 
 interface CoursesData {
   _id?: string;
@@ -44,7 +45,28 @@ const MentorCourses = () => {
         setTotalPages(response?.data?.result.totalPages);
       }
     } catch (error: any) {
-      console.log(error);
+      if (error && error.response?.status === 401) {
+        toast.warn(error.response.data.message);
+        Cookies.remove('accessToken');
+        localStorage.clear();
+        setTimeout(() => {
+          window.location.replace('/pages/mentor/login');
+        }, 3000);
+        return;
+      }
+      if (
+        error &&
+        error?.response?.status === 403 &&
+        error?.response?.data?.message === 'Mentor Blocked'
+      ) {
+        toast.warn(error?.response?.data?.message);
+        Cookies.remove('accessToken');
+        localStorage.clear();
+        setTimeout(() => {
+          window.location.replace('/pages/mentor/login');
+        }, 3000);
+        return;
+      }
     }
   };
 
@@ -71,6 +93,11 @@ const MentorCourses = () => {
           const response = await mentorApis.unPublish(String(courseId))
           if (response) {
             fetchData(currentPage);
+            Swal.fire(
+              "unPublished!",
+              `The course has been "unPublished".`,
+              "success"
+            );
           }
         }
       } else {
@@ -87,11 +114,45 @@ const MentorCourses = () => {
           const response = await mentorApis.publish(String(courseId))
           if (response) {
             fetchData(currentPage);
+            Swal.fire(
+              "Published!",
+              `The course has been "Published".`,
+              "success"
+            );
           }
         }
       }
     } catch (error: any) {
-      console.error("Error updating course status:", error);
+      if (error && error.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
+        console.log('401 log', error.response.data.message)
+        toast.warn(error.response.data.message);
+        setTimeout(() => {
+          router.push('/pages/mentor/profile')
+        },2000)
+        return;
+    }
+      if (error && error.response?.status === 401) {
+        toast.warn(error.response.data.message);
+        Cookies.remove('accessToken');
+        localStorage.clear();
+        setTimeout(() => {
+          window.location.replace('/pages/mentor/login');
+        }, 3000);
+        return;
+      }
+      if (
+        error &&
+        error?.response?.status === 403 &&
+        error?.response?.data?.message === 'Mentor Blocked'
+      ) {
+        toast.warn(error?.response?.data?.message);
+        Cookies.remove('accessToken');
+        localStorage.clear();
+        setTimeout(() => {
+          window.location.replace('/pages/mentor/login');
+        }, 3000);
+        return;
+      }
     }
 
   };
@@ -115,6 +176,28 @@ const MentorCourses = () => {
         return
       }
     } catch (error: any) {
+      if (error && error.response?.status === 401) {
+        toast.warn(error.response.data.message);
+        Cookies.remove('accessToken');
+        localStorage.clear();
+        setTimeout(() => {
+          window.location.replace('/pages/student/login');
+        }, 3000);
+        return;
+      }
+      if (
+        error &&
+        error?.response?.status === 403 &&
+        error?.response?.data?.message === 'Mentor Blocked'
+      ) {
+        toast.warn(error?.response?.data?.message);
+        Cookies.remove('accessToken');
+        localStorage.clear();
+        setTimeout(() => {
+          window.location.replace('/pages/mentor/login');
+        }, 3000);
+        return;
+      }
       if (error && error?.response?.status === 404) {
         toast.warn('Course Not Found')
         setCourses([]);
@@ -155,7 +238,7 @@ const MentorCourses = () => {
         <div className="flex justify-between items-center mb-4">
           {/* Add Course Button */}
           <Link href="/pages/mentor/add-course">
-            <button className="bg-[#433D8B] text-white px-6 py-2 rounded-lg hover:opacity-90">
+            <button className="bg-[#22177A] text-white px-6 py-2 rounded-[13px]">
               Add Course
             </button>
           </Link>
@@ -165,13 +248,13 @@ const MentorCourses = () => {
         <div className="flex items-center gap-2 mb-3">
           <input
             type="text"
-            className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#6E40FF] focus:border-transparent"
+            className="border border-[#22177A] rounded-[13px] px-3 py-2"
             placeholder="Search courses..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button
-            className="px-4 py-2 bg-[#6E40FF] text-white rounded-[0px]"
+            className="px-4 py-2 border border-[#22177A] bg-[#ffffff] text-black rounded-[13px]"
             onClick={handleSearch}
           >
             Search
@@ -204,7 +287,7 @@ const MentorCourses = () => {
             handlers={(row) => [
               {
                 handler: () => handleListUnlist(row._id, row.isPublished),
-                name: row.isPublished ? 'Unlist' : 'List',
+                name: row.isPublished ? 'UnPublish' : 'Publish',
                 icon: row.isPublished ? <FaLock /> : <FaUnlock />
               },
               {
@@ -220,6 +303,7 @@ const MentorCourses = () => {
                 name: "Edit Course"
               }
             ]}
+            buttonStyles=" bg-[#ffffff] border border-[#22177A] text-black rounded-[13px] hover:bg-gray-100 transition-colors"
           />
         )}
         {/* Pagination */}

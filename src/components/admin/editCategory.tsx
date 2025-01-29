@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import LoadingModal from "../re-usable/loadingModal";
 import { useRouter } from "next/navigation";
 import AdminHeader from "./header";
+import Cookies from "js-cookie";
 
 export interface CategoryFormData {
     categoryName: string;
@@ -58,6 +59,15 @@ const EditCategory = () => {
             }, 2000)
             
         } catch (error: any) {
+            if (error && error.response?.status === 401) {
+                toast.warn(error.response.data.message);
+                Cookies.remove('accessToken');
+                localStorage.clear();
+                setTimeout(() => {
+                  window.location.replace('/pages/login');
+                }, 3000);
+                return;
+              }
             if(error && error?.response?.status === 403){
                 toast.warn('Category Already Exist')
             }

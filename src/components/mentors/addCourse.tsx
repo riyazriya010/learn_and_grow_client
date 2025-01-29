@@ -1,13 +1,14 @@
 'use client'
 
 import { mentorApis } from "@/app/api/mentorApi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Navbar from "../navbar";
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/navigation";
 import LoadingModal from "../re-usable/loadingModal";
+import Cookies from "js-cookie";
 
 // interface Chapters {
 //   title: string;
@@ -26,8 +27,12 @@ interface FormValues {
   demoVideo: File | null;
 }
 
+interface CategoryData {
+  categoryName: string;
+}
+
 const AddCourse = () => {
-  // const [chapters, setChapters] = useState<Chapters[]>([]);
+  const [categories, setCategories] = useState<CategoryData[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const {
@@ -40,6 +45,41 @@ const AddCourse = () => {
   } = useForm<FormValues>({});
 
   const router = useRouter()
+
+  useEffect(() => {
+    const fetchCat = async () => {
+      try{
+        const categoryResponse = await mentorApis.getCategories();
+      setCategories(categoryResponse?.data?.data || []);
+      }catch(error: any){
+        if (
+          error &&
+          error?.response?.status === 403 &&
+          error?.response?.data?.message === 'Mentor Blocked'
+        ) {
+          toast.warn(error?.response?.data?.message);
+          Cookies.remove('accessToken');
+          localStorage.clear();
+          setTimeout(() => {
+            window.location.replace('/pages/mentor/login');
+          }, 3000);
+          return;
+        }
+        if (error && error.response?.status === 401) {
+          toast.warn(error.response.data.message);
+          Cookies.remove('accessToken');
+          localStorage.clear();
+          setTimeout(() => {
+              window.location.replace('/pages/mentor/login');
+          }, 3000);
+          return;
+      }
+      }
+    }
+    fetchCat()
+  }, [])
+
+
 
   const onSubmit = async (data: any) => {
     setIsLoading(true);
@@ -79,15 +119,48 @@ const AddCourse = () => {
       }
 
     } catch (error: any) {
-      console.error("Error submitting form:", error);
-    } finally{
+      if (error && error.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
+        console.log('401 log', error.response.data.message)
+        toast.warn(error.response.data.message);
+        setTimeout(() => {
+          router.push('/pages/mentor/profile')
+        },2000)
+        return;
+    }
+      if (
+        error &&
+        error?.response?.status === 403 &&
+        error?.response?.data?.message === 'Mentor Blocked'
+      ) {
+        toast.warn(error?.response?.data?.message);
+        Cookies.remove('accessToken');
+        localStorage.clear();
+        setTimeout(() => {
+          window.location.replace('/pages/mentor/login');
+        }, 3000);
+        return;
+      }
+      if (error && error.response?.status === 401) {
+        toast.warn(error.response.data.message);
+        Cookies.remove('accessToken');
+        localStorage.clear();
+        setTimeout(() => {
+            window.location.replace('/pages/mentor/login');
+        }, 3000);
+        return;
+    }
+      if (error && error?.status === 403) {
+        toast.warn('Course Name Already Exist')
+      }
+    } finally {
       setIsLoading(false)
     }
   }
 
   return (
     <>
-    <LoadingModal isOpen={isLoading} message='Please wait course is uploading'/>
+      <LoadingModal isOpen={isLoading} message='Please wait course is uploading' />
+
       <div className="flex flex-col min-h-screen">
         <Navbar />
 
@@ -101,7 +174,7 @@ const AddCourse = () => {
         />
 
         <div className="min-h-screen bg-gray-100 flex items-center justify-center py-10">
-          
+
           <div className="w-full max-w-3xl bg-white rounded-lg shadow-md p-6">
             <h1 className="text-3xl text-[#433D8B] font-bold text-center mb-6">Add Course</h1>
 
@@ -132,17 +205,20 @@ const AddCourse = () => {
               {/* Category */}
               <label className="block font-semibold mb-2">Category</label>
               <select
-                {...register('category', { required: 'Category is required' })}
+                {...register("category", { required: "Category is required" })}
                 className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black"
               >
                 <option value="">Select Category</option>
-                <option value="programming">Programming</option>
-                <option value="design">Design</option>
-                <option value="business">Business</option>
+                {
+                  categories?.map((cat, index) => {
+                    return <option key={index} value={cat?.categoryName}>{cat?.categoryName}</option>
+                  })
+                }
+                {/* <option value="programming">Programming</option>
+                                <option value="design">Design</option>
+                                <option value="business">Business</option> */}
               </select>
-              {errors.category && (
-                <p className="text-red-500 text-sm">{errors.category.message}</p>
-              )}
+              {errors.category && <p className="text-red-500 text-sm">{errors.category.message}</p>}
 
               {/* Level */}
               <label className="block font-semibold mb-2">Level</label>

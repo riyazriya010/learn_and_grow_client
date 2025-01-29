@@ -26,7 +26,7 @@ const PaymentFailure = () => {
                     <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
                         <button
                             onClick={handleBackToHome}
-                            className="w-full py-2 bg-[#6E40FF] text-white rounded-[0px]"
+                            className="w-full py-2 bg-[#22177A] text-white rounded-[13px]"
                         >
                             Back to Home
                         </button>

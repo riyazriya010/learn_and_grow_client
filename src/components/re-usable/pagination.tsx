@@ -13,7 +13,7 @@ const Pagination = ({ directClick, nextPage, previousPage, currentPage, totalPag
     <div className="flex items-center justify-center space-x-4">
       <button
         onClick={previousPage}
-        className="px-4 py-2 text-[#6E40FF] bg-white border-2 border-[#6E40FF] rounded-md shadow-md hover:bg-[#433D8B] hover:text-white transition"
+        className="px-4 py-2 bg-[#ffffff] border border-[#22177A] text-black rounded-md shadow-md hover:bg-gray-100 transition-colors transition"
         disabled={currentPage === 1}
       >
         Prev
@@ -30,8 +30,8 @@ const Pagination = ({ directClick, nextPage, previousPage, currentPage, totalPag
               onClick={() => directClick(pageNumber)}
               className={`w-10 h-10 flex items-center justify-center rounded-md border-2 ${
                 currentPage === pageNumber
-                  ? 'bg-[#6E40FF] text-white shadow-lg'
-                  : 'bg-white text-[#6E40FF] shadow-sm hover:bg-[#6E40FF] hover:text-white'
+                  ? 'bg-[#22177A] text-white shadow-lg'
+                  : 'bg-[#ffffff] border border-gray-300 text-black rounded-md shadow-md hover:bg-[#22177A] rounded-md shadow-md hover:bg-[#433D8B] hover:text-white transition'
               }`}
             >
               {pageNumber}
@@ -42,7 +42,7 @@ const Pagination = ({ directClick, nextPage, previousPage, currentPage, totalPag
 
       <button
         onClick={nextPage}
-        className="px-4 py-2 text-[#6E40FF] bg-white border-2 border-[#6E40FF] rounded-md shadow-md hover:bg-[#433D8B] hover:text-white transition"
+        className="px-4 py-2 bg-[#ffffff] border border-[#22177A] text-black rounded-md shadow-md hover:bg-gray-100 transition-colorsrounded-md shadow-md transition"
         disabled={currentPage === totalPages}
       >
         Next

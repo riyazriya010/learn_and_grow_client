@@ -13,6 +13,7 @@ const StudentVerifyEmail = () => {
 
     useEffect(() => {
         const verifyUser = async () => {
+            
             const token = searchParams.get('token');
 
             console.log('Token from query: ', token);

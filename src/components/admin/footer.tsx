@@ -1,7 +1,7 @@
 // Footer.js
 const AdminFooter = () => {
     return (
-        <footer className="bg-[#433D8B] text-white py-6">
+        <footer className="bg-gray-200 text-gray-800 py-8 border-t border-gray-200">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-center items-center gap-8 px-4">
 
             <div className="text-center">

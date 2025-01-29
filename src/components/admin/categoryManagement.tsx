@@ -11,6 +11,9 @@ import { useRouter } from "next/navigation";
 import AdminHeader from "./header";
 import Pagination from "../re-usable/pagination";
 import Swal from "sweetalert2";
+import Cookies from "js-cookie";
+import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface CategoryData {
   _id?: string;
@@ -36,8 +39,16 @@ const CategoryManagement = () => {
         setCurrentPage(response?.data?.result.currentPage);
         setTotalPages(response?.data?.result.totalPages);
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      if (error && error.response?.status === 401) {
+        toast.warn(error.response.data.message);
+        Cookies.remove('accessToken');
+        localStorage.clear();
+        setTimeout(() => {
+          window.location.replace('/pages/login');
+        }, 3000);
+        return;
+      }
     }
   };
 
@@ -63,7 +74,12 @@ const CategoryManagement = () => {
           const response = await adminApis.unListCategory(categoryId);
           if (response) {
             console.log('Category unlisted: ', response);
-            fetchData(currentPage); // Refresh the data
+            fetchData(currentPage)
+            Swal.fire(
+              "UnListed!",
+              `The category has been "unlisted".`,
+              "success"
+            );
           }
         }
       } else {
@@ -81,7 +97,12 @@ const CategoryManagement = () => {
           const response = await adminApis.listCategory(categoryId);
           if (response) {
             console.log('Category listed: ', response);
-            fetchData(currentPage); // Refresh the data
+            fetchData(currentPage);
+            Swal.fire(
+              "Listed!",
+              `The category has been "listed".`,
+              "success"
+            );
           }
         }
       }
@@ -109,8 +130,10 @@ const CategoryManagement = () => {
       <div className="flex flex-col min-h-screen">
         <AdminHeader />
 
+        <h1 className="text-center text-2xl font-semi-bold text-[#666666] mt-5">Category Management</h1>
+
         {/* Content Section */}
-        <main className="flex-grow px-8 py-4">
+        <main className="flex-grow px-8">
           <div className="flex justify-between items-center mb-4">
             <Link href="/pages/add-category">
               <button className="bg-[#433D8B] text-white px-6 py-2 rounded-lg hover:opacity-90">
@@ -152,7 +175,7 @@ const CategoryManagement = () => {
                   name: "Edit",
                 },
               ]}
-              buttonStyles="bg-[#433D8B] text-white text-sm font-medium rounded hover:opacity-90"
+              buttonStyles="bg-[#22177A] text-white text-sm font-medium rounded hover:opacity-90"
               tableWidth="max-w-[450px]"
             />
           )}

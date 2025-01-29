@@ -12,6 +12,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { app } from "@/lib/firebase/config";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/slices/mentorSlice";
+import Navbar from "../navbar";
 
 
 export interface MentorSignUpCredential {
@@ -116,7 +117,7 @@ const MentorSignup = () => {
 
             <div className="min-h-screen flex flex-col justify-between bg-white">
                 {/* Header */}
-                <LoggedOutHeader />
+                <Navbar />
 
                 <ToastContainer
                     autoClose={2000}
@@ -129,18 +130,18 @@ const MentorSignup = () => {
 
                 {/* Signup Form */}
                 <main className="flex-grow flex items-center justify-center px-4 py-8">
-                    <div className="bg-white border-2 border-[#D6D1F0] shadow-lg w-[400px] p-6 rounded-lg">
-                        <h1 className="text-center text-2xl font-bold mb-6 text-[#6E40FF]">Mentor Signup</h1>
+                    <div className="bg-white border border-gray-400 w-[400px] p-6 rounded-lg">
+                        <h1 className="text-center text-2xl font-semi-bold mb-6 text-[#666666]">Mentor Signup</h1>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             {/* Name Input */}
                             <div className="mb-4">
-                                <label htmlFor="username" className="block text-gray-700 font-semibold mb-2">
+                                <label htmlFor="username" className="block text-gray-500 font-semibold mb-2">
                                     Enter your name:
                                 </label>
                                 <input
                                     type="text"
                                     id="username"
-                                    className="w-full p-3 border border-black bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
+                                    className="w-full p-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                     placeholder="Enter your name"
                                     {...register("username", {
                                         required: "username required",
@@ -155,13 +156,13 @@ const MentorSignup = () => {
 
                             {/* Email Input */}
                             <div className="mb-4">
-                                <label htmlFor="email" className="block text-gray-700 font-semibold mb-2">
+                                <label htmlFor="email" className="block text-gray-500 font-semibold mb-2">
                                     Enter your email:
                                 </label>
                                 <input
                                     type="email"
                                     id="email"
-                                    className="w-full p-3 border border-black bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
+                                    className="w-full p-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                     placeholder="Enter your email"
                                     {...register("email", {
                                         required: "Email is required",
@@ -176,13 +177,13 @@ const MentorSignup = () => {
 
                             {/* Phone Input */}
                             <div className="mb-4">
-                                <label htmlFor="phone" className="block text-gray-700 font-semibold mb-2">
+                                <label htmlFor="phone" className="block text-gray-500 font-semibold mb-2">
                                     Enter your phone number:
                                 </label>
                                 <input
                                     type="text"
                                     id="phone"
-                                    className="w-full p-3 border border-black bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
+                                    className="w-full p-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                     placeholder="Enter your phone number"
                                     {...register("phone", {
                                         required: "Phone number is required",
@@ -197,13 +198,13 @@ const MentorSignup = () => {
 
                             {/* Expertise Input */}
                             <div className="mb-4">
-                                <label htmlFor="expertise" className="block text-gray-700 font-semibold mb-2">
+                                <label htmlFor="expertise" className="block text-gray-500 font-semibold mb-2">
                                     Enter your Expertise Area:
                                 </label>
                                 <input
                                     type="text"
                                     id="expertise"
-                                    className="w-full p-3 border border-black bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
+                                    className="w-full p-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                     placeholder="Enter your Expertise Area"
                                     {...register("expertise", {
                                         required: "expertise area required",
@@ -218,13 +219,13 @@ const MentorSignup = () => {
 
                             {/* Skills Input */}
                             <div className="mb-4">
-                                <label htmlFor="skills" className="block text-gray-700 font-semibold mb-2">
+                                <label htmlFor="skills" className="block text-gray-500 font-semibold mb-2">
                                     Enter your skills:
                                 </label>
                                 <input
                                     type="text"
                                     id="skills"
-                                    className="w-full p-3 border border-black bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
+                                    className="w-full p-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                     placeholder="Enter your Expertise Area"
                                     {...register("skills", {
                                         required: "skills required",
@@ -239,13 +240,13 @@ const MentorSignup = () => {
 
                             {/* Password Input */}
                             <div className="mb-4">
-                                <label htmlFor="password" className="block text-gray-700 font-semibold mb-2">
+                                <label htmlFor="password" className="block text-gray-500 font-semibold mb-2">
                                     Enter your password:
                                 </label>
                                 <input
                                     type="password"
                                     id="password"
-                                    className="w-full p-3 border border-black bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
+                                    className="w-full p-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                     placeholder="Enter your password"
                                     {...register("password", {
                                         required: "Enter a password",
@@ -262,13 +263,13 @@ const MentorSignup = () => {
 
                             {/* Confirm Password Input */}
                             <div className="mb-4">
-                                <label htmlFor="confirmPassword" className="block text-gray-700 font-semibold mb-2">
+                                <label htmlFor="confirmPassword" className="block text-gray-500 font-semibold mb-2">
                                     Confirm your password:
                                 </label>
                                 <input
                                     type="password"
                                     id="confirmPassword"
-                                    className="w-full p-3 border border-black bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
+                                    className="w-full p-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                     placeholder="Confirm your password"
                                     {...register("confirmPassword", {
                                         validate: (value) => {
@@ -283,7 +284,7 @@ const MentorSignup = () => {
                             {/* Signup Button */}
                             <button
                                 type="submit"
-                                className="w-full bg-[#6E40FF] text-white py-3 rounded-[0px] hover:opacity-90"
+                                className="w-full bg-[#22177A] text-white py-3 rounded-[13px]"
                             >
                                 Signup
                             </button>
@@ -300,7 +301,7 @@ const MentorSignup = () => {
                         <button
                             onClick={handleGoogleSignUp}
                             type="button"
-                            className="w-full flex items-center justify-center py-2 px-4 border border-gray-500 rounded-[0px] bg-white text-gray-700 hover:bg-gray-200 transition"
+                            className="w-full flex items-center justify-center py-2 px-4 border border-[#22177A] rounded-[13px] bg-white text-gray-700 hover:bg-gray-200 transition"
                         >
                             <img
                                 src="/images/glogo.png"
@@ -314,7 +315,7 @@ const MentorSignup = () => {
                         <div className="text-center mt-6">
                             <p className="text-sm text-black">
                                 Already have an account?{' '}
-                                <a href="/pages/mentor/login" className="text-base text-[#6E40FF] font-semibold hover:underline">
+                                <a href="/pages/mentor/login" className="text-base text-[#191919] font-semibold hover:underline">
                                     Login
                                 </a>
                             </p>

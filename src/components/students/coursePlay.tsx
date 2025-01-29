@@ -6,6 +6,10 @@ import Navbar from "../navbar";
 import LoadingModal from "../re-usable/loadingModal";
 import { useRouter, useSearchParams } from "next/navigation";
 import { studentApis } from "@/app/api/studentApi";
+import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Cookies from "js-cookie";
+import Footer from "../loggedoutNav/footer";
 
 interface Chapter {
     _id: string;
@@ -59,14 +63,36 @@ const CoursePlay = () => {
             const fetchCourseData = async () => {
                 try {
                     const response = await studentApis.coursePlay(buyedId);
-                    const data = response.data.data;
+                    console.log('play ', response)
+                    const data = response.data.result;
 
                     setChapters(data.chapters);
                     setCourse(data.course);
                     setPurchasedCourse(data.purchasedCourse);
                     setCourseId(data?.purchasedCourse?.courseId?._id)
-                } catch (error) {
-                    console.error("Error fetching course data:", error);
+                } catch (error: any) {
+                    if (error && error.response?.status === 401) {
+                        toast.warn(error.response.data.message);
+                        Cookies.remove('accessToken');
+                        localStorage.clear();
+                        setTimeout(() => {
+                          window.location.replace('/pages/student/login');
+                        }, 3000);
+                        return;
+                      }
+                      if (
+                        error &&
+                        error?.response?.status === 403 &&
+                        error?.response?.data?.message === 'Student Blocked'
+                      ) {
+                        toast.warn(error?.response?.data?.message);
+                        Cookies.remove('accessToken');
+                        localStorage.clear();
+                        setTimeout(() => {
+                          window.location.replace('/pages/student/login');
+                        }, 3000);
+                        return;
+                      }
                 } finally {
                     setIsLoading(false);
                 }
@@ -137,11 +163,32 @@ const CoursePlay = () => {
         if (chapterId && !purchasedCourse?.completedChapters[currentChapterIndex]?.isCompleted) {
             try {
                 const response = await studentApis.chapterVideoEnd(chapterId);
-                const updatedData = response.data.data;
-
+                console.log('vid end ', response)
+                const updatedData = response.data.result;
                 setPurchasedCourse(updatedData);
-            } catch (error) {
-                console.error("Error marking chapter as completed:", error);
+            } catch (error: any) {
+                if (error && error.response?.status === 401) {
+                    toast.warn(error.response.data.message);
+                    Cookies.remove('accessToken');
+                    localStorage.clear();
+                    setTimeout(() => {
+                      window.location.replace('/pages/student/login');
+                    }, 3000);
+                    return;
+                  }
+                  if (
+                    error &&
+                    error?.response?.status === 403 &&
+                    error?.response?.data?.message === 'Student Blocked'
+                  ) {
+                    toast.warn(error?.response?.data?.message);
+                    Cookies.remove('accessToken');
+                    localStorage.clear();
+                    setTimeout(() => {
+                      window.location.replace('/pages/student/login');
+                    }, 3000);
+                    return;
+                  }
             }
         }
         setIsPlaying(false);
@@ -155,6 +202,15 @@ const CoursePlay = () => {
             <header>
                 <Navbar />
             </header>
+
+            <ToastContainer
+                autoClose={2000}
+                pauseOnHover={false}
+                transition={Slide}
+                hideProgressBar={false}
+                closeOnClick={false}
+                pauseOnFocusLoss={true}
+            />
 
             <div className="flex flex-1 w-full px-4 py-8 md:px-8 lg:px-16">
                 {/* Left Side */}
@@ -229,7 +285,7 @@ const CoursePlay = () => {
                         <button
                             onClick={handleQuizButtonClick}
                             disabled={!isAllChaptersCompleted}
-                            className={`w-full py-2 px-4 mt-4 rounded text-white ${isAllChaptersCompleted ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400 cursor-not-allowed"
+                            className={`w-full py-2 px-4 mt-4 rounded-[13px] text-white ${isAllChaptersCompleted ? "bg-[#22177A]" : "bg-gray-400 cursor-not-allowed"
                                 }`}
                         >
                             {isAllChaptersCompleted ? "Start Quiz" : "Complete All Chapters to Unlock Quiz"}
@@ -238,7 +294,7 @@ const CoursePlay = () => {
                 </div>
             </div>
 
-            <MentorFooter />
+            <Footer />
         </div>
     );
 };

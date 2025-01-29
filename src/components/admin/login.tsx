@@ -64,17 +64,17 @@ const AdminLogin = () => {
 
             {/* Login Form */}
             <main className="flex-grow flex items-center justify-center px-4 py-8">
-                <div className="bg-[#F8F9FA] border-2 border-[#D6D1F0] w-[400px] p-6 shadow-md rounded-none">
-                    <h1 className="text-center text-2xl font-bold mb-6 text-[#433D8B]">Admin Login</h1>
+                <div className="bg-white border border-gray-400 w-[400px] p-6 rounded-lg">
+                    <h1 className="text-center text-2xl font-semi-bold mb-6 text-[#666666]">Admin Login</h1>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="mb-4">
-                            <label htmlFor="email" className="block text-gray-700 font-semibold mb-2">
+                            <label htmlFor="email" className="block text-gray-500 font-semibold mb-2">
                                 Enter your email:
                             </label>
                             <input
                                 type="email"
                                 id="email"
-                                className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
+                                className="w-full p-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                 placeholder="Enter your email"
                                 {...register("email", {
                                     required: "Email is required",
@@ -87,13 +87,13 @@ const AdminLogin = () => {
                             <p className="text-red-600">{errors.email?.message}</p>
                         </div>
                         <div className="mb-4">
-                            <label htmlFor="password" className="block text-gray-700 font-semibold mb-2">
+                            <label htmlFor="password" className="block text-gray-500 font-semibold mb-2">
                                 Enter your password:
                             </label>
                             <input
                                 type="password"
                                 id="password"
-                                className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
+                                className="w-full p-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                 placeholder="Enter your password"
                                 {...register("password", {
                                     required: "Password is required",
@@ -110,7 +110,7 @@ const AdminLogin = () => {
 
                         <button
                             type="submit"
-                            className="w-full bg-[#433D8B] text-white py-3 rounded-[22px] hover:opacity-90"
+                            className="w-full bg-[#22177A] text-white py-3 rounded-[13px]"
                         >
                             Login
                         </button>
@@ -119,7 +119,7 @@ const AdminLogin = () => {
             </main>
 
             {/* Footer */}
-            <AdminFooter />
+            {/* <AdminFooter /> */}
 
         </div>
     );

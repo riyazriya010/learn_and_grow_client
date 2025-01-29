@@ -11,6 +11,7 @@ import Pagination from "../re-usable/pagination";
 import Image from "next/image";
 import ReusableTable from "../re-usable/table";
 import Link from "next/link";
+import Cookies from "js-cookie";
 
 interface User {
   _id: string;
@@ -36,14 +37,22 @@ const UserManagement = () => {
           setCurrentPage(response?.data?.result.currentPage);
           setTotalPages(response?.data?.result.totalPages);
         }
-      } catch (error) {
-        console.error("Error fetching users:", error);
+      } catch (error: any) {
+        if (error && error.response?.status === 401) {
+          toast.warn(error.response.data.message);
+          Cookies.remove('accessToken');
+          localStorage.clear();
+          setTimeout(() => {
+            window.location.replace('/pages/login');
+          }, 3000);
+          return;
+        }
       }
     };
     fetchUsers(currentPage);
   }, [currentPage]);
 
-  const blockUser  = async (id: string) => {
+  const blockUser = async (id: string) => {
     const user = users.find((d) => d._id === id);
     if (!user) return;
 
@@ -62,8 +71,8 @@ const UserManagement = () => {
     if (result.isConfirmed) {
       try {
         const response = updatedStatus
-          ? await adminApis.blockUser (id)
-          : await adminApis.unBlockUser (id);
+          ? await adminApis.blockUser(id)
+          : await adminApis.unBlockUser(id);
 
         if (response) {
           setUsers((prevUsers) =>
@@ -81,7 +90,12 @@ const UserManagement = () => {
         }
       } catch (error: any) {
         if (error && error.response?.status === 401) {
-          toast.warn(error.response?.data.message);
+          toast.warn(error.response.data.message);
+          Cookies.remove('accessToken');
+          localStorage.clear();
+          setTimeout(() => {
+            window.location.replace('/pages/login');
+          }, 3000);
           return;
         }
       }
@@ -93,7 +107,7 @@ const UserManagement = () => {
       <div className="min-h-screen flex flex-col">
         {/* Header */}
         <AdminHeader />
-
+        <h1 className="text-center text-2xl font-semi-bold text-[#666666] mt-5">User Management</h1>
         <ToastContainer
           autoClose={2000}
           pauseOnHover={false}
@@ -104,7 +118,7 @@ const UserManagement = () => {
         />
 
         {/* Main Content */}
-        <main className="flex-grow px-8 py-4">
+        <main className="flex-grow px-8 py-3">
 
           {users.length === 0 ? (
             <div className="flex flex-col justify-center items-center h-96 bg-gray-100 rounded-lg shadow-lg p-6">
@@ -129,12 +143,12 @@ const UserManagement = () => {
               }))}
               handlers={(row) => [
                 {
-                  handler: () => blockUser (row._id),
+                  handler: () => blockUser(row._id),
                   name: row.isBlocked ? 'Unblock' : 'Block', // Dynamically update name
-                  icon: row.isBlocked ? <FaUnlock /> : <FaLock />
+                  icon: row.isBlocked ? <FaUnlock /> : <FaLock />,
                 }
               ]}
-              buttonStyles="bg-[#433D8B] text-white text-sm font-medium rounded hover:opacity-90"
+              buttonStyles="bg-[#22177A] text-white text-sm font-medium rounded hover:opacity-90"
               tableWidth="max-w-[600px]"
             />
           )}

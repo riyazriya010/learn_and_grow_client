@@ -11,6 +11,9 @@ import { useRouter } from "next/navigation";
 import AdminHeader from "./header";
 import Pagination from "../re-usable/pagination";
 import Swal from "sweetalert2";
+import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Cookies from "js-cookie";
 
 interface CourseData {
   _id?: string;
@@ -27,30 +30,41 @@ const CourseManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
-  useEffect(() => {
-    const fetchData = async (page: number) => {
-      try {
-        const filters = { page, limit: 4 }
-        const response = await adminApis.getAllCourses(filters)
-        if (response) {
-          const data = response.data?.result?.courses;
-          setCourse(data);
-          setCurrentPage(response?.data?.result.currentPage);
-          setTotalPages(response?.data?.result.totalPages);
-        }
-      } catch (error) {
-        console.log(error)
+
+  const fetchData = async (page: number) => {
+    try {
+      const filters = { page, limit: 4 }
+      const response = await adminApis.getAllCourses(filters)
+      if (response) {
+        const data = response.data?.result?.courses || []
+        console.log('data :', response)
+        setCourse(data);
+        setCurrentPage(response?.data?.result.currentPage);
+        setTotalPages(response?.data?.result.totalPages);
+      }
+    } catch (error: any) {
+      if (error && error.response?.status === 401) {
+        toast.warn(error.response.data.message);
+        Cookies.remove('accessToken');
+        localStorage.clear();
+        setTimeout(() => {
+          window.location.replace('/pages/login');
+        }, 3000);
+        return;
       }
     }
+  }
+
+  useEffect(() => {
     fetchData(currentPage)
   }, [currentPage])
 
 
-  
+
   const handleListUnlist = async (courseId: string, isListed: boolean) => {
     try {
       let result;
-  
+
       if (isListed) {
         // Unlisting logic
         result = await Swal.fire({
@@ -67,7 +81,12 @@ const CourseManagement = () => {
           const response = await adminApis.courseUnList(courseId);
           if (response) {
             console.log("Unlisted course:", response);
-            // Optional: Update your state or handle success feedback here
+            fetchData(currentPage)
+            Swal.fire(
+              "UnListed!",
+             `The course has been "UnListed".`,
+             "success"
+           );
           }
         }
       } else {
@@ -86,24 +105,39 @@ const CourseManagement = () => {
           const response = await adminApis.courseList(courseId);
           if (response) {
             console.log("Listed course:", response);
-            // Optional: Update your state or handle success feedback here
+            fetchData(currentPage)
+            Swal.fire(
+               "Listed!",
+              `The course has been "Listed".`,
+              "success"
+            );
           }
         }
       }
-    } catch (error) {
-      console.error("Error updating course status:", error);
+    } catch (error: any) {
+      if (error && error.response?.status === 401) {
+        toast.warn(error.response.data.message);
+        Cookies.remove('accessToken');
+        localStorage.clear();
+        setTimeout(() => {
+          window.location.replace('/pages/login');
+        }, 3000);
+        return;
+      }
     }
   };
-  
+
 
   return (
     <>
       <div className="flex flex-col min-h-screen">
         <AdminHeader />
 
+        <h1 className="text-center text-2xl font-semi-bold text-[#666666] mt-5">Course Management</h1>
+
         {/* Content Section */}
         <main className="flex-grow px-8 py-4">
-          {course.length === 0 ? (
+          {course && course.length === 0 ? (
             <div className="flex flex-col justify-center items-center h-96 bg-gray-100 rounded-lg shadow-lg p-6">
               <Image
                 src="/images/undraw_no-data_ig65.svg" // Path to your illustration
@@ -131,7 +165,7 @@ const CourseManagement = () => {
                   icon: row.isListed ? <FaLock /> : <FaUnlock />
                 }
               ]}
-              buttonStyles="bg-[#6E40FF] text-white text-sm font-medium rounded hover:opacity-90"
+              buttonStyles="bg-[#22177A] text-white text-sm font-medium rounded hover:opacity-90"
               tableWidth="max-w-[600px]"
             />
           )}

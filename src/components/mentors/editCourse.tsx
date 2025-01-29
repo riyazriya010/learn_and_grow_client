@@ -246,6 +246,7 @@ import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter, useSearchParams } from "next/navigation";
 import LoadingModal from "../re-usable/loadingModal";
+import Cookies from "js-cookie";
 
 interface FormValues {
     courseName: string;
@@ -285,8 +286,8 @@ const EditCourse = () => {
                 setIsLoading(true);
                 try {
                     const response = await mentorApis.getCourse(getCourseId);
-                    if (response?.data?.data) {
-                        const fetchedCourse = response.data.data;
+                    if (response?.data?.result) {
+                        const fetchedCourse = response.data.result;
                         setValue('courseName', fetchedCourse.courseName);
                         setValue('description', fetchedCourse.description);
                         setValue('category', fetchedCourse.category);
@@ -297,9 +298,30 @@ const EditCourse = () => {
                         setDemoVideoUrl(fetchedCourse.demoVideo[0]?.url);
                     }
                     const categoryResponse = await mentorApis.getCategories();
-                    setCategories(categoryResponse?.data?.data || []);
-                } catch (error) {
-                    console.error("Error fetching course data:", error);
+                    setCategories(categoryResponse?.data?.result || []);
+                } catch (error: any) {
+                    if (error && error.response?.status === 401) {
+                        toast.warn(error.response.data.message);
+                        Cookies.remove('accessToken');
+                        localStorage.clear();
+                        setTimeout(() => {
+                          window.location.replace('/pages/mentor/login');
+                        }, 3000);
+                        return;
+                      }
+                      if (
+                        error &&
+                        error?.response?.status === 403 &&
+                        error?.response?.data?.message === 'Mentor Blocked'
+                      ) {
+                        toast.warn(error?.response?.data?.message);
+                        Cookies.remove('accessToken');
+                        localStorage.clear();
+                        setTimeout(() => {
+                          window.location.replace('/pages/mentor/login');
+                        }, 3000);
+                        return;
+                      }
                 } finally {
                     setIsLoading(false);
                 }
@@ -340,9 +362,40 @@ const EditCourse = () => {
                     router.push('/pages/mentor/courses')
                 }, 2000)
             }
-        } catch (error) {
-            console.error("Error updating course:", error);
-            toast.error("Failed to update course");
+        } catch (error: any) {
+            if (error && error.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
+                console.log('401 log', error.response.data.message)
+                toast.warn(error.response.data.message);
+                setTimeout(() => {
+                  router.push('/pages/mentor/profile')
+                },2000)
+                return;
+            }
+            if (error && error.response?.status === 401) {
+                toast.warn(error.response.data.message);
+                Cookies.remove('accessToken');
+                localStorage.clear();
+                setTimeout(() => {
+                  window.location.replace('/pages/mentor/login');
+                }, 3000);
+                return;
+              }
+              if (
+                error &&
+                error?.response?.status === 403 &&
+                error?.response?.data?.message === 'Mentor Blocked'
+              ) {
+                toast.warn(error?.response?.data?.message);
+                Cookies.remove('accessToken');
+                localStorage.clear();
+                setTimeout(() => {
+                  window.location.replace('/pages/mentor/login');
+                }, 3000);
+                return;
+              }
+            if(error && error?.status === 403){
+                toast.warn('Course Name Already Exist')
+              }
         } finally {
             setIsLoading(false);
         }

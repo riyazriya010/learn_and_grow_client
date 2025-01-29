@@ -9,6 +9,9 @@ import Navbar from "../navbar";
 import Image from "next/image";
 import ReusableTable from "../re-usable/table";
 import Pagination from "../re-usable/pagination";
+import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Cookies from "js-cookie";
 
 interface CourseData {
   _id?: string;
@@ -33,13 +36,34 @@ const PurchasedCourse = () => {
         const response = await studentApis.getPurchasedCourses(filters)
         if (response) {
           console.log('ress ', response)
-          const data = response.data?.data?.courses;
+          const data = response.data?.result?.courses;
           setCourse(data);
-          setCurrentPage(response?.data?.data.currentPage);
-          setTotalPages(response?.data?.data.totalPages);
+          setCurrentPage(response?.data?.result.currentPage);
+          setTotalPages(response?.data?.result.totalPages);
         }
-      } catch (error) {
-        console.log(error)
+      } catch (error: any) {
+        if (
+          error &&
+          error?.response?.status === 403 &&
+          error?.response?.data?.message === 'Student Blocked'
+        ) {
+          toast.warn(error?.response?.data?.message);
+          Cookies.remove('accessToken');
+          localStorage.clear();
+          setTimeout(() => {
+            window.location.replace('/pages/student/login');
+          }, 3000);
+          return;
+        }
+        if (error && error.response?.status === 401) {
+          toast.warn(error.response.data.message);
+          Cookies.remove('accessToken');
+          localStorage.clear();
+          setTimeout(() => {
+            window.location.replace('/pages/student/login');
+          }, 3000);
+          return;
+        }
       } finally {
         setIsLoading(false)
       }
@@ -57,6 +81,15 @@ const PurchasedCourse = () => {
     <>
       <div className="flex flex-col min-h-screen">
         <Navbar />
+
+        <ToastContainer
+          autoClose={2000}
+          pauseOnHover={false}
+          transition={Slide}
+          hideProgressBar={false}
+          closeOnClick={false}
+          pauseOnFocusLoss={true}
+        />
 
         {/* Content Section */}
         <main className="flex-grow px-8 py-4">

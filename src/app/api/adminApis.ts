@@ -19,12 +19,12 @@ export const adminApis = {
             })
             return response
         } catch (error: any) {
-            console.log('e: ',error)
             if (error && error.response.status === 409) {
                 throw error
             } else if(error.code === 'ERR_NETWORK'){
                 throw error
             }
+            throw error
         }
     },
 
@@ -36,7 +36,7 @@ export const adminApis = {
             })
             return response
         } catch (error: any) {
-            console.log(error.message)
+            throw error
         }
     },
 
@@ -48,7 +48,7 @@ export const adminApis = {
             })
             return response
         } catch (error: any) {
-            console.log(error.message)
+            throw error
         }
     },
 
@@ -61,6 +61,7 @@ export const adminApis = {
             if (error && error.response?.status === 401) {
                 throw error
             }
+            throw error
         }
     },
 
@@ -73,6 +74,7 @@ export const adminApis = {
             if (error && error.response?.status === 401) {
                 throw error
             }
+            throw error
         }
     },
 
@@ -87,6 +89,7 @@ export const adminApis = {
             if (error && error.response?.status === 401) {
                 throw error
             }
+            throw error
         }
     },
 
@@ -99,6 +102,7 @@ export const adminApis = {
             if (error && error.response?.status === 401) {
                 throw error
             }
+            throw error
         }
     },
 
@@ -114,7 +118,7 @@ export const adminApis = {
             })
                 return response
         }catch(error: any){
-            console.log(error)
+            throw error
         }
     },
 
@@ -129,10 +133,10 @@ export const adminApis = {
             })
             return response
         }catch(error: any){
-            console.log(error)
             if(error && error.response?.status === 403 && error.response?.data?.message === 'Category Already Exist'){
                 throw error
             }
+            throw error
         }
     },
 
@@ -193,7 +197,7 @@ export const adminApis = {
 
     courseUnList: async (courseId: string): Promise<any> => {
         try{
-            const response = await axios.patch(`${ADMIN_SERVICE_URL}/unlist/course?courseId=${courseId}`,{
+            const response = await axios.patch(`${ADMIN_SERVICE_URL}/unlist/course?courseId=${courseId}`, {}, {
                 withCredentials: true
             })
             return response
@@ -206,7 +210,7 @@ export const adminApis = {
 
     courseList: async (courseId: string): Promise<any> => {
         try{
-            const response = await axios.patch(`${ADMIN_SERVICE_URL}/list/course?courseId=${courseId}`,{
+            const response = await axios.patch(`${ADMIN_SERVICE_URL}/list/course?courseId=${courseId}`, {}, {
                 withCredentials: true
             })
             return response
@@ -220,6 +224,48 @@ export const adminApis = {
         try{
             const response = await axios.get(`${ADMIN_SERVICE_URL}/get/wallet`,{
                 params: filters,
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
+
+    /////////////////////// week - 3 ///////////////////////
+    addBadge: async (data: { badgeName: string, description: string, value: string }) => {
+        try{
+            const response = await axios.post(`${ADMIN_SERVICE_URL}/add/badge`,data,{
+                headers:{
+                    "Content-Type": "application/json"
+                },
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
+    getAllBadge: async (filters: { page: number, limit: number }) => {
+        try{
+            const response = await axios.get(`${ADMIN_SERVICE_URL}/get/badges`,{
+                params: filters,
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
+    },
+
+    editBadge: async (data: { badgeName: string, description: string, value: string }, badgeId: string) => {
+        try{
+            const response = await axios.patch(`${ADMIN_SERVICE_URL}/edit/badge/${badgeId}`,data,{
+                headers:{
+                    "Content-Type": "application/json"
+                },
                 withCredentials: true
             })
             return response

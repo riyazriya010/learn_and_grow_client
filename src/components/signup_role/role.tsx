@@ -6,56 +6,55 @@ import LoggedOutHeader from "../loggedoutNav/header"
 import Navbar from "../navbar"
 
 const SignupRole = () => {
-    return(
-        <>
-        <div className="flex flex-col min-h-screen bg-white">
+  return (
+    <>
+      <div className="flex flex-col min-h-screen bg-white">
         {/* Header */}
-        {/* <LoggedOutHeader /> */}
-
-        <Navbar />
+        <header>
+          <Navbar />
+        </header>
 
         {/* Main Content */}
-        <main className="flex-grow flex flex-col items-center justify-center">
+        <main className="flex-grow flex flex-col items-center justify-center px-4 py-16">
           {/* Title */}
-          <h1 className="text-[#6E40FF] font-['Edu_NSW_ACT_Foundation'] text-xl mb-8">
+          <h1 className="text-3xl font-bold text-[#666666] mb-12">
             Select Your Signup Role
           </h1>
 
-          <div className="flex space-x-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full">
             {/* Left Card */}
-            <div className="bg-white border border-[#D6D1F0] rounded-lg p-6 shadow-[0px_4px_10px_rgba(0,0,0,0.1)] flex flex-col items-center text-center">
-              <p className="text-black font-medium mb-4">
-                Access Courses, Learn, <br /> and Interact with <br /> Mentors
+            <div className="bg-white-50 border border-gray-300 rounded-lg p-8 flex flex-col items-center text-center shadow-sm hover:shadow-lg transition-shadow">
+              <p className="text-gray-700 text-lg mb-6 leading-relaxed">
+                Access Courses, Learn, <br /> and Interact with Mentors
               </p>
               <Link href="/pages/student/signup">
-              <button className="px-6 py-2 bg-[#6E40FF] text-white rounded-[0px] hover:opacity-90">
-                Student
-              </button>
+                <button className="px-8 py-3 bg-[#ffffff] border border-[#22177A] text-black rounded-[13px] hover:bg-gray-100 transition-colors">
+                  Student
+                </button>
               </Link>
-              
             </div>
 
             {/* Right Card */}
-            <div className="bg-white border border-[#D6D1F0] rounded-lg p-6 shadow-[0px_4px_10px_rgba(0,0,0,0.1)] flex flex-col items-center text-center">
-              <p className="text-black font-medium mb-4">
-                Upload Courses, <br /> Mentor Students, and <br /> Inspire Growth
+            <div className="bg-white-50 border border-gray-300 rounded-lg p-8 flex flex-col items-center text-center shadow-sm hover:shadow-lg transition-shadow">
+              <p className="text-gray-700 text-lg mb-6 leading-relaxed">
+                Upload Courses, Mentor Students, <br /> and Inspire Growth
               </p>
-
               <Link href="/pages/mentor/signup">
-              <button className="px-6 py-2 bg-[#6E40FF] text-white rounded-[0px] hover:opacity-90">
-                Mentor
-              </button>
+                <button className="px-8 py-3 bg-[#ffffff] border border-[#22177A] text-black rounded-[13px] hover:bg-gray-100 transition-colors">
+                  Mentor
+                </button>
               </Link>
-              
             </div>
           </div>
         </main>
 
         {/* Footer */}
-        <Footer />
+        <footer>
+          <Footer />
+        </footer>
       </div>
-        </>
-    )
+    </>
+  )
 }
 
 export default SignupRole

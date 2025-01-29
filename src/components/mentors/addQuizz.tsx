@@ -9,6 +9,7 @@ import MentorFooter from './footer';
 import { mentorApis } from '@/app/api/mentorApi';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Swal from "sweetalert2";
+import Cookies from 'js-cookie';
 
 export interface IQuizForm {
     question: string;
@@ -34,14 +35,14 @@ const AddQuiz = () => {
 
     useEffect(() => {
         const getCourseId = searchParams.get('courseId')
-        
-        if(getCourseId){
+
+        if (getCourseId) {
             setCourseId(getCourseId)
             setIsLoading(false)
-        }else{
+        } else {
             setIsLoading(false)
         }
-    },[searchParams])
+    }, [searchParams])
 
     const onSubmit = async (data: IQuizForm) => {
         // Handle form submission logic here
@@ -57,8 +58,39 @@ const AddQuiz = () => {
                 }, 2000)
             }
         } catch (error: any) {
-            console.log(error)
-            if(error && error?.response?.status === 403) {
+            if (error && error.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
+                console.log('401 log', error.response.data.message)
+                toast.warn(error.response.data.message);
+                setTimeout(() => {
+                    router.push('/pages/mentor/profile')
+                }, 2000)
+                return;
+            }
+            if (
+                error &&
+                error?.response?.status === 403 &&
+                error?.response?.data?.message === 'Mentor Blocked'
+            ) {
+                toast.warn(error?.response?.data?.message);
+                Cookies.remove('accessToken');
+                localStorage.clear();
+                setTimeout(() => {
+                    window.location.replace('/pages/mentor/login');
+                }, 3000);
+                return;
+            }
+            if (
+                error && error?.response?.status === 401) {
+                toast.warn(error?.response?.data?.message);
+                Cookies.remove('accessToken');
+                localStorage.clear();
+                setTimeout(() => {
+                    window.location.replace('/pages/mentor/login');
+                }, 3000);
+                return;
+            }
+
+            if (error && error?.response?.status === 403) {
                 toast.warn('Question Already Exist')
             }
         }

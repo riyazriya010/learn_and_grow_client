@@ -34,7 +34,9 @@
     "react-toastify": "^10.0.6",
     "redux-persist": "^6.0.0",
     "shaka-player": "^4.12.5",
-    "sweetalert2": "^11.15.2"
+    "socket.io-client": "^4.8.1",
+    "sweetalert2": "^11.15.2",
+    "tailwind-scrollbar-hide": "^2.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

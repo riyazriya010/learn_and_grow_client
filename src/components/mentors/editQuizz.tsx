@@ -8,6 +8,7 @@ import Navbar from '../navbar';
 import MentorFooter from './footer';
 import { mentorApis } from '@/app/api/mentorApi';
 import { useSearchParams } from 'next/navigation';
+import Cookies from "js-cookie";
 
 export interface IQuizForm {
     question: string;
@@ -50,7 +51,28 @@ const EditQuiz = () => {
                 toast.success(`Quiz question added successfully!`);
             }
         } catch (error: any) {
-            console.log(error)
+            if (error && error.response?.status === 401) {
+                toast.warn(error.response.data.message);
+                Cookies.remove('accessToken');
+                localStorage.clear();
+                setTimeout(() => {
+                  window.location.replace('/pages/mentor/login');
+                }, 3000);
+                return;
+              }
+              if (
+                error &&
+                error?.response?.status === 403 &&
+                error?.response?.data?.message === 'Mentor Blocked'
+              ) {
+                toast.warn(error?.response?.data?.message);
+                Cookies.remove('accessToken');
+                localStorage.clear();
+                setTimeout(() => {
+                  window.location.replace('/pages/mentor/login');
+                }, 3000);
+                return;
+              }
             if(error && error?.response?.status === 403) {
                 toast.warn('Question Already Exist')
             }

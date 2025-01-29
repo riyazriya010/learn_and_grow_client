@@ -34,6 +34,7 @@ const StudentsProfile = () => {
   const navLink = [
     { field: "Purchased Courses", link: "/pages/student/purchased-course" },
     { field: "Certificates", link: "/pages/student/get-certificates" },
+    { field: "Chats", link: "/pages/student/chat" },
     { field: "Wallet", link: "#" },
   ];
   
@@ -58,8 +59,8 @@ const StudentsProfile = () => {
             try {
               const response = await studentApis.isBlocked(userId);
               console.log('check res: ', response)
-              if (response && response.data && response.data.user) {
-                const fetchedUser = response.data.user;
+              if (response && response.data) {
+                const fetchedUser = response.data.result;
                 setLocalUser({
                   email: fetchedUser.email || "",
                   username: fetchedUser.username || "",
@@ -73,7 +74,29 @@ const StudentsProfile = () => {
                 setValue("phone", fetchedUser.phone || "");
               }
             } catch (error: any) {
-              if (error && error.response.status === 403) {
+              if (
+                error &&
+                error?.response?.status === 403 &&
+                error?.response?.data?.message === 'Student Blocked'
+              ) {
+                toast.warn(error?.response?.data?.message);
+                Cookies.remove('accessToken');
+                localStorage.clear();
+                setTimeout(() => {
+                  window.location.replace('/pages/student/login');
+                }, 3000);
+                return;
+              }
+              if (error && error.response?.status === 401) {
+                toast.warn(error.response.data.message);
+                Cookies.remove('accessToken');
+                localStorage.clear();
+                setTimeout(() => {
+                  window.location.replace('/pages/student/login');
+                }, 3000);
+                return;
+              }
+              if (error && error?.response?.status === 403) {
                 toast.warn(error.response.data.message);
                 Cookies.remove('accessToken');
                 localStorage.clear();
@@ -118,6 +141,19 @@ const StudentsProfile = () => {
         router.push('/pages/student/verify-alert');
       }
     } catch (error: any) {
+      if (
+        error &&
+        error?.response?.status === 403 &&
+        error?.response?.data?.message === 'Student Blocked'
+      ) {
+        toast.warn(error?.response?.data?.message);
+        Cookies.remove('accessToken');
+        localStorage.clear();
+        setTimeout(() => {
+          window.location.replace('/pages/student/login');
+        }, 3000);
+        return;
+      }
       if (error && error.response?.status === 403) {
         toast.warn(error.response?.data.message);
         return;
@@ -160,27 +196,45 @@ const StudentsProfile = () => {
         toast.success('Profile Updated');
 
         dispatch(setUser({
-          userId: response.data.user._id,
-          username: response.data.user.username,
-          email: response.data.user.email,
-          role: response.data.user.role,
+          userId: response.data.result._id,
+          username: response.data.result.username,
+          email: response.data.result.email,
+          role: response.data.result.role,
         }));
 
         setLocalUser({
-          email: response.data.user.email,
-          username: response.data.user.username,
-          phone: response.data.user.phone,
-          profileImage: response.data.user.profilePicUrl, // Update the profile picture
+          email: response.data.result.email,
+          username: response.data.result.username,
+          phone: response.data.result.phone,
+          profileImage: response.data.result.profilePicUrl, // Update the profile picture
         });
         console.log('local: ',localUser)
 
         reset({
-          username: response.data.user.username,
-          phone: response.data.user.phone,
-          profile: response.data.user.profilePicUrl,
+          username: response.data.result.username,
+          phone: response.data.result.phone,
+          profile: response.data.result.profilePicUrl,
         });
       }
     } catch (error: any) {
+      if (error && error.response?.status === 401 && error.response.data.message === 'Student Not Verified') {
+        console.log('401 log', error.response.data.message)
+        toast.warn(error.response.data.message);
+        return;
+    }
+      if (
+        error &&
+        error?.response?.status === 403 &&
+        error?.response?.data?.message === 'Student Blocked'
+      ) {
+        toast.warn(error?.response?.data?.message);
+        Cookies.remove('accessToken');
+        localStorage.clear();
+        setTimeout(() => {
+          window.location.replace('/pages/student/login');
+        }, 3000);
+        return;
+      }
       if (error && error.response?.status === 403) {
         toast.warn(error.response.data.message);
         Cookies.remove('accessToken');
@@ -192,6 +246,11 @@ const StudentsProfile = () => {
       }
       if (error && error.response?.status === 401) {
         toast.warn(error.response.data.message);
+        Cookies.remove('accessToken');
+        localStorage.clear();
+        setTimeout(() => {
+          window.location.replace('/pages/student/login');
+        }, 3000);
         return;
       }
     }
@@ -236,7 +295,7 @@ const StudentsProfile = () => {
           >
             <div className="flex flex-col items-center mb-6 relative">
               <div
-                className={`w-24 h-24 rounded-full flex items-center justify-center ${isVerified ? "border-4 border-[#6E40FF]" : "bg-gray-300"}`}
+                className={`w-24 h-24 rounded-full flex items-center justify-center ${isVerified ? "border-4 border-[#22177A]" : "bg-gray-300"}`}
                 onClick={() => document.getElementById('profile-input')?.click()}
               >
                 {localUser.profileImage || "" ? (
@@ -258,7 +317,7 @@ const StudentsProfile = () => {
                   className="hidden"
                 />
                 {isVerified && (
-                  <div className="absolute top-0 right-0 w-8 h-8 bg-[#6E40FF] rounded-full flex items-center justify-center border-2 border-white">
+                  <div className="absolute top-0 right-0 w-8 h-8 bg-[#22177A] rounded-full flex items-center justify-center border-2 border-white">
                     <span className="text-white text-xl font-bold">✔</span>
                   </div>
                 )}
@@ -322,7 +381,7 @@ const StudentsProfile = () => {
                   <button
                     type="button"
                     onClick={handleVerify}
-                    className="bg-yellow-500 text-white px-6 py-2 rounded-[0px] hover:bg-yellow-400"
+                    className="bg-[#ffffff] border border-[#22177A] text-black px-6 py-2 rounded-[13px] hover:bg-gray-100 transition-colors"
                   >
                     Verify Your Account !!!
                   </button>
@@ -332,7 +391,7 @@ const StudentsProfile = () => {
               <div className="text-center">
                 <button
                   type="submit"
-                  className="bg-[#6E40FF] text-white px-[60px] py-2 rounded-[0px]"
+                  className="bg-[#22177A] text-white px-[60px] py-2 rounded-[13px]"
                 >
                   Update
                 </button>
@@ -341,7 +400,7 @@ const StudentsProfile = () => {
           </form>
         </div>
       </div>
-      <Footer />
+      <Footer/>
     </div>
   );
 };

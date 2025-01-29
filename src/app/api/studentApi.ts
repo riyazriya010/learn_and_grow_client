@@ -25,7 +25,7 @@ export const studentApis = {
                 throw error
             }
 
-            console.error('error while login in studentApis: ', error.message)
+            throw error
         }
     },
 
@@ -42,7 +42,7 @@ export const studentApis = {
             if (error && error.response?.status === 409) {
                 throw error
             }
-            console.error("Unexpected error in signup:", error);
+            throw error
         }
     },
 
@@ -60,7 +60,7 @@ export const studentApis = {
             if (error.response.status === 403) {
                 throw error
             }
-            console.error('error while signup in studentApis: ', error)
+            throw error
         }
     },
 
@@ -78,7 +78,7 @@ export const studentApis = {
             if (error && error.response?.status === 409) {
                 throw error
             }
-            console.error('error while signup in studentApis: ', error)
+            throw error
         }
     },
 
@@ -95,6 +95,7 @@ export const studentApis = {
             if (error && error.response.status === 401) {
                 throw error
             }
+            throw error
         }
     },
 
@@ -105,9 +106,10 @@ export const studentApis = {
             })
             return response
         } catch (error: any) {
-            if (error && error.response.status === 403) {
+            if (error && error?.response?.status === 403) {
                 throw error
             }
+            throw error
         }
     },
 
@@ -124,6 +126,7 @@ export const studentApis = {
             if (error && error.response?.status === 401) {
                 throw error
             }
+            throw error
         }
     },
 
@@ -143,6 +146,7 @@ export const studentApis = {
             if (error && error.response?.status === 401) {
                 throw error
             }
+            throw error
         }
     },
 
@@ -157,19 +161,19 @@ export const studentApis = {
             });
             return response;
         } catch (error: any) {
-            console.log(error);
+            throw error
         }
     },
 
 
-    getCourse: async (id: string) => {
+    getCourse: async (id: string, userId: string) => {
         try {
-            const response = await axios.get(`${USER_SERVICE_URL}/get/course?courseId=${id}`, {
+            const response = await axios.get(`${USER_SERVICE_URL}/get/course?courseId=${id}&userId=${userId}`, {
                 withCredentials: true
             })
             return response
         } catch (error: any) {
-            console.log(error)
+            throw error
         }
     },
 
@@ -182,7 +186,7 @@ export const studentApis = {
             })
             return response
         } catch (error: any) {
-            console.log(error)
+            throw error
         }
     },
 
@@ -199,9 +203,10 @@ export const studentApis = {
     },
 
 
-    payment: async (courseId: string, txnid: string, amountPaid: number, courseName: string) => {
+    payment: async (courseId: string, txnid: string, amount: number, courseName: string) => {
         try {
-            const response = await axios.get(`${USER_SERVICE_URL}/payment?courseId=${courseId}&txnid=${txnid}&amount=${amountPaid}&courseName=${courseName}`, {
+            const data = { courseId, txnid, amount, courseName }
+            const response = await axios.post(`${USER_SERVICE_URL}/payment`, data, {
                 withCredentials: true
             })
             return response
@@ -250,7 +255,7 @@ export const studentApis = {
 
     chapterVideoEnd: async (chapterId: string) => {
         try {
-            const response = await axios.get(`${USER_SERVICE_URL}/chapter-end?chapterId=${chapterId}`, {
+            const response = await axios.patch(`${USER_SERVICE_URL}/chapter-end?chapterId=${chapterId}`, {}, {
                 withCredentials: true
             })
             return response

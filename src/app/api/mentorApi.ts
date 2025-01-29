@@ -26,8 +26,7 @@ export const mentorApis = {
             } else if (error.response.status === 403) {
                 throw error
             }
-
-            console.error('error while login in studentApis: ', error.message)
+            throw error
         }
     },
 
@@ -45,7 +44,7 @@ export const mentorApis = {
             if (error.response.status === 409) {
                 throw error
             }
-            console.log(error.message)
+            throw error
         }
     },
 
@@ -62,6 +61,7 @@ export const mentorApis = {
             if (error && error.response.status === 401) {
                 throw error
             }
+            throw error
         }
     },
 
@@ -79,7 +79,7 @@ export const mentorApis = {
             if (error && error.response.status === 403) {
                 throw error
             }
-            console.error('error while google Login in mentorApis: ', error)
+            throw error
         }
     },
 
@@ -97,7 +97,7 @@ export const mentorApis = {
             if (error && error.response?.status === 409) {
                 throw error
             }
-            console.error('error while google signup in mentorApis: ', error)
+            throw error
         }
     },
 
@@ -111,6 +111,7 @@ export const mentorApis = {
             if (error && error.response?.status === 403) {
                 throw error
             }
+            throw error
         }
     },
 
@@ -127,6 +128,7 @@ export const mentorApis = {
             if (error && error.response?.status === 401) {
                 throw error
             }
+            throw error
         }
     },
 
@@ -146,6 +148,7 @@ export const mentorApis = {
             if (error && error.response?.status === 401) {
                 throw error
             }
+            throw error
         }
     },
 
@@ -160,8 +163,7 @@ export const mentorApis = {
                 withCredentials: true, // Include credentials if needed
             });
             return response.data;
-        } catch (error) {
-            console.error("API Error:", error);
+        } catch (error: any) {
             throw error; // Rethrow error to handle it in the calling function
         }
     },
@@ -215,8 +217,7 @@ export const mentorApis = {
                 withCredentials: true, // Include credentials if needed
             });
             return response.data;
-        } catch (error) {
-            console.error("API Error:", error);
+        } catch (error: any) {
             throw error; // Rethrow error to handle it in the calling function
         }
     },
@@ -245,8 +246,8 @@ export const mentorApis = {
                 withCredentials: true
             })
             return response
-        } catch (error) {
-            console.log(error)
+        } catch (error: any) {
+            throw error
         }
     },
 
@@ -350,18 +351,5 @@ export const mentorApis = {
         }
     },
 
-    // editCourseWithoutFiles: async (formData: any, courseId: string) => {
-    //     try{
-    //         const response = await axios.patch(`${MENTOR_SERVICE_URL}/edit-data/course?courseId=${courseId}`, formData, {
-    //             headers: {
-    //                 "Content-Type": 'multipart/form-data'
-    //             },
-    //             withCredentials: true
-    //         })
-    //         return response
-    //     }catch(error: any){
-    //         throw error
-    //     }
-    // }
 
 }

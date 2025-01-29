@@ -187,7 +187,7 @@ const ReusableTable: React.FC<TableProps> = ({ headers, data, handlers, buttonSt
         }`}
       >
         <table className="w-full border-collapse table-fixed">
-          <thead className="bg-[#6E40FF] text-white">
+          <thead className="bg-[#22177A] text-white">
             <tr>
               {headers.map((header, index) => (
                 <th key={index} className="py-2 px-4 text-left">{header}</th>

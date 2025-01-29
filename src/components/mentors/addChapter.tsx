@@ -7,7 +7,9 @@ import MentorFooter from './footer';
 import { mentorApis } from '@/app/api/mentorApi';
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Cookies from "js-cookie";
+import LoadingModal from '../re-usable/loadingModal';
 
 export interface FormValues {
     title: string;
@@ -19,6 +21,7 @@ const AddChapter: React.FC = () => {
         const [courseId, setCourseId] = useState<string | null>(null);
         const [isLoading, setIsLoading] = useState<boolean>(true);
         const searchParams = useSearchParams()
+        const router = useRouter()
 
     const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
 
@@ -37,8 +40,8 @@ const AddChapter: React.FC = () => {
         }, [searchParams]);
 
     const onSubmit: SubmitHandler<FormValues> = async (data: any) => {
+        setIsLoading(true)
         try {
-
             const formData = new FormData()
 
             if (data.chapterVideo && data.chapterVideo[0]) {
@@ -58,15 +61,53 @@ const AddChapter: React.FC = () => {
             }
 
             const response = await mentorApis.addChapter(formData, String(courseId))
-            console.log('res ', response)
+            if(response){
+                toast.success('Chapter Added Successfully')
+                setTimeout(() => {
+                    router.push('/pages/mentor/courses')
+                }, 2000)
+            }
 
-        } catch (error) {
-            console.error("Error submitting form:", error);
-        }
+        } catch (error: any) {
+            if (error && error.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
+                console.log('401 log', error.response.data.message)
+                toast.warn(error.response.data.message);
+                setTimeout(() => {
+                  router.push('/pages/mentor/profile')
+                },2000)
+                return;
+            }
+            if (
+                error &&
+                error?.response?.status === 403 &&
+                error?.response?.data?.message === 'Mentor Blocked'
+              ) {
+                toast.warn(error?.response?.data?.message);
+                Cookies.remove('accessToken');
+                localStorage.clear();
+                setTimeout(() => {
+                  window.location.replace('/pages/mentor/login');
+                }, 3000);
+                return;
+              }
+            if (error && error.response?.status === 401) {
+                toast.warn(error.response.data.message);
+                Cookies.remove('accessToken');
+                localStorage.clear();
+                setTimeout(() => {
+                    window.location.replace('/pages/mentor/login');
+                }, 3000);
+                return;
+            }
+        }finally {
+            setIsLoading(false)
+          }
     };
 
     return (
         <>
+         <LoadingModal isOpen={isLoading} message='Please wait course is uploading' />
+
             <Navbar />
 
             <ToastContainer

@@ -75,7 +75,8 @@ export async function middleware(req: NextRequest) {
         url.pathname.startsWith('/pages/student/purchased-course') ||
         url.pathname.startsWith('/pages/student/quizz') ||
         url.pathname.startsWith('/pages/student/summary-page') ||
-        url.pathname.startsWith('/pages/student/certificate-view')
+        url.pathname.startsWith('/pages/student/certificate-view') ||
+        url.pathname.startsWith('/pages/student/chat')
     ) {
         if (role !== 'student') {
             url.pathname = '/pages/student/login';
@@ -99,7 +100,8 @@ export async function middleware(req: NextRequest) {
         url.pathname.startsWith('/pages/mentor/edit-course') ||
         url.pathname.startsWith('/pages/mentor/edit-quizz') ||
         url.pathname.startsWith('/pages/mentor/quizz') ||
-        url.pathname.startsWith('/pages/mentor/wallet')
+        url.pathname.startsWith('/pages/mentor/wallet') || 
+        url.pathname.startsWith('/pages/mentor/chat')
     ) {
         if (role !== 'mentor') {
             url.pathname = '/pages/mentor/login';

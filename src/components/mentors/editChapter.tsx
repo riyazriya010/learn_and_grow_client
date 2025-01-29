@@ -8,6 +8,7 @@ import { mentorApis } from '@/app/api/mentorApi';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
+import Cookies from "js-cookie";
 
 interface FormValues {
     title: string;
@@ -40,6 +41,8 @@ const EditChapter: React.FC = () => {
         setIsLoading(false);
     }, [setValue]);
 
+
+
     const onSubmit: SubmitHandler<FormValues> = async (data) => {
         try {
             const formData = new FormData();
@@ -62,7 +65,37 @@ const EditChapter: React.FC = () => {
                     router.push('/pages/mentor/courses');
                 }, 2000);
             }
-        } catch (error) {
+        } catch (error: any) {
+            if (error && error.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
+                console.log('401 log', error.response.data.message)
+                toast.warn(error.response.data.message);
+                setTimeout(() => {
+                    router.push('/pages/mentor/profile')
+                }, 2000)
+                return;
+            }
+            if (error && error.response?.status === 401) {
+                toast.warn(error.response.data.message);
+                Cookies.remove('accessToken');
+                localStorage.clear();
+                setTimeout(() => {
+                    window.location.replace('/pages/mentor/login');
+                }, 3000);
+                return;
+            }
+            if (
+                error &&
+                error?.response?.status === 403 &&
+                error?.response?.data?.message === 'Mentor Blocked'
+            ) {
+                toast.warn(error?.response?.data?.message);
+                Cookies.remove('accessToken');
+                localStorage.clear();
+                setTimeout(() => {
+                    window.location.replace('/pages/mentor/login');
+                }, 3000);
+                return;
+            }
             console.error("Error submitting form:", error);
             toast.error('Error updating chapter');
         }

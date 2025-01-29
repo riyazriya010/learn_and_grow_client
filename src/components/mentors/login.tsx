@@ -34,10 +34,10 @@ const MentorLogin = () => {
                 if (response.data.success) {
                     dispatch(
                         setUser({
-                            userId: response.data.user._id,
-                            username: response.data.user.username,
-                            email: response.data.user.email,
-                            role: response.data.user.role
+                            userId: response.data.result._id,
+                            username: response.data.result.username,
+                            email: response.data.result.email,
+                            role: response.data.result.role
                         }),
                     )
                     router.replace('/pages/mentor/dashboard')
@@ -119,17 +119,17 @@ const MentorLogin = () => {
 
             {/* Login Form */}
             <main className="flex-grow flex items-center justify-center px-4 py-8">
-                <div className="bg-white border-2 border-[#D6D1F0] shadow-lg w-[400px] p-6 rounded-lg">
-                    <h1 className="text-center text-2xl font-bold mb-6 text-[#6E40FF]">Mentor Login</h1>
+                <div className="bg-white border border-gray-400 w-[400px] p-6 rounded-lg">
+                    <h1 className="text-center text-2xl font-semi-bold mb-6 text-[#666666]">Mentor Login</h1>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="mb-4">
-                            <label htmlFor="email" className="block text-gray-700 font-semibold mb-2">
+                            <label htmlFor="email" className="block text-gray-500 font-semibold mb-2">
                                 Enter your email:
                             </label>
                             <input
                                 type="email"
                                 id="email"
-                                className="w-full p-3 border border-[#333333] bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
+                                className="w-full p-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                 placeholder="Enter your email"
                                 {...register("email", {
                                     required: "Email is required",
@@ -142,13 +142,13 @@ const MentorLogin = () => {
                             <p className="text-red-600">{errors.email?.message}</p>
                         </div>
                         <div className="mb-4">
-                            <label htmlFor="password" className="block text-gray-700 font-semibold mb-2">
+                            <label htmlFor="password" className="block text-gray-500 font-semibold mb-2">
                                 Enter your password:
                             </label>
                             <input
                                 type="password"
                                 id="password"
-                                className="w-full p-3 border border-[#333333] bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
+                                className="w-full p-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
                                 placeholder="Enter your password"
                                 {...register("password", {
                                     required: "Password is required",
@@ -163,7 +163,7 @@ const MentorLogin = () => {
                             <p className="text-red-600">{errors.password?.message}</p>
                         </div>
                         <div className="text-right mb-4">
-                            <a href="#" className="text-sm text-blue-600 hover:underline"
+                            <a href="#" className="text-sm text-gray-600 hover:underline"
                                 onClick={() => router.push('/pages/mentor/forget-password')}
                             >
                                 Forget password?
@@ -171,7 +171,7 @@ const MentorLogin = () => {
                         </div>
                         <button
                             type="submit"
-                            className="w-full bg-[#6E40FF] text-white py-3 rounded-[0px] hover:opacity-90"
+                            className="w-full bg-[#22177A] text-white py-3 rounded-[13px]"
                         >
                             Login
                         </button>
@@ -186,26 +186,10 @@ const MentorLogin = () => {
                         </div>
                     </div>
 
-                    {/* Google Login Button */}
-                    {/* <div className="flex justify-center items-center mt-6 mb-6">
-                        <button
-                            onClick={handleGoogleLogin}
-                            type="button"
-                            className="flex justify-center items-center w-12 h-12 rounded-full border-[3px] border-[#D9D9D9] bg-white text-[#757575] hover:opacity-90"
-                        >
-                           
-                            <img
-                                src="/images/glogo.png"
-                                alt="Google logo"
-                                className="w-8 h-8"
-                            />
-                        </button>
-                    </div> */}
-
                     <button
                     onClick={handleGoogleLogin}
                     type="button"
-                    className="w-full flex items-center justify-center py-2 px-4 border border-gray-500 rounded-[0px] bg-white text-gray-700 hover:bg-gray-200 transition mt-[-7%]"
+                    className="w-full flex items-center justify-center py-2 px-4 border border-[#22177A] rounded-[13px] bg-white text-gray-700 hover:bg-gray-200 transition mt-[-7%]"
                 >
                     <img
                         src="/images/glogo.png"
@@ -219,7 +203,7 @@ const MentorLogin = () => {
                     <div className="text-center mt-6">
                         <p className="text-sm text-black">
                             Don't have an account?{' '}
-                            <a href="/pages/mentor/signup" className="text-base text-[#6E40FF] font-semibold hover:underline">
+                            <a href="/pages/mentor/signup" className="text-base text-[#191919] font-semibold hover:underline">
                                 Signup
                             </a>
                         </p>

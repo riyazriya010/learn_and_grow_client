@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AdminHeader from "./header";
+import Cookies from "js-cookie";
 
 export interface CategoryFormData {
     categoryName: string;
@@ -28,7 +29,15 @@ const AddCategory = () => {
                 reset()
             }
         }catch(error: any){
-            console.log(error)
+            if (error && error.response?.status === 401) {
+                toast.warn(error.response.data.message);
+                Cookies.remove('accessToken');
+                localStorage.clear();
+                setTimeout(() => {
+                  window.location.replace('/pages/login');
+                }, 3000);
+                return;
+              }
             if(error && error.response?.status === 403 && error.response?.data?.message === 'Category Already Exist'){
                 toast.warn('Category Already Exist')
                 reset()

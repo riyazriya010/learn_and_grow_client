@@ -10,6 +10,7 @@ import { studentApis } from "@/app/api/studentApi";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import Cookies from "js-cookie";
 
 interface QuizzData {
     _id: string;
@@ -52,13 +53,34 @@ const StudentQuizz = () => {
                     const response = await studentApis.getQuizz(String(getCourseId))
                     console.log('response 1 : ', response)
 
-                    const shuffledArray = shuffleArray(response?.data?.data?.questions)
-                    const newQuizz = { ...response?.data?.data, questions: shuffledArray }
+                    const shuffledArray = shuffleArray(response?.data?.result?.questions)
+                    const newQuizz = { ...response?.data?.result, questions: shuffledArray }
                     console.log('newQuizz: ', newQuizz)
                     setQuizz(newQuizz);
                     setIsLoading(false);
                 } catch (error: any) {
-                    console.log(error)
+                    if (
+                        error &&
+                        error?.response?.status === 403 &&
+                        error?.response?.data?.message === 'Student Blocked'
+                      ) {
+                        toast.warn(error?.response?.data?.message);
+                        Cookies.remove('accessToken');
+                        localStorage.clear();
+                        setTimeout(() => {
+                          window.location.replace('/pages/student/login');
+                        }, 3000);
+                        return;
+                      }
+                    if (error && error.response?.status === 401) {
+                        toast.warn(error.response.data.message);
+                        Cookies.remove('accessToken');
+                        localStorage.clear();
+                        setTimeout(() => {
+                            window.location.replace('/pages/student/login');
+                        }, 3000);
+                        return;
+                    }
                 } finally {
                     setIsLoading(false)
                 }
@@ -67,6 +89,7 @@ const StudentQuizz = () => {
         }
 
     }, [restart]);
+
 
     const handleOption = (option: string, currentQuestionIndex: any) => {
         if (selectedAnswers[currentQuestionIndex]) return;
@@ -104,33 +127,68 @@ const StudentQuizz = () => {
         }
         if ((corretAnswers.length + wrongAnswers.length) === quizz?.questions.length) {
             // Mock response for submission
-            const response = await studentApis.completeCourse(String(courseId))
-            console.log('succes: ', response)
-            if (response) {
-                if(response?.data?.message === 'Course Already Completed'){
-                    toast.warn('You Already Completed The Course')
-                    router.push('/pages/student/get-certificates')
-                    return
-                }
-                const courseName = response?.data?.data?.courseName
-                const mentorName = response?.data?.data?.mentorName
-                const data = {
-                    username,
-                    courseName,
-                    mentorName,
-                    courseId,
-                }
-                const createCertificate = await studentApis.createCertificate(data)
-                if (createCertificate) {
-                    console.log('certi: ', createCertificate)
-                    toast.success("Quiz completed successfully!!");
-                    setQuizCompleted(true);
+
+            try {
+                const response = await studentApis.completeCourse(String(courseId))
+                console.log('succes: ', response)
+                if (response) {
+                    if (response?.data?.message === 'Course Completed') {
+                        toast.warn('You Already Completed The Course')
+                        router.push('/pages/student/get-certificates')
+                        return
+                    }
+                    const courseName = response?.data?.result?.courseName
+                    const mentorName = response?.data?.result?.mentorName
+                    const data = {
+                        username,
+                        courseName,
+                        mentorName,
+                        courseId,
+                    }
+                    const createCertificate = await studentApis.createCertificate(data)
+                    if (createCertificate) {
+                        console.log('certi: ', createCertificate)
+                        toast.success("Quiz completed successfully!!");
+                        setQuizCompleted(true);
+                    }
+
+                } else {
+                    setQuizCompleted(false);
+                    toast.error("You didn't complete the quiz successfully. Try again.");
                 }
 
-            } else {
-                setQuizCompleted(false);
-                toast.error("You didn't complete the quiz successfully. Try again.");
+            } catch (error: any) {
+                if (
+                    error &&
+                    error?.response?.status === 403 &&
+                    error?.response?.data?.message === 'Student Blocked'
+                  ) {
+                    toast.warn(error?.response?.data?.message);
+                    Cookies.remove('accessToken');
+                    localStorage.clear();
+                    setTimeout(() => {
+                      window.location.replace('/pages/student/login');
+                    }, 3000);
+                    return;
+                  }
+                  if (error && error.response?.status === 401 || error.response?.message === " Course Already Completed") {
+                    toast.warn(error.response.data.message);
+                    setTimeout(() => {
+                        router.replace('/pages/student/get-certificates')
+                    }, 3000);
+                    return;
+                  }
+                if (error && error.response?.status === 401) {
+                    toast.warn(error.response.data.message);
+                    Cookies.remove('accessToken');
+                    localStorage.clear();
+                    setTimeout(() => {
+                      window.location.replace('/pages/student/login');
+                    }, 3000);
+                    return;
+                  }
             }
+
         }
     };
 
@@ -190,7 +248,7 @@ const StudentQuizz = () => {
                                 </div>
                                 :
                                 <div className="bg-white border-2 border-[#D6D1F0] shadow-lg w-[400px] p-6 rounded-lg">
-                                    <h1 className="text-center text-2xl font-bold mb-6 text-[#6E40FF]">Question {currentQuestionIndex + 1}</h1>
+                                    <h1 className="text-center text-2xl font-bold mb-6 text-[#666666]">Question {currentQuestionIndex + 1}</h1>
 
                                     {/* Display current question */}
                                     <div className="text-center text-xl mb-4">
@@ -204,11 +262,11 @@ const StudentQuizz = () => {
                                                 key={index}
                                                 onClick={() => handleOption(option, currentQuestionIndex)}
                                                 disabled={!!selectedAnswers[currentQuestionIndex]} // Disable if already answered
-                                                className={`w-[40%] py-3 rounded-lg hover:opacity-80 ${selectedAnswers[currentQuestionIndex] === option
+                                                className={`w-[40%] py-3 rounded-[13px] ${selectedAnswers[currentQuestionIndex] === option
                                                     ? quizz?.questions[currentQuestionIndex].correct_answer === option
                                                         ? 'bg-green-500'
                                                         : 'bg-red-500'
-                                                    : 'bg-[#6E40FF] text-white'
+                                                    : 'bg-[#ffffff] text-black border border-[#22177A]'
                                                     }`}
                                             >
                                                 {option}
@@ -221,7 +279,7 @@ const StudentQuizz = () => {
                                         <button
                                             onClick={handleNextQuestion}
                                             disabled={!selectedAnswers[currentQuestionIndex]}
-                                            className="w-full bg-[#6E40FF] text-white py-3 rounded-[22px] hover:opacity-90"
+                                            className="w-[70px] bg-[#6E40FF] text-white py-3 rounded-[13px] ml-[250px] hover:opacity-90"
                                         >
                                             Next
                                         </button>
@@ -231,7 +289,7 @@ const StudentQuizz = () => {
                                                 <button
                                                     onClick={handleSubmitQuiz}
                                                     disabled={!selectedAnswers[currentQuestionIndex]}
-                                                    className="w-full bg-red-500 text-white py-3 rounded-[22px] hover:opacity-90"
+                                                    className="w-[70px] bg-red-500 text-white py-3 rounded-[13px] ml-[250px] hover:opacity-90"
                                                 >
                                                     Retry
                                                 </button>
@@ -239,7 +297,7 @@ const StudentQuizz = () => {
                                                 <button
                                                     onClick={handleSubmitQuiz}
                                                     disabled={!selectedAnswers[currentQuestionIndex]}
-                                                    className="w-full bg-[#6E40FF] text-white py-3 rounded-[22px] hover:opacity-90"
+                                                    className="w-[110px] bg-[#6E40FF] text-white py-3 rounded-[13px] ml-[250px] hover:opacity-90"
                                                 >
                                                     Submit Quiz
                                                 </button>

@@ -26,12 +26,13 @@ const AdminHeader = () => {
             <header className="bg-white shadow-md py-4 px-8">
                 <div className="max-w-6xl mx-auto flex items-center justify-between">
                     {/* Navigation Links */}
-                    <nav className="flex gap-x-8 text-black">
+                    <nav className="flex gap-x-8 text-black text-[13px] font-semi-bold">
                         <a href="/pages/dashboard" className="hover:text-[#433D8B]">Dashboard</a>
                         <a href="/pages/userManagement" className="hover:text-[#433D8B]">User Management</a>
                         <a href="/pages/mentorManagement" className="hover:text-[#433D8B]">Mentor Management</a>
                         <a href="/pages/category-management" className="hover:text-[#433D8B]">Category Management</a>
                         <a href="/pages/course-management" className="hover:text-[#433D8B]">Course Management</a>
+                        <a href="/pages/badge-management" className="hover:text-[#433D8B]">Badge Management</a>
                         <a href="/pages/wallet" className="hover:text-[#433D8B]">Wallet</a>
                     </nav>
 

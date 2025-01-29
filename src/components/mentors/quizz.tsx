@@ -11,6 +11,7 @@ import { mentorApis } from "@/app/api/mentorApi";
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from "sweetalert2";
+import Cookies from "js-cookie";
 
 interface Question {
     _id: string;
@@ -45,11 +46,11 @@ const Quizz = () => {
             const fetchData = async () => {
                 try {
                     const response = await mentorApis.getAllQuizz(getCourseId);
-                    if (response && response.data && response.data.data && Array.isArray(response.data.data)) {
+                    if (response && response.data && response.data.result && Array.isArray(response.data.result)) {
                         console.log('res quizz: ', response);
 
                         // Assuming response.data.data is an array of quiz objects
-                        const quizData = response.data.data.map((quiz: any) => ({
+                        const quizData = response.data.result.map((quiz: any) => ({
                             courseId: quiz.courseId,
                             questions: quiz.questions.map((question: any) => ({
                                 _id: question._id,
@@ -64,8 +65,29 @@ const Quizz = () => {
                     } else {
                         setQuizzes([]); // Set to empty array if no questions found
                     }
-                } catch (error) {
-                    console.error("Error fetching quiz data:", error);
+                } catch (error: any) {
+                    if (error && error.response?.status === 401) {
+                        toast.warn(error.response.data.message);
+                        Cookies.remove('accessToken');
+                        localStorage.clear();
+                        setTimeout(() => {
+                            window.location.replace('/pages/mentor/login');
+                        }, 3000);
+                        return;
+                    }
+                    if (
+                        error &&
+                        error?.response?.status === 403 &&
+                        error?.response?.data?.message === 'Mentor Blocked'
+                    ) {
+                        toast.warn(error?.response?.data?.message);
+                        Cookies.remove('accessToken');
+                        localStorage.clear();
+                        setTimeout(() => {
+                            window.location.replace('/pages/mentor/login');
+                        }, 3000);
+                        return;
+                    }
                 } finally {
                     setIsLoading(false); // Set loading to false after fetching
                 }
@@ -88,8 +110,8 @@ const Quizz = () => {
             text: "You won't be able to revert this!",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
             confirmButtonText: "Yes, delete it!",
         }).then(async (result: any) => {
             if (result.isConfirmed) {
@@ -104,9 +126,37 @@ const Quizz = () => {
                         );
                         toast.success("Successfully deleted the quiz!");
                     }
-                } catch (error) {
-                    console.error("Error deleting quiz:", error);
-                    toast.error("Failed to delete the quiz.");
+                } catch (error: any) {
+                    if (error && error.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
+                        console.log('401 log', error.response.data.message)
+                        toast.warn(error.response.data.message);
+                        setTimeout(() => {
+                            router.push('/pages/mentor/profile')
+                        }, 2000)
+                        return;
+                    }
+                    if (error && error.response?.status === 401) {
+                        toast.warn(error.response.data.message);
+                        Cookies.remove('accessToken');
+                        localStorage.clear();
+                        setTimeout(() => {
+                            window.location.replace('/pages/mentor/login');
+                        }, 3000);
+                        return;
+                    }
+                    if (
+                        error &&
+                        error?.response?.status === 403 &&
+                        error?.response?.data?.message === 'Mentor Blocked'
+                    ) {
+                        toast.warn(error?.response?.data?.message);
+                        Cookies.remove('accessToken');
+                        localStorage.clear();
+                        setTimeout(() => {
+                            window.location.replace('/pages/mentor/login');
+                        }, 3000);
+                        return;
+                    }
                 }
             }
         });
@@ -167,7 +217,7 @@ const Quizz = () => {
                                     name: "Delete"
                                 },
                             ]}
-                            buttonStyles="bg-[#433D8B] text-white text-sm font-medium rounded hover:opacity-90"
+                            buttonStyles="bg-[#FF474c] text-white text-sm font-medium rounded hover:opacity-90"
                             tableWidth="max-w-[850px]"
                         />
                     )}

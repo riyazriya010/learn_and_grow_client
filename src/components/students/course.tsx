@@ -9,6 +9,8 @@ import { useRouter } from 'next/navigation';
 import Pagination from '../re-usable/pagination';
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Cookies from 'js-cookie';
+import Footer from '../loggedoutNav/footer';
 
 const CoursesPage = () => {
   const [courses, setCourses] = useState<any>([]);
@@ -18,6 +20,7 @@ const CoursesPage = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [filter, setFliter] = useState<boolean>(true)
 
   const router = useRouter();
 
@@ -28,7 +31,7 @@ const CoursesPage = () => {
   const fetchCourses = async (page: number) => {
     try {
       // const filters = { page, limit: 6, selectedCategory, selectedLevel, searchTerm };
-      const filters = { page, limit: 6 };
+      const filters = { page, limit: 1 };
       const response = await studentApis.fetchAllCourse(filters);
       if (response?.data) {
         console.log('res ', response)
@@ -40,7 +43,23 @@ const CoursesPage = () => {
         setCourses([]);
       }
     } catch (error: any) {
-      console.error('Error fetching courses:', error);
+      if (
+        error &&
+        error?.response?.status === 403 &&
+        error?.response?.data?.message === 'Student Blocked'
+      ) {
+        toast.warn(error?.response?.data?.message);
+        Cookies.remove('accessToken');
+        localStorage.clear();
+        setTimeout(() => {
+          window.location.replace('/pages/student/login');
+        }, 3000);
+        return;
+      }
+      if(error && error?.response?.status === 404 && error?.response?.data?.message === 'Courses Not Found'){
+        toast.warn('Courses Not Foundd')
+      }
+      // console.error('Error fetching courses:', error);
       setCourses([]);
     }
   };
@@ -64,21 +83,34 @@ const CoursesPage = () => {
     const parsedFilters = JSON.parse(String(filters))
 
     if (parsedFilters) {
+      setFliter(false)
       const filteringData = async () => {
         try {
           const response = await studentApis.filterData(parsedFilters)
 
           if (response && response?.data) {
-            setCourses(response?.data?.data?.courses);
-            setCurrentPage(response?.data?.data?.currentPage);
-            setTotalPages(response?.data?.data?.totalPages);
-            setTotalCourses(response?.data?.data?.totalCourses);
+            setCourses(response?.data?.result?.courses);
+            setCurrentPage(response?.data?.result?.currentPage);
+            setTotalPages(response?.data?.result?.totalPages);
+            setTotalCourses(response?.data?.result?.totalCourses);
           } else {
             setCourses([]); // Set empty array if courses are not found
           }
 
         } catch (error: any) {
-          console.log('error :', error)
+          if (
+            error &&
+            error?.response?.status === 403 &&
+            error?.response?.data?.message === 'Student Blocked'
+          ) {
+            toast.warn(error?.response?.data?.message);
+            Cookies.remove('accessToken');
+            localStorage.clear();
+            setTimeout(() => {
+              window.location.replace('/pages/student/login');
+            }, 3000);
+            return;
+          }
           if (error && error?.response?.status === 404) {
             toast.warn('Course Not Found')
             setCourses([]);
@@ -95,6 +127,7 @@ const CoursesPage = () => {
 
   // Remove filters and fetch data
   const removeFilters = () => {
+    setFliter(true)
     setSelectedCategory(null);
     setSelectedLevel(null);
     setSearchTerm("");
@@ -106,6 +139,7 @@ const CoursesPage = () => {
 
   const commonFilter = async () => {
     try {
+      setFliter(false) // to visible remove filter button
       const filters: any = {};
       if (selectedCategory) filters.selectedCategory = selectedCategory;
       if (selectedLevel) filters.selectedLevel = selectedLevel;
@@ -118,20 +152,35 @@ const CoursesPage = () => {
       }
 
       const response = await studentApis.filterData(filters);
-      console.log('res: ', response.data.data.courses)
+      console.log('res filtered: ', response.data.result.courses)
       if (response && response?.data) {
-        setCourses(response?.data?.data?.courses);
-        setCurrentPage(response?.data?.data?.currentPage);
-        setTotalPages(response?.data?.data?.totalPages);
-        setTotalCourses(response?.data?.data?.totalCourses);
+        setCourses(response?.data?.result?.courses);
+        setCurrentPage(response?.data?.result?.currentPage);
+        setTotalPages(response?.data?.result?.totalPages);
+        setTotalCourses(response?.data?.result?.totalCourses);
       } else {
         setCourses([]); // Set empty array if courses are not found
       }
     } catch (error: any) {
       console.log('errorrr: ', error);
+      if (
+        error &&
+        error?.response?.status === 403 &&
+        error?.response?.data?.message === 'Student Blocked'
+      ) {
+        toast.warn(error?.response?.data?.message);
+        Cookies.remove('accessToken');
+        localStorage.clear();
+        setTimeout(() => {
+          window.location.replace('/pages/student/login');
+        }, 3000);
+        return;
+      }
       if (error && error?.response?.status === 404) {
         toast.warn('Course Not Found')
         setCourses([]);
+        setCurrentPage(1)
+        setTotalPages(1)
       }
     }
   };
@@ -195,7 +244,17 @@ const CoursesPage = () => {
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-4">
+          {
+            filter ? <button 
+            className='px-4 py-2 bg-[#22177A] text-white rounded-[13px]'
+            onClick={commonFilter}
+            > Apply Filter</button> 
+            : <button
+            className='px-4 py-2 border border-[#22177A] bg-[#ffffff] text-gray-600 rounded-[13px] hover:bg-gray-200 transition-colors'
+            onClick={removeFilters}
+            > Remove Filter</button>
+          }
+          {/* <div className="flex gap-4">
             <button
               className="px-4 py-2 bg-[#6E40FF] text-white rounded-[0px]"
               onClick={commonFilter}
@@ -208,7 +267,7 @@ const CoursesPage = () => {
             >
               Remove
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Courses Section */}
@@ -222,13 +281,13 @@ const CoursesPage = () => {
             <div className="flex items-center gap-2">
               <input
                 type="text"
-                className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#6E40FF] focus:border-transparent"
+                className="border border-gray-400 rounded-[13px] px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#191919] focus:border-transparent"
                 placeholder="Search courses..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               <button
-                className="px-4 py-2 bg-[#6E40FF] text-white rounded-[0px]"
+                className="px-4 py-2 border border-[#22177A] bg-[#ffffff] text-gray-600 rounded-[13px] hover:bg-gray-100 transition-colors"
                 onClick={commonFilter}
               >
                 Search
@@ -292,7 +351,10 @@ const CoursesPage = () => {
         </div>
       </div>
 
-      <footer><MentorFooter /></footer>
+      <footer>
+        {/* <MentorFooter /> */}
+        <Footer />
+        </footer>
     </div>
   );
 };
