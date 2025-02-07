@@ -35,7 +35,8 @@ const StudentsProfile = () => {
     { field: "Purchased Courses", link: "/pages/student/purchased-course" },
     { field: "Certificates", link: "/pages/student/get-certificates" },
     { field: "Chats", link: "/pages/student/chat" },
-    { field: "Wallet", link: "#" },
+    { field: "Badge", link: "/pages/student/badge" },
+    // { field: "Wallet", link: "#" },
   ];
   
   const router = useRouter();

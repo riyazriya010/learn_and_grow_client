@@ -24,7 +24,7 @@ const CoursesPage = () => {
 
   const router = useRouter();
 
-  const categories = ['Programming', 'Machine Learning', 'Data Science', 'UI/UX'];
+  const categories = ['Programming', 'Machine Learning', 'Data Science', 'Cyber Security'];
   const levels = ['Beginner', 'Intermediate', 'Advanced'];
 
   // Fetch courses with pagination and filters

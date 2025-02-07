@@ -76,7 +76,9 @@ export async function middleware(req: NextRequest) {
         url.pathname.startsWith('/pages/student/quizz') ||
         url.pathname.startsWith('/pages/student/summary-page') ||
         url.pathname.startsWith('/pages/student/certificate-view') ||
-        url.pathname.startsWith('/pages/student/chat')
+        url.pathname.startsWith('/pages/student/chat') ||
+        url.pathname.startsWith('/pages/student/badge') ||
+        url.pathname.startsWith('/pages/student/notifications')
     ) {
         if (role !== 'student') {
             url.pathname = '/pages/student/login';
@@ -101,7 +103,9 @@ export async function middleware(req: NextRequest) {
         url.pathname.startsWith('/pages/mentor/edit-quizz') ||
         url.pathname.startsWith('/pages/mentor/quizz') ||
         url.pathname.startsWith('/pages/mentor/wallet') || 
-        url.pathname.startsWith('/pages/mentor/chat')
+        url.pathname.startsWith('/pages/mentor/chat') ||
+        url.pathname.startsWith('/pages/mentor/notifications') ||
+        url.pathname.startsWith('/pages/mentor/sales-report')
     ) {
         if (role !== 'mentor') {
             url.pathname = '/pages/mentor/login';
@@ -117,7 +121,12 @@ export async function middleware(req: NextRequest) {
         url.pathname.startsWith('/pages/mentorManagement') ||
         url.pathname.startsWith('/pages/category-management') ||
         url.pathname.startsWith('/pages/course-management') ||
-        url.pathname.startsWith('/pages/wallet')
+        url.pathname.startsWith('/pages/wallet') ||
+        url.pathname.startsWith('/pages/add-badges') ||
+        url.pathname.startsWith('/pages/badge-management') ||
+        url.pathname.startsWith('/pages/course-details') ||
+        url.pathname.startsWith('/pages/approve-course') || 
+        url.pathname.startsWith('/pages/sales-report')
     ) {
         if (role !== 'admin') {
             url.pathname = '/pages/login';

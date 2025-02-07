@@ -137,6 +137,15 @@ const CourseManagement = () => {
 
         {/* Content Section */}
         <main className="flex-grow px-8 py-4">
+
+        <div className="flex justify-between items-center mb-4">
+            <Link href="/pages/approve-course">
+              <button className="bg-[#433D8B] text-white px-6 py-2 rounded-lg hover:opacity-90">
+                Approve Course
+              </button>
+            </Link>
+          </div>
+
           {course && course.length === 0 ? (
             <div className="flex flex-col justify-center items-center h-96 bg-gray-100 rounded-lg shadow-lg p-6">
               <Image

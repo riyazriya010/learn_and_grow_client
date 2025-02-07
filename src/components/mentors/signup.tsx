@@ -40,10 +40,10 @@ const MentorSignup = () => {
                 reset()
                 dispatch(
                     setUser({
-                        userId: response.data.user._id,
-                        username: response.data.user.username,
-                        email: response.data.user.email,
-                        role: response.data.user.role
+                        userId: response.data.result._id,
+                        username: response.data.result.username,
+                        email: response.data.result.email,
+                        role: response.data.result.role
                     }),
                 )
                 setTimeout(() => {
@@ -82,10 +82,10 @@ const MentorSignup = () => {
                     toast.success("You were Logged");
                     dispatch(
                         setUser({
-                            userId: response.data.user._id,
-                            username: response.data.user.username,
-                            email: response.data.user.email,
-                            role: response.data.user.role
+                            userId: response.data.result._id,
+                            username: response.data.result.username,
+                            email: response.data.result.email,
+                            role: response.data.result.role
                         }),
                     )
                     setTimeout(() => {

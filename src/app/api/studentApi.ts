@@ -326,6 +326,18 @@ export const studentApis = {
         }catch(error: any){
             throw error
         }
+    },
+
+
+    getBadges: async () => {
+        try{
+            const response = await axios.get(`${USER_SERVICE_URL}/get/badges`,{
+                withCredentials: true
+            })
+            return response
+        }catch(error: any){
+            throw error
+        }
     }
 
 

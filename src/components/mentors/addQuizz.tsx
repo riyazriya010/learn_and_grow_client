@@ -135,6 +135,10 @@ const AddQuiz = () => {
                                             value: 10,
                                             message: "Question must be at least 10 characters",
                                         },
+                                        pattern: {
+                                            value: /^[A-Za-z]+(?:\s[A-Za-z]+)*$/,
+                                            message: "Question cannot have leading/trailing spaces or multiple spaces between words",
+                                        },
                                     })}
                                     className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#433D8B] focus:border-[#433D8B] text-sm ${errors.question ? "border-red-500" : "border-gray-300"}`}
                                     placeholder="Enter the quiz question"
@@ -154,6 +158,14 @@ const AddQuiz = () => {
                                     id="option1"
                                     {...register("option1", {
                                         required: "Option 1 is required",
+                                        minLength: {
+                                            value: 5,
+                                            message: "Option must be at least 5 characters",
+                                        },
+                                        pattern: {
+                                            value: /^[A-Za-z]+(?:\s[A-Za-z]+)*$/,
+                                            message: "Option cannot have leading/trailing spaces or multiple spaces between words",
+                                        },
                                     })}
                                     className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#433D8B] focus:border-[#433D8B] text-sm ${errors.option1 ? "border-red-500" : "border-gray-300"}`}
                                     placeholder="Enter first option"
@@ -173,6 +185,14 @@ const AddQuiz = () => {
                                     id="option2"
                                     {...register("option2", {
                                         required: "Option 2 is required",
+                                        minLength: {
+                                            value: 5,
+                                            message: "Option must be at least 5 characters",
+                                        },
+                                        pattern: {
+                                            value: /^[A-Za-z]+(?:\s[A-Za-z]+)*$/,
+                                            message: "Option cannot have leading/trailing spaces or multiple spaces between words",
+                                        },
                                     })}
                                     className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#433D8B] focus:border-[#433D8B] text-sm ${errors.option2 ? "border-red-500" : "border-gray-300"}`}
                                     placeholder="Enter second option"

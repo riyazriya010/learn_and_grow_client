@@ -119,6 +119,10 @@ const EditCategory = () => {
                                             value: 5,
                                             message: "Category name must be at least 5 characters",
                                         },
+                                        pattern: {
+                                            value: /^[A-Za-z]+(?:\s[A-Za-z]+)*$/,
+                                            message: "Category name cannot have leading/trailing spaces or multiple spaces between words",
+                                        },
                                     })}
                                     onChange={(e) => setCategoryName(e.target.value)}
                                     className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#433D8B] focus:border-[#433D8B] text-sm ${errors.categoryName ? "border-red-500" : "border-gray-300"

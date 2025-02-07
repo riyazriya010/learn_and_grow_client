@@ -12,16 +12,19 @@ import Pagination from "../re-usable/pagination";
 import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from "js-cookie";
+import AdminHeader from "./header";
+import AdminFooter from "./footer";
+import axios from "axios";
+import { ADMIN_SERVICE_URL } from "@/utils/constant";
 
 interface CourseData {
   _id?: string;
-  courseDetails: { [key: string]: any };
-  completedChapters: [{ [key: string]: any }];
-  isCourseCompleted: boolean;
-  purchasedAt: string;
+  courseName: string;
+  level: string;
+  price: string
 }
-const PurchasedCourse = () => {
-  const headers = ['Course Name', 'Level']
+const NotApprovedCourse = () => {
+  const headers = ['Course Name', 'Level', 'Price']
   const [course, setCourse] = useState<CourseData[] | []>([])
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,8 +35,11 @@ const PurchasedCourse = () => {
     setIsLoading(false)
     const fetchData = async (page: number) => {
       try {
-        const filters = { page, limit: 4 };
-        const response = await studentApis.getPurchasedCourses(filters)
+        const filters = { page, limit: 3 };
+        const response = await axios.get(`${ADMIN_SERVICE_URL}/get/non-approved/courses`,{
+            params: filters,
+            withCredentials: true
+        })
         if (response) {
           console.log('ress ', response)
           const data = response.data?.result?.courses;
@@ -42,25 +48,12 @@ const PurchasedCourse = () => {
           setTotalPages(response?.data?.result.totalPages);
         }
       } catch (error: any) {
-        if (
-          error &&
-          error?.response?.status === 403 &&
-          error?.response?.data?.message === 'Student Blocked'
-        ) {
-          toast.warn(error?.response?.data?.message);
-          Cookies.remove('accessToken');
-          localStorage.clear();
-          setTimeout(() => {
-            window.location.replace('/pages/student/login');
-          }, 3000);
-          return;
-        }
         if (error && error.response?.status === 401) {
           toast.warn(error.response.data.message);
           Cookies.remove('accessToken');
           localStorage.clear();
           setTimeout(() => {
-            window.location.replace('/pages/student/login');
+            window.location.replace('/pages/login');
           }, 3000);
           return;
         }
@@ -72,7 +65,7 @@ const PurchasedCourse = () => {
   }, [currentPage])
 
   const viewCourse = (id: string) => {
-    router.push(`/pages/student/course-play?buyedId=${id}`)
+    router.push(`/pages/course-details?courseId=${id}`)
   }
 
   if (isLoading) return <LoadingModal isOpen={isLoading} message="Please wait..." />
@@ -80,7 +73,7 @@ const PurchasedCourse = () => {
   return (
     <>
       <div className="flex flex-col min-h-screen">
-        <Navbar />
+        <AdminHeader />
 
         <ToastContainer
           autoClose={2000}
@@ -103,16 +96,17 @@ const PurchasedCourse = () => {
                 height={128}
                 className="mb-4"
               />
-              <h2 className="text-2xl font-semibold text-gray-800">No Courses Buyed Yet</h2>
-              <p className="text-gray-600 mt-2">It looks like you haven't buyed any courses.</p>
+              <h2 className="text-2xl font-semibold text-gray-800">No non-approved course not found yet</h2>
+              {/* <p className="text-gray-600 mt-2">It looks like you haven't buyed any courses.</p> */}
             </div>
           ) : (
             <ReusableTable
               headers={headers}
               data={course.map((c) => ({
                 "_id": c._id,
-                "Course Name": c.courseDetails.courseName,
-                'Level': c.courseDetails.level
+                "Course Name": c.courseName,
+                'Level': c.level,
+                'Price': c.price
               }))}
               handlers={(row) => [
 
@@ -122,7 +116,7 @@ const PurchasedCourse = () => {
                 },
               ]}
               buttonStyles="bg-[#433D8B] text-white text-sm font-medium rounded hover:opacity-90"
-              tableWidth="max-w-[650px]"
+              tableWidth="max-w-[750px]"
             />
           )}
         </main>
@@ -141,10 +135,10 @@ const PurchasedCourse = () => {
           </div>
         </div>
 
-        <MentorFooter />
+        <AdminFooter />
       </div>
     </>
   )
 }
 
-export default PurchasedCourse
+export default NotApprovedCourse

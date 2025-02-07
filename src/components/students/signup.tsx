@@ -41,24 +41,26 @@ const Signup = () => {
     const onSubmit: SubmitHandler<Credentials> = async (data) => {
         try {
             let response = await studentApis.signup(data)
-
+            console.log('signup response: ', response)
             if (response && response.data.success) {
                 toast.success(response?.data?.message)
                 reset()
                 dispatch(
                     setUser({
-                        userId: response.data.user._id,
-                        username: response.data.user.username,
-                        email: response.data.user.email,
-                        role: response.data.user.role
+                        userId: response.data.result._id,
+                        username: response.data.result.username,
+                        email: response.data.result.email,
+                        role: response.data.result.role
                     }),
                 )
                 setTimeout(() => {
                     // router.push('/pages/student/verify-alert') 
+                    console.log('verify alert redirect')
                     window.location.replace('/pages/student/verify-alert');
                 }, 1000)
             }
         } catch (error: any) {
+            console.log('signup error: ', error)
             if (error.response?.status === 409) {
                 toast.error(error.response.data.message)
                 reset()
@@ -88,10 +90,10 @@ const Signup = () => {
                     toast.success("You were Logged");
                     dispatch(
                         setUser({
-                            userId: response.data.user._id,
-                            username: response.data.user.username,
-                            email: response.data.user.email,
-                            role: response.data.user.role
+                            userId: response.data.result._id,
+                            username: response.data.result.username,
+                            email: response.data.result.email,
+                            role: response.data.result.role
                         }),
                     )
                     setTimeout(() => {

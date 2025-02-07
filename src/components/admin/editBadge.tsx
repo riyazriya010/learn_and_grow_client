@@ -121,6 +121,10 @@ const AdminEditBadges = () => {
                                             value: 5,
                                             message: "Badge Name must be at least 5 characters",
                                         },
+                                        pattern: {
+                                            value: /^[A-Za-z][A-Za-z0-9]*(?:\s[A-Za-z][A-Za-z0-9]*)*$/,
+                                            message: "Badge Name must start with a letter and contain only single spaces",
+                                        },
                                     })}
                                     className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#433D8B] focus:border-[#433D8B] text-sm ${errors.badgeName ? "border-red-500" : "border-gray-300"}`}
                                     placeholder="Enter the badge name"
@@ -140,6 +144,14 @@ const AdminEditBadges = () => {
                                     id="description"
                                     {...register("description", {
                                         required: "Description is required",
+                                        minLength: {
+                                            value: 10,
+                                            message: "Description must be at least 10 characters",
+                                        },
+                                        pattern: {
+                                            value: /^[A-Za-z][A-Za-z0-9]*(?:\s[A-Za-z][A-Za-z0-9]*)*$/,
+                                            message: "Description must start with a letter and contain only single spaces",
+                                        },
                                     })}
                                     className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#433D8B] focus:border-[#433D8B] text-sm ${errors.description ? "border-red-500" : "border-gray-300"}`}
                                     placeholder="Enter the description"

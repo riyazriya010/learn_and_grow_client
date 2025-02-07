@@ -1,8 +1,9 @@
-import MentorAddBadges from "@/components/admin/addBadges"
+import AdminAddBadges from "@/components/admin/addBadges"
 
 const AdminAddBadgesPage = () => {
     return(
-        <MentorAddBadges />
+        // <MentorAddBadges />
+        <AdminAddBadges />
     )
 }
 
