@@ -1,10 +1,7 @@
 "use client"
 import Cookies from 'js-cookie'
-import { useRouter } from 'next/navigation';
 
 const AdminHeader = () => {
-
-    const router = useRouter()
 
     const handleLogout = () => {
         localStorage.clear();

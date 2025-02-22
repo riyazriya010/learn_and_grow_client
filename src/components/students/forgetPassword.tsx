@@ -1,11 +1,10 @@
 "use client"
 
-import React, { useState } from "react";
+import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Footer from "../loggedoutNav/footer";
-import LoggedOutHeader from "../loggedoutNav/header";
 import { studentApis } from "@/app/api/studentApi";
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/navigation";
 import Navbar from "../navbar";
@@ -22,7 +21,7 @@ const StudentForgetPassword = () => {
     const router = useRouter()
 
     // Form Submit Functionality
-    const { register, handleSubmit, reset, getValues, formState: { errors }, } = useForm<StudentForgetCredentials>()
+    const { register, handleSubmit, getValues, formState: { errors }, } = useForm<StudentForgetCredentials>()
     const onSubmit: SubmitHandler<StudentForgetCredentials> = async (data) => {
         try {
             const response = await studentApis.forgetPass(data)
@@ -36,7 +35,7 @@ const StudentForgetPassword = () => {
                 }
             }
         } catch (error: any) {
-            if(error && error.response?.status === 401){
+            if (error && error.response?.status === 401) {
                 toast.error(error.response.data.message)
                 return
             }
@@ -107,25 +106,25 @@ const StudentForgetPassword = () => {
                             <p className="text-red-600">{errors.password?.message}</p>
                         </div>
 
-                         {/* Confirm Password Input */}
-                         <div className="mb-4">
-                                <label htmlFor="confirmPassword" className="block text-gray-500 font-semibold mb-2">
-                                    Confirm your password:
-                                </label>
-                                <input
-                                    type="password"
-                                    id="confirmPassword"
-                                    className="w-full p-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
-                                    placeholder="Confirm your password"
-                                    {...register("confirmPassword", {
-                                        validate: (value) => {
-                                            const { password } = getValues();
-                                            return password === value || "Passwords should match!";
-                                        },
-                                    })}
-                                />
-                                <p className="text-red-600">{errors.confirmPassword?.message}</p>
-                            </div>
+                        {/* Confirm Password Input */}
+                        <div className="mb-4">
+                            <label htmlFor="confirmPassword" className="block text-gray-500 font-semibold mb-2">
+                                Confirm your password:
+                            </label>
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                className="w-full p-3 border border-gray-300 bg-white rounded-md focus:outline-none focus:border-[#433D8B]"
+                                placeholder="Confirm your password"
+                                {...register("confirmPassword", {
+                                    validate: (value) => {
+                                        const { password } = getValues();
+                                        return password === value || "Passwords should match!";
+                                    },
+                                })}
+                            />
+                            <p className="text-red-600">{errors.confirmPassword?.message}</p>
+                        </div>
 
                         <button
                             type="submit"

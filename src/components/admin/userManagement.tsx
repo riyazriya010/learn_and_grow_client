@@ -10,7 +10,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import Pagination from "../re-usable/pagination";
 import Image from "next/image";
 import ReusableTable from "../re-usable/table";
-import Link from "next/link";
 import Cookies from "js-cookie";
 
 interface User {

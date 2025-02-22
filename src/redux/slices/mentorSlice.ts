@@ -25,10 +25,10 @@ const mentorSlice = createSlice({
             console.log('Previous State:', state); // Log previous state
             console.log('Action Payload:', action.payload); // Log action payload
             const { userId, username, email, role } = action.payload;
-            state.userId = userId,
-                state.username = username,
-                state.email = email,
-                state.role = role
+            state.userId = userId;
+                state.username = username;
+                state.email = email;
+                state.role = role;
                 
             console.log('Updated State:', state); // Log updated state
             

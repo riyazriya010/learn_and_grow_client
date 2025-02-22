@@ -1,10 +1,9 @@
 // import { AddCourseFormInputs } from "@/components/mentors/addCourse";
 import { IQuizForm } from "@/components/mentors/addQuizz";
 import { MentorLoginCredentials } from "@/components/mentors/login";
-import { MentorProfile } from "@/components/mentors/profile";
 import { MentorSignUpCredential } from "@/components/mentors/signup";
 import { MENTOR_SERVICE_URL } from "@/utils/constant";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { User } from "firebase/auth"
 
 export const mentorApis = {
@@ -20,11 +19,13 @@ export const mentorApis = {
                 withCredentials: true
             })
             return response
-        } catch (error: any) {
-            if (error.response.status === 401) {
-                throw error
-            } else if (error.response.status === 403) {
-                throw error
+        } catch (error: unknown) {
+            if (error instanceof AxiosError) {
+                if (error?.response?.status === 401) {
+                    throw error
+                } else if (error?.response?.status === 403) {
+                    throw error
+                }
             }
             throw error
         }
@@ -40,15 +41,17 @@ export const mentorApis = {
                 withCredentials: true
             })
             return response
-        } catch (error: any) {
-            if (error.response.status === 409) {
-                throw error
+        } catch (error: unknown) {
+            if (error instanceof AxiosError) {
+                if (error?.response?.status === 409) {
+                    throw error
+                }
             }
             throw error
         }
     },
 
-    forgetPass: async (data: any) => {
+    forgetPass: async (data: { email: string, password: string, confirmPassword: string }) => {
         try {
             const response = await axios.patch(`${MENTOR_SERVICE_URL}/mentor/forget-password`, data, {
                 headers: {
@@ -57,9 +60,11 @@ export const mentorApis = {
                 withCredentials: true,
             })
             return response
-        } catch (error: any) {
-            if (error && error.response.status === 401) {
-                throw error
+        } catch (error: unknown) {
+            if (error instanceof AxiosError) {
+                if (error && error?.response?.status === 401) {
+                    throw error
+                }
             }
             throw error
         }
@@ -75,9 +80,11 @@ export const mentorApis = {
             });
             return response
 
-        } catch (error: any) {
-            if (error && error.response.status === 403) {
-                throw error
+        } catch (error: unknown) {
+            if (error instanceof AxiosError) {
+                if (error && error?.response?.status === 403) {
+                    throw error
+                }
             }
             throw error
         }
@@ -93,9 +100,11 @@ export const mentorApis = {
             });
             return response
 
-        } catch (error: any) {
-            if (error && error.response?.status === 409) {
-                throw error
+        } catch (error: unknown) {
+            if (error instanceof AxiosError) {
+                if (error && error?.response?.status === 409) {
+                    throw error
+                }
             }
             throw error
         }
@@ -107,9 +116,11 @@ export const mentorApis = {
                 withCredentials: true
             })
             return response
-        } catch (error: any) {
-            if (error && error.response?.status === 403) {
-                throw error
+        } catch (error: unknown) {
+            if (error instanceof AxiosError) {
+                if (error && error?.response?.status === 403) {
+                    throw error
+                }
             }
             throw error
         }
@@ -121,12 +132,14 @@ export const mentorApis = {
                 withCredentials: true
             })
             return response
-        } catch (error: any) {
-            if (error && error.response?.status === 403) {
-                throw error
-            }
-            if (error && error.response?.status === 401) {
-                throw error
+        } catch (error: unknown) {
+            if (error instanceof AxiosError) {
+                if (error && error.response?.status === 403) {
+                    throw error
+                }
+                if (error && error.response?.status === 401) {
+                    throw error
+                }
             }
             throw error
         }
@@ -141,13 +154,16 @@ export const mentorApis = {
                 withCredentials: true
             })
             return response
-        } catch (error: any) {
-            if (error && error.response?.status === 403) {
-                throw error
+        } catch (error: unknown) {
+            if (error instanceof AxiosError) {
+                if (error && error.response?.status === 403) {
+                    throw error
+                }
+                if (error && error.response?.status === 401) {
+                    throw error
+                }
             }
-            if (error && error.response?.status === 401) {
-                throw error
-            }
+
             throw error
         }
     },
@@ -170,37 +186,37 @@ export const mentorApis = {
 
 
     unPublish: async (courseId: string) => {
-        try{
-            const response = await axios.patch(`${MENTOR_SERVICE_URL}/unPublish/course?courseId=${courseId}`,{},{
+        try {
+            const response = await axios.patch(`${MENTOR_SERVICE_URL}/unPublish/course?courseId=${courseId}`, {}, {
                 withCredentials: true
             })
             return response
-        }catch(error: any){
+        } catch (error: any) {
             throw error
         }
     },
 
 
     publish: async (courseId: string) => {
-        try{
-            const response = await axios.patch(`${MENTOR_SERVICE_URL}/publish/course?courseId=${courseId}`,{},{
+        try {
+            const response = await axios.patch(`${MENTOR_SERVICE_URL}/publish/course?courseId=${courseId}`, {}, {
                 withCredentials: true
             })
             return response
-        }catch(error: any){
+        } catch (error: any) {
             throw error
         }
     },
 
 
     filterCourse: async (filter: { searchTerm: string, page: number, limit: number }) => {
-        try{
+        try {
             const response = await axios.get(`${MENTOR_SERVICE_URL}/filter/course`, {
                 params: filter,
                 withCredentials: true
             })
             return response
-        }catch(error: any){
+        } catch (error: any) {
             throw error
         }
     },
@@ -224,7 +240,7 @@ export const mentorApis = {
 
 
     editChapter: async (data: FormData, chapterId: string) => {
-        try{
+        try {
             const response = await axios.patch(`${MENTOR_SERVICE_URL}/edit/chapter?chapterId=${chapterId}`, data, {
                 headers: {
                     'Content-Type': 'multipart/form-data', // Axios auto-handles this but explicit is good
@@ -232,7 +248,7 @@ export const mentorApis = {
                 withCredentials: true, // Include credentials if needed
             })
             return response
-        }catch(error: any) {
+        } catch (error: any) {
             throw error
         }
     },
@@ -276,18 +292,18 @@ export const mentorApis = {
 
 
     getAllChapters: async (courseId: string) => {
-        try{
-            const response = await axios.get(`${MENTOR_SERVICE_URL}/get/all-chapters?courseId=${courseId}`,{
+        try {
+            const response = await axios.get(`${MENTOR_SERVICE_URL}/get/all-chapters?courseId=${courseId}`, {
                 withCredentials: true
             })
             return response
-        }catch(error: any){
+        } catch (error: any) {
             throw error
         }
     },
 
     addQuizz: async (data: IQuizForm, courseId: string) => {
-        try{
+        try {
             const response = await axios.post(`${MENTOR_SERVICE_URL}/add/quizz?courseId=${courseId}`, data, {
                 headers: {
                     "Content-Type": "application/json"
@@ -295,37 +311,37 @@ export const mentorApis = {
                 withCredentials: true
             })
             return response
-        }catch(error: any){
+        } catch (error: any) {
             throw error
         }
     },
 
     getAllQuizz: async (courseId: string) => {
-        try{
-            const response = await axios.get(`${MENTOR_SERVICE_URL}/get/all-quizz?courseId=${courseId}`,{
+        try {
+            const response = await axios.get(`${MENTOR_SERVICE_URL}/get/all-quizz?courseId=${courseId}`, {
                 withCredentials: true
             })
             return response
-        }catch(error: any){
+        } catch (error: any) {
             throw error
         }
     },
 
 
     deleteQuizz: async (quizId: string, courseId: string) => {
-        try{
-            const response = await axios.delete(`${MENTOR_SERVICE_URL}/delete/quizz?courseId=${courseId}&quizId=${quizId}`,{
+        try {
+            const response = await axios.delete(`${MENTOR_SERVICE_URL}/delete/quizz?courseId=${courseId}&quizId=${quizId}`, {
                 withCredentials: true
             })
             return response
-        }catch(error: any){
+        } catch (error: any) {
             throw error
         }
     },
 
 
     editCourseWithFiles: async (formData: any, courseId: string) => {
-        try{
+        try {
             const response = await axios.patch(`${MENTOR_SERVICE_URL}/edit/course?courseId=${courseId}`, formData, {
                 headers: {
                     "Content-Type": 'multipart/form-data'
@@ -333,23 +349,68 @@ export const mentorApis = {
                 withCredentials: true
             })
             return response
-        }catch(error: any){
+        } catch (error: any) {
             throw error
         }
     },
 
 
     getWallet: async (filters: { page: number, limit: number }) => {
-        try{
-            const response = await axios.get(`${MENTOR_SERVICE_URL}/get/wallet`,{
+        try {
+            const response = await axios.get(`${MENTOR_SERVICE_URL}/get/wallet`, {
                 params: filters,
                 withCredentials: true
             })
             return response
-        }catch(error: any){
+        } catch (error: any) {
             throw error
         }
     },
+
+
+
+
+
+
+
+
+
+    //////////////////////////////////// Auth Apis /////////////////////////////////
+
+
+
+
+    /////////////////////////////////// Course Apis ////////////////////////////////
+
+
+
+
+    ///////////////////////////////// Chapter Apis ///////////////////////////////
+
+
+
+
+
+    //////////////////////////////// Quizz Apis //////////////////////////////////////
+
+
+
+
+
+    //////////////////////////////// Chat Apis //////////////////////////////
+
+
+
+
+
+    /////////////////////////////// Notification Apis /////////////////////////////////////
+
+
+
+
+
+    /////////////////////////////// Sales Data Apis /////////////////////////////////////
+
 
 
 }

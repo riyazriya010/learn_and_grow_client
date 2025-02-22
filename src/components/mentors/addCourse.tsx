@@ -4,12 +4,14 @@ import { mentorApis } from "@/app/api/mentorApi";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Navbar from "../navbar";
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/navigation";
 import LoadingModal from "../re-usable/loadingModal";
 import Cookies from "js-cookie";
 import socket from "@/utils/socket";
+import axios from "axios";
+import { MENTOR_SERVICE_URL } from "@/utils/constant";
 
 // interface Chapters {
 //   title: string;
@@ -29,18 +31,18 @@ interface FormValues {
 }
 
 interface CategoryData {
+  _id: string;
   categoryName: string;
 }
 
 const AddCourse = () => {
   const [categories, setCategories] = useState<CategoryData[] | null>(null);
+  const [catId, setCatId] = useState<string | ''>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
     reset,
     formState: { errors },
   } = useForm<FormValues>({});
@@ -51,6 +53,7 @@ const AddCourse = () => {
     const fetchCat = async () => {
       try {
         const categoryResponse = await mentorApis.getCategories();
+        console.log('cat : ', categoryResponse)
         setCategories(categoryResponse?.data?.result || []);
       } catch (error: any) {
         if (
@@ -82,83 +85,167 @@ const AddCourse = () => {
 
 
 
+  // const onSubmit = async (data: any) => {
+  //   setIsLoading(true);
+  //   try {
+  //     console.log('data: ', data)
+  //     const formData = new FormData()
+
+  //     if (data.demoVideo && data.demoVideo[0]) {
+  //       formData.append("demoVideo", data.demoVideo[0])
+  //     }
+
+  //     if (data.thumbnail && data.thumbnail[0]) {
+  //       formData.append("thumbnail", data.thumbnail[0])
+  //     }
+
+  //     // Append other fields
+  //     for (const key of Object.keys(data)) {
+  //       if (key !== "demoVideo" && key !== "thumbnail") {
+  //         formData.append(key, data[key]);
+  //       }
+  //     }
+
+  //     // Log FormData entries
+  //     for (const [key, value] of formData.entries()) {
+  //       console.log(`${key}:`, value);
+  //     }
+
+  //     // Make the API call
+  //     const response = await mentorApis.addCourse(formData);
+  //     console.log("Server Response:", response);
+  //     if (response) {
+  //       const courseName = response?.result?.courseName
+  //       socket.emit('courseUploaded', courseName)
+  //       reset()
+  //       toast.success('Course Uploaded Successfully')
+  //       setTimeout(() => {
+  //         router.push('/pages/mentor/courses')
+  //       }, 2000)
+  //     }
+
+  //   } catch (error: any) {
+  //     if (error && error.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
+  //       console.log('401 log', error.response.data.message)
+  //       toast.warn(error.response.data.message);
+  //       setTimeout(() => {
+  //         router.push('/pages/mentor/profile')
+  //       }, 2000)
+  //       return;
+  //     }
+  //     if (
+  //       error &&
+  //       error?.response?.status === 403 &&
+  //       error?.response?.data?.message === 'Mentor Blocked'
+  //     ) {
+  //       toast.warn(error?.response?.data?.message);
+  //       Cookies.remove('accessToken');
+  //       localStorage.clear();
+  //       setTimeout(() => {
+  //         window.location.replace('/pages/mentor/login');
+  //       }, 3000);
+  //       return;
+  //     }
+  //     if (error && error.response?.status === 401) {
+  //       toast.warn(error.response.data.message);
+  //       Cookies.remove('accessToken');
+  //       localStorage.clear();
+  //       setTimeout(() => {
+  //         window.location.replace('/pages/mentor/login');
+  //       }, 3000);
+  //       return;
+  //     }
+  //     if (error && error?.status === 403) {
+  //       toast.warn('Course Name Already Exist')
+  //     }
+  //   } finally {
+  //     setIsLoading(false)
+  //   }
+  // }
+
+
   const onSubmit = async (data: any) => {
     setIsLoading(true);
+    data.categoryId = catId
+    console.log('catId: ', catId)
+    console.log('data: ', data)
     try {
-      console.log('data: ', data)
-      const formData = new FormData()
+      console.log("data: ", data);
 
+
+
+      // Step 1: Get Pre-signed URLs from backend
+      const fileRequests: any = [];
       if (data.demoVideo && data.demoVideo[0]) {
-        formData.append("demoVideo", data.demoVideo[0])
+        fileRequests.push({
+          fileName: data.demoVideo[0].name,
+          fileType: data.demoVideo[0].type,
+        });
       }
-
       if (data.thumbnail && data.thumbnail[0]) {
-        formData.append("thumbnail", data.thumbnail[0])
+        fileRequests.push({
+          fileName: data.thumbnail[0].name,
+          fileType: data.thumbnail[0].type,
+        });
       }
 
-      // Append other fields
-      for (const key of Object.keys(data)) {
-        if (key !== "demoVideo" && key !== "thumbnail") {
-          formData.append(key, data[key]);
+      const presignedResponse = await axios.post(
+        `${MENTOR_SERVICE_URL}/mentor/generate-presigned-url`,
+        { files: fileRequests },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
         }
+      );
+
+      console.log("Pre-signed URLs response:", presignedResponse);
+      const urls = presignedResponse.data.urls;
+
+      // Step 2: Upload files to S3 using their respective URLs
+      let demoVideoUrl = "";
+      let thumbnailUrl = "";
+
+      for (let i = 0; i < urls.length; i++) {
+        const fileToUpload = i === 0 ? data.demoVideo[0] : data.thumbnail[0];
+
+        const s3Upload = await axios.put(urls[i].presignedUrl, fileToUpload, {
+          headers: { "Content-Type": fileToUpload.type },
+        });
+        console.log('s3Upload: ', s3Upload)
+
+        if (i === 0) demoVideoUrl = `https://learnandgrow.s3.amazonaws.com/${urls[i].fileKey}`;
+        if (i === 1) thumbnailUrl = `https://learnandgrow.s3.amazonaws.com/${urls[i].fileKey}`;
       }
 
-      // Log FormData entries
-      for (const [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
+      // Step 3: Send file URLs and course details to the backend
+      const response = await axios.post(
+        `${MENTOR_SERVICE_URL}/mentor/course-upload`,
+        {
+          ...data,
+          demoVideoUrl,
+          thumbnailUrl,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
 
-      // Make the API call
-      const response = await mentorApis.addCourse(formData);
       console.log("Server Response:", response);
-      if (response) {
-        const courseName = response?.result?.courseName
-        socket.emit('courseUploaded', courseName)
-        reset()
-        toast.success('Course Uploaded Successfully')
-        setTimeout(() => {
-          router.push('/pages/mentor/courses')
-        }, 2000)
-      }
 
+      if (response) {
+        const courseName = response?.data?.courseName;
+        socket.emit("courseUploaded", courseName);
+        reset();
+        toast.success("Course Uploaded Successfully");
+        setTimeout(() => {
+          router.push("/pages/mentor/courses");
+        }, 2000);
+      }
     } catch (error: any) {
-      if (error && error.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
-        console.log('401 log', error.response.data.message)
-        toast.warn(error.response.data.message);
-        setTimeout(() => {
-          router.push('/pages/mentor/profile')
-        }, 2000)
-        return;
-      }
-      if (
-        error &&
-        error?.response?.status === 403 &&
-        error?.response?.data?.message === 'Mentor Blocked'
-      ) {
-        toast.warn(error?.response?.data?.message);
-        Cookies.remove('accessToken');
-        localStorage.clear();
-        setTimeout(() => {
-          window.location.replace('/pages/mentor/login');
-        }, 3000);
-        return;
-      }
-      if (error && error.response?.status === 401) {
-        toast.warn(error.response.data.message);
-        Cookies.remove('accessToken');
-        localStorage.clear();
-        setTimeout(() => {
-          window.location.replace('/pages/mentor/login');
-        }, 3000);
-        return;
-      }
-      if (error && error?.status === 403) {
-        toast.warn('Course Name Already Exist')
-      }
-    } finally {
-      setIsLoading(false)
+      console.error("Error uploading course:", error);
     }
-  }
+  };
 
   return (
     <>
@@ -207,7 +294,7 @@ const AddCourse = () => {
               {/* Course Description */}
               <label className="block font-semibold mb-2">Description</label>
               <input
-                {...register('description', { 
+                {...register('description', {
                   required: 'Description is required',
                   minLength: {
                     value: 10,
@@ -217,7 +304,7 @@ const AddCourse = () => {
                     value: /^[A-Za-z]+(?:\s[A-Za-z]+)*$/,
                     message: "Description cannot have leading/trailing spaces or multiple spaces between words",
                   }
-                 })}
+                })}
                 type="text"
                 className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black"
               />
@@ -230,11 +317,17 @@ const AddCourse = () => {
               <select
                 {...register("category", { required: "Category is required" })}
                 className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black"
+                onChange={(e) => setCatId(e.target.value)}
               >
                 <option value="">Select Category</option>
                 {
                   categories?.map((cat, index) => {
-                    return <option key={index} value={cat?.categoryName}>{cat?.categoryName}</option>
+                    return <option
+                      key={index}
+                      value={cat?.categoryName}
+                    >
+                      {cat?.categoryName}
+                    </option>
                   })
                 }
                 {/* <option value="programming">Programming</option>
@@ -261,13 +354,17 @@ const AddCourse = () => {
               {/* Duration */}
               <label className="block font-semibold mb-2">Duration (Hours)</label>
               <input
-                {...register('duration', { 
+                {...register('duration', {
                   required: 'Duration is required',
                   minLength: {
                     value: 3,
                     message: "Duration must be at least 3 characters",
+                  },
+                  pattern: {
+                    value: /^(\d+(\.\d{1,2})?)\s?hr$/,
+                    message: "Duration must be in the format 'X hr' or 'X.XX hr'"
                   }
-                 })}
+                })}
                 type="text"
                 className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black"
               />
@@ -278,13 +375,17 @@ const AddCourse = () => {
               {/* Price */}
               <label className="block font-semibold mb-2">Price</label>
               <input
-                {...register('price', { 
+                {...register('price', {
                   required: 'Price is required',
                   minLength: {
                     value: 3,
                     message: "Price must be at least 3 characters",
+                  },
+                  pattern: {
+                    value: /^[1-9]\d*$/,  // Ensures only positive whole numbers (no leading/trailing spaces)
+                    message: "Price must be a valid number",
                   }
-                 })}
+                })}
                 type="text"
                 className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black"
               />

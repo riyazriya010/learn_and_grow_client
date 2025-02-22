@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { FaUser, FaSignInAlt } from "react-icons/fa";
 
 interface SideNavProps {
     navLink: { field: string; link: string }[];

@@ -4,11 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Navbar from '../navbar';
-import MentorFooter from '../mentors/footer';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { adminApis } from '@/app/api/adminApis';
+import AdminHeader from './header';
+import AdminFooter from './footer';
 
 export interface BadgeData {
     badgeName: string;
@@ -87,7 +87,7 @@ const AdminEditBadges = () => {
             <div className="flex flex-col min-h-screen bg-white">
                 {/* Header */}
                 <header>
-                    <Navbar />
+                    <AdminHeader/>
                 </header>
 
                 <ToastContainer
@@ -192,7 +192,7 @@ const AdminEditBadges = () => {
                 </div>
 
                 {/* Footer */}
-                <MentorFooter />
+                <AdminFooter />
             </div>
         </>
     );

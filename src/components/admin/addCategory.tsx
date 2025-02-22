@@ -3,16 +3,19 @@
 import { adminApis } from "@/app/api/adminApis";
 import MentorFooter from "../mentors/footer";
 import { useForm } from "react-hook-form";
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AdminHeader from "./header";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 export interface CategoryFormData {
     categoryName: string;
 }
 
 const AddCategory = () => {
+    const router = useRouter()
+
     const {
         register,
         handleSubmit,
@@ -27,6 +30,9 @@ const AddCategory = () => {
                 console.log('res ', response)
                 toast.success('Category Added Successfully')
                 reset()
+                setTimeout(() => {
+                    router.push('/pages/category-management')
+                }, 2000)
             }
         }catch(error: any){
             if (error && error.response?.status === 401) {

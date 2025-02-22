@@ -12,7 +12,7 @@ import AdminHeader from "./header";
 import Pagination from "../re-usable/pagination";
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface CategoryData {
@@ -153,7 +153,7 @@ const CategoryManagement = () => {
               />
               <h2 className="text-2xl font-semibold text-gray-800">No Courses Uploaded Yet</h2>
               <p className="text-gray-600 mt-2">
-                It looks like you haven't added any courses. Start by clicking the button above!
+                It looks like you haven&apos;t added any courses. Start by clicking the button above
               </p>
             </div>
           ) : (

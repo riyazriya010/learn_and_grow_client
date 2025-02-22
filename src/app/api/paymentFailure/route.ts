@@ -1,8 +1,6 @@
 import { redirect } from "next/navigation";
 
 export async function POST(req: any) {
-  
-  const contentType = req.headers.get("content-type") || "";
 
   const formData = await req.formData();
 

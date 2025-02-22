@@ -1,11 +1,9 @@
 "use client"
 
-import React from "react"
+import React, { useCallback } from "react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import Footer from "../loggedoutNav/footer"
-import LoggedOutHeader from "../loggedoutNav/header";
-import { useRouter } from "next/navigation";
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { studentApis } from "@/app/api/studentApi";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
@@ -13,8 +11,6 @@ import { app } from "@/lib/firebase/config";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/slices/userSlice";
 import Navbar from "../navbar";
-import Button from "../re-usable/button";
-import Image from "next/image";
 
 
 export interface Credentials {
@@ -32,15 +28,13 @@ export interface UserDetails {
 }
 
 const Signup = () => {
-
-    const router = useRouter()
     const dispatch = useDispatch()
 
     // Signup Form Functionality
     const { register, handleSubmit, reset, getValues, formState: { errors } } = useForm<Credentials>()
     const onSubmit: SubmitHandler<Credentials> = async (data) => {
         try {
-            let response = await studentApis.signup(data)
+            const response = await studentApis.signup(data)
             console.log('signup response: ', response)
             if (response && response.data.success) {
                 toast.success(response?.data?.message)
@@ -70,10 +64,7 @@ const Signup = () => {
         }
     }
 
-
-
-    // Google signup functionality
-    const handleGoogleSignUp = async () => {
+    const handleGoogleSignUp = useCallback(async () => {
         const auth = getAuth(app)
         const provider = new GoogleAuthProvider()
         provider.setCustomParameters({ prompt: 'select_account' })
@@ -82,10 +73,10 @@ const Signup = () => {
             const result = await signInWithPopup(auth, provider)
             const user = result.user;
 
-            let response = await studentApis.googleSignup(user)
+            const response = await studentApis.googleSignup(user)
 
             if (response) {
-                const googleUser = response.data.googleUser;
+                // const googleUser = response.data.googleUser;
                 if (response.data.success) {
                     toast.success("You were Logged");
                     dispatch(
@@ -111,7 +102,49 @@ const Signup = () => {
             }
             // console.log(error)
         }
-    }
+    }, [dispatch])
+
+
+    // // Google signup functionality
+    // const handleGoogleSignUp = async () => {
+    //     const auth = getAuth(app)
+    //     const provider = new GoogleAuthProvider()
+    //     provider.setCustomParameters({ prompt: 'select_account' })
+
+    //     try {
+    //         const result = await signInWithPopup(auth, provider)
+    //         const user = result.user;
+
+    //         let response = await studentApis.googleSignup(user)
+
+    //         if (response) {
+    //             const googleUser = response.data.googleUser;
+    //             if (response.data.success) {
+    //                 toast.success("You were Logged");
+    //                 dispatch(
+    //                     setUser({
+    //                         userId: response.data.result._id,
+    //                         username: response.data.result.username,
+    //                         email: response.data.result.email,
+    //                         role: response.data.result.role
+    //                     }),
+    //                 )
+    //                 setTimeout(() => {
+    //                     // router.push(`/pages/home`);
+    //                     window.location.replace('/pages/home');
+    //                 }, 2000);
+    //             }
+    //         }
+
+    //     } catch (error: any) {
+    //         if (error && error.response?.status === 403) {
+    //             toast.warn(error.response?.data?.message)
+    //         } else if (error.response?.status === 409) {
+    //             toast.error(error.response.data.message)
+    //         }
+    //         // console.log(error)
+    //     }
+    // }
 
     return (
         <>
@@ -147,8 +180,8 @@ const Signup = () => {
                                     {...register("username", {
                                         required: "Username is required",
                                         pattern: {
-                                            value: /^(?=.{1,15}$)[A-Za-z][A-Za-z0-9._]*$/,
-                                            message: "Username can only contain letters, numbers, periods, and underscores. It must start with a letter.",
+                                            value: /^[A-Za-z][A-Za-z0-9]*(?:\s[A-Za-z][A-Za-z0-9]*)*$/,
+                                            message: "User Name must start with a letter and contain only single spaces",
                                         },
                                     })}
                                 />

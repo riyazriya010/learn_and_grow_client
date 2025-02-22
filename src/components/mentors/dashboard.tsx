@@ -14,6 +14,9 @@ import { ApexOptions } from "apexcharts";
 import Navbar from "../navbar";
 import MentorFooter from "./footer";
 import { MENTOR_SERVICE_URL } from "@/utils/constant";
+import { ToastContainer, toast, Slide } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Cookies from "js-cookie";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -50,8 +53,7 @@ const Dashboard = () => {
 
     const [courseSales, setCourseSales] = useState<CourseSales[]>([]);
     const [revenueOrders, setRevenueOrders] = useState<RevenueOrders[]>([]);
-    const [year, setYear] = useState<number>(new Date().getFullYear());
-    const [filterYear, setFilterYear] = useState<number>(new Date().getFullYear());
+    // const [year, setYear] = useState<number>(new Date().getFullYear());
 
     const currentYear = new Date().getFullYear();
     const [selectedYear, setSelectedYear] = useState<number | "">(currentYear);
@@ -60,7 +62,6 @@ const Dashboard = () => {
 
     // Generate the last 10 years dynamically
     const yearList = Array.from({ length: 10 }, (_, index) => currentYear - index);
-    const dayList = Array.from({ length: 31 }, (_, index) => index + 1);
     const monthList = [
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
@@ -71,14 +72,56 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`${MENTOR_SERVICE_URL}/get/dashboard`,{
+                const response = await axios.get(`${MENTOR_SERVICE_URL}/get/dashboard`, {
                     withCredentials: true
                 });
                 if (response?.data?.result) {
                     setData(response.data.result);
                 }
-            } catch (error) {
-                console.error("Error fetching dashboard data:", error);
+            } catch (error: any) {
+                if (error && error.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
+                    console.log('401 log', error.response.data.message)
+                    toast.warn(error.response.data.message);
+                    return;
+                }
+                if (error && error.response?.status === 401) {
+                    toast.warn(error.response.data.message);
+                    Cookies.remove('accessToken');
+                    localStorage.clear();
+                    setTimeout(() => {
+                        window.location.replace('/pages/mentor/login');
+                    }, 3000);
+                    return;
+                }
+                if (
+                    error &&
+                    error?.response?.status === 403 &&
+                    error?.response?.data?.message === 'Mentor Blocked'
+                ) {
+                    toast.warn(error?.response?.data?.message);
+                    Cookies.remove('accessToken');
+                    localStorage.clear();
+                    setTimeout(() => {
+                        window.location.replace('/pages/mentor/login');
+                    }, 3000);
+                    return;
+                }
+                if (error && error.response?.status === 403) {
+                    console.log('403')
+                    toast.warn(error.response?.data.message)
+                    Cookies.remove('accessToken')
+                    localStorage.clear()
+                    setTimeout(() => {
+                        // router.push('/pages/mentor/login')
+                        window.location.replace('/pages/mentor/login')
+                    }, 3000)
+                    return
+                }
+                if (error && error.response?.status === 401) {
+                    console.log('401')
+                    toast.warn(error.response.data.message)
+                    return
+                }
             }
         };
         fetchData();
@@ -121,17 +164,59 @@ const Dashboard = () => {
             // Convert the filters object into a query string
             const queryString = `filter=${encodeURIComponent(JSON.stringify(filters))}`;
 
-            const response = await axios.get(`${MENTOR_SERVICE_URL}/get/chart/graph/data?${queryString}`,{
+            const response = await axios.get(`${MENTOR_SERVICE_URL}/get/chart/graph/data?${queryString}`, {
                 withCredentials: true
             });
             if (response?.data?.result) {
                 console.log('res ', response)
                 setCourseSales(response.data.result.courseSales || []);
                 setRevenueOrders(response.data.result.revenueOrders || []);
-                setYear(response.data.result.year || new Date().getFullYear());
+                // setYear(response.data.result.year || new Date().getFullYear());
             }
-        } catch (error) {
-            console.error("Error fetching chart graph data:", error);
+        } catch (error: any) {
+            if (error && error.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
+                console.log('401 log', error.response.data.message)
+                toast.warn(error.response.data.message);
+                return;
+            }
+            if (error && error.response?.status === 401) {
+                toast.warn(error.response.data.message);
+                Cookies.remove('accessToken');
+                localStorage.clear();
+                setTimeout(() => {
+                    window.location.replace('/pages/mentor/login');
+                }, 3000);
+                return;
+            }
+            if (
+                error &&
+                error?.response?.status === 403 &&
+                error?.response?.data?.message === 'Mentor Blocked'
+            ) {
+                toast.warn(error?.response?.data?.message);
+                Cookies.remove('accessToken');
+                localStorage.clear();
+                setTimeout(() => {
+                    window.location.replace('/pages/mentor/login');
+                }, 3000);
+                return;
+            }
+            if (error && error.response?.status === 403) {
+                console.log('403')
+                toast.warn(error.response?.data.message)
+                Cookies.remove('accessToken')
+                localStorage.clear()
+                setTimeout(() => {
+                    // router.push('/pages/mentor/login')
+                    window.location.replace('/pages/mentor/login')
+                }, 3000)
+                return
+            }
+            if (error && error.response?.status === 401) {
+                console.log('401')
+                toast.warn(error.response.data.message)
+                return
+            }
         }
     };
 
@@ -143,7 +228,7 @@ const Dashboard = () => {
 
     // Function to generate distinct colors for each course dynamically
     const generateColors = (count: number) => {
-        const colors = [];
+        const colors: any = [];
         for (let i = 0; i < count; i++) {
             const hue = (i * 137) % 360; // Using golden angle for better distribution
             colors.push(`hsl(${hue}, 70%, 50%)`);
@@ -225,6 +310,15 @@ const Dashboard = () => {
                 <header>
                     <Navbar />
                 </header>
+
+                <ToastContainer
+                    autoClose={2000}
+                    pauseOnHover={false}
+                    transition={Slide}
+                    hideProgressBar={false}
+                    closeOnClick={false}
+                    pauseOnFocusLoss={true}
+                />
 
                 <div className="min-h-screen p-6 bg-white-100">
                     {/* <h1 className="text-2xl font-bold mb-6">Mentor Dashboard</h1> */}

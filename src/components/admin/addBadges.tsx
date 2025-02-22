@@ -1,12 +1,11 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MentorFooter from '../mentors/footer';
 import { useRouter } from 'next/navigation';
-import Swal from "sweetalert2";
 import Cookies from 'js-cookie';
 import { adminApis } from '@/app/api/adminApis';
 import AdminHeader from './header';
@@ -19,8 +18,7 @@ export interface IBadgeForm {
 
 const AdminAddBadges = () => {
     const router = useRouter();
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-
+    
     const {
         register,
         handleSubmit,

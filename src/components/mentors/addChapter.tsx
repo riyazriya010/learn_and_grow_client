@@ -5,7 +5,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import Navbar from '../navbar';
 import MentorFooter from './footer';
 import { mentorApis } from '@/app/api/mentorApi';
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Cookies from "js-cookie";
@@ -18,26 +18,25 @@ export interface FormValues {
 }
 
 const AddChapter: React.FC = () => {
-        const [courseId, setCourseId] = useState<string | null>(null);
-        const [isLoading, setIsLoading] = useState<boolean>(true);
-        const searchParams = useSearchParams()
-        const router = useRouter()
+    const [courseId, setCourseId] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const searchParams = useSearchParams()
+    const router = useRouter()
 
     const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
 
 
-     useEffect(() => {
-            const getCourseId = searchParams.get('courseId')
-    
-            if (getCourseId) {
-                setCourseId(getCourseId);
-                setIsLoading(false);
-                console.log('id: ', courseId)
-            } else {
-                setIsLoading(false);
-            }
+    useEffect(() => {
+        const getCourseId = searchParams.get('courseId')
 
-        }, [searchParams]);
+        if (getCourseId) {
+            setCourseId(getCourseId);
+            setIsLoading(false);
+        } else {
+            setIsLoading(false);
+        }
+
+    }, [searchParams]);
 
     const onSubmit: SubmitHandler<FormValues> = async (data: any) => {
         setIsLoading(true)
@@ -61,7 +60,7 @@ const AddChapter: React.FC = () => {
             }
 
             const response = await mentorApis.addChapter(formData, String(courseId))
-            if(response){
+            if (response) {
                 toast.success('Chapter Added Successfully')
                 setTimeout(() => {
                     router.push('/pages/mentor/courses')
@@ -73,23 +72,23 @@ const AddChapter: React.FC = () => {
                 console.log('401 log', error.response.data.message)
                 toast.warn(error.response.data.message);
                 setTimeout(() => {
-                  router.push('/pages/mentor/profile')
-                },2000)
+                    router.push('/pages/mentor/profile')
+                }, 2000)
                 return;
             }
             if (
                 error &&
                 error?.response?.status === 403 &&
                 error?.response?.data?.message === 'Mentor Blocked'
-              ) {
+            ) {
                 toast.warn(error?.response?.data?.message);
                 Cookies.remove('accessToken');
                 localStorage.clear();
                 setTimeout(() => {
-                  window.location.replace('/pages/mentor/login');
+                    window.location.replace('/pages/mentor/login');
                 }, 3000);
                 return;
-              }
+            }
             if (error && error.response?.status === 401) {
                 toast.warn(error.response.data.message);
                 Cookies.remove('accessToken');
@@ -99,14 +98,14 @@ const AddChapter: React.FC = () => {
                 }, 3000);
                 return;
             }
-        }finally {
+        } finally {
             setIsLoading(false)
-          }
+        }
     };
 
     return (
         <>
-         <LoadingModal isOpen={isLoading} message='Please wait course is uploading' />
+            <LoadingModal isOpen={isLoading} message='Please wait course is uploading' />
 
             <Navbar />
 
@@ -133,7 +132,17 @@ const AddChapter: React.FC = () => {
                                 id="title"
                                 placeholder="Enter chapter title"
                                 className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
-                                {...register('title', { required: 'Title is required' })}
+                                {...register('title', {
+                                    required: 'Title is required',
+                                    minLength: {
+                                        value: 5,
+                                        message: "Chapter name must be at least 5 characters",
+                                    },
+                                    pattern: {
+                                        value: /^[A-Za-z]+(?:\s[A-Za-z]+)*$/,
+                                        message: "Chapter name cannot have leading/trailing spaces or multiple spaces between words",
+                                    }
+                                })}
                             />
                             {errors.title && <p className="text-red-600">{errors.title.message}</p>}
                         </div>
@@ -148,7 +157,17 @@ const AddChapter: React.FC = () => {
                                 placeholder="Enter chapter description"
                                 rows={4}
                                 className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
-                                {...register('description', { required: 'Description is required' })}
+                                {...register('description', {
+                                    required: 'Description is required',
+                                    minLength: {
+                                        value: 10,
+                                        message: "Description name must be at least 10 characters",
+                                    },
+                                    pattern: {
+                                        value: /^[A-Za-z]+(?:\s[A-Za-z]+)*$/,
+                                        message: "Description name cannot have leading/trailing spaces or multiple spaces between words",
+                                    }
+                                })}
                             ></textarea>
                             {errors.description && <p className="text-red-600">{errors.description.message}</p>}
                         </div>

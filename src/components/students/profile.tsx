@@ -13,7 +13,7 @@ import { studentApis } from "@/app/api/studentApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/slices/userSlice";
 import Navbar from "../navbar";
-import Image from "next/image";
+import axios from "axios";
 
 export interface UserProfile {
   username: string;
@@ -36,7 +36,7 @@ const StudentsProfile = () => {
     { field: "Certificates", link: "/pages/student/get-certificates" },
     { field: "Chats", link: "/pages/student/chat" },
     { field: "Badge", link: "/pages/student/badge" },
-    // { field: "Wallet", link: "#" },
+    { field: "Wallet", link: "/pages/student/wallet" },
   ];
   
   const router = useRouter();
@@ -171,6 +171,8 @@ const StudentsProfile = () => {
     try {
       console.log('data: ', data)
 
+      const fileRequests: any = [];
+
       const formData = new FormData();
 
       // Check if profile image exists and append it to form data
@@ -191,9 +193,75 @@ const StudentsProfile = () => {
       }
 
       // Make the API call
-      const response = await studentApis.profileUpdate(formData);
-      console.log('profile update: ', response)
-      if (response && response.data && response.data.success) {
+
+      // const response = await studentApis.profileUpdate(formData);
+
+
+      ////////////////////
+
+      // let s3FileUrl = "";
+      let profilePicUrl = "";
+if (data.profile.name && data.profile.type) {
+  fileRequests.push({ fileName: data.profile.name, fileType: data.profile.type })
+  
+  const presignedResponse = await studentApis.preSignedUrl(fileRequests)
+
+  // const presignedResponse = await axios.post(
+  //   `${USER_SERVICE_URL}/student/generate-presigned-url`,
+  //   // {
+  //   //   fileName: data.profile.name,
+  //   //   fileType: data.profile.type,
+  //   // },
+  //   {
+  //     files: fileRequests
+  //   },
+  //   {
+  //     headers: { "Content-Type": "application/json" },
+  //     withCredentials: true,
+  //   }
+  // );
+
+  console.log("profile update: ", presignedResponse);
+
+  const urls = presignedResponse.data.urls;
+  console.log('urls ',urls)
+
+  for (let i = 0; i < urls.length; i++) {
+    const fileToUpload = i === 0 && data.profile;
+
+    const s3Upload = await axios.put(urls[i].presignedUrl, fileToUpload, {
+      headers: { "Content-Type": fileToUpload.type },
+    });
+    console.log('s3Upload: ', s3Upload)
+
+    if (i === 0) profilePicUrl = `https://learnandgrow.s3.amazonaws.com/${urls[i].fileKey}`;
+  }
+}
+
+// ✅ s3FileUrl is now always defined before use
+const response = await studentApis.profile({
+  username: data.username,
+  phone: data.phone,
+  profilePicUrl,
+})
+
+// const response = await axios.patch(
+//   `${USER_SERVICE_URL}/student/profile-update`,
+//   {
+//     username: data.username,
+//     phone: data.phone,
+//     profilePicUrl,
+//   },
+//   {
+//     headers: { "Content-Type": "application/json" },
+//     withCredentials: true,
+//   }
+// );
+
+
+console.log('resss: ', response)
+
+ if (response && response.data && response.data.success) {
         toast.success('Profile Updated');
 
         dispatch(setUser({

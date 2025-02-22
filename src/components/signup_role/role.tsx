@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import Footer from "../loggedoutNav/footer"
-import LoggedOutHeader from "../loggedoutNav/header"
 import Navbar from "../navbar"
 
 const SignupRole = () => {

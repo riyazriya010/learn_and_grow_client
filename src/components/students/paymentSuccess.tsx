@@ -12,14 +12,12 @@ import LoadingModal from '../re-usable/loadingModal';
 import Cookies from "js-cookie";
 
 const PaymentSuccess = () => {
-    const [courseId, setCourseId] = useState<string | null>(null)
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const searchParams = useSearchParams();
     const router = useRouter();
 
     const txnid = searchParams.get('txnid');
     const amountPaid = searchParams.get('amountPaid');
-    const bankRefNum = searchParams.get('bankRefNum');
     const courseName = searchParams.get('courseName');
 
     const handleNavigateToCourses = () => {
@@ -30,7 +28,7 @@ const PaymentSuccess = () => {
         const getCourseId = searchParams.get('courseId');
 
         if (getCourseId) {
-            setCourseId(getCourseId)
+            // setCourseId(getCourseId)
             const payment = async () => {
                 try {
                     const response = await studentApis.payment(String(getCourseId), String(txnid) , Number(amountPaid), String(courseName))

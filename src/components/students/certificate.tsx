@@ -4,12 +4,11 @@ import { studentApis } from "@/app/api/studentApi";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
 import LoadingModal from "../re-usable/loadingModal";
-import MentorFooter from "../mentors/footer";
 import Navbar from "../navbar";
 import Image from "next/image";
 import Cookies from "js-cookie";
 import ReusableTable from "../re-usable/table";
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Footer from "../loggedoutNav/footer";
 
@@ -102,7 +101,7 @@ const Certificates = () => {
                 className="mb-4"
               />
               <h2 className="text-2xl font-semibold text-gray-800">No Certificates Buyed Yet</h2>
-              <p className="text-gray-600 mt-2">It looks like you haven't completed any courses.</p>
+              <p className="text-gray-600 mt-2">It looks like you haven&apos;t completed any courses.</p>
             </div>
           ) : (
             <ReusableTable

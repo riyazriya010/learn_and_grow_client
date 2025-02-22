@@ -259,11 +259,17 @@ interface FormValues {
     demoVideo: FileList | null;
 }
 
+interface CourseData {
+    _id: string;
+    courseName: string;
+}
+
 interface CategoryData {
     categoryName: string;
 }
 
 const EditCourse = () => {
+    const [course, setCourse] = useState<CourseData | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [courseId, setCourseId] = useState<string | null>(null);
     const [categories, setCategories] = useState<CategoryData[] | null>(null);
@@ -288,6 +294,7 @@ const EditCourse = () => {
                     const response = await mentorApis.getCourse(getCourseId);
                     if (response?.data?.result) {
                         const fetchedCourse = response.data.result;
+                        setCourse(fetchedCourse)
                         setValue('courseName', fetchedCourse.courseName);
                         setValue('description', fetchedCourse.description);
                         setValue('category', fetchedCourse.category);
@@ -305,23 +312,23 @@ const EditCourse = () => {
                         Cookies.remove('accessToken');
                         localStorage.clear();
                         setTimeout(() => {
-                          window.location.replace('/pages/mentor/login');
+                            window.location.replace('/pages/mentor/login');
                         }, 3000);
                         return;
-                      }
-                      if (
+                    }
+                    if (
                         error &&
                         error?.response?.status === 403 &&
                         error?.response?.data?.message === 'Mentor Blocked'
-                      ) {
+                    ) {
                         toast.warn(error?.response?.data?.message);
                         Cookies.remove('accessToken');
                         localStorage.clear();
                         setTimeout(() => {
-                          window.location.replace('/pages/mentor/login');
+                            window.location.replace('/pages/mentor/login');
                         }, 3000);
                         return;
-                      }
+                    }
                 } finally {
                     setIsLoading(false);
                 }
@@ -367,8 +374,8 @@ const EditCourse = () => {
                 console.log('401 log', error.response.data.message)
                 toast.warn(error.response.data.message);
                 setTimeout(() => {
-                  router.push('/pages/mentor/profile')
-                },2000)
+                    router.push('/pages/mentor/profile')
+                }, 2000)
                 return;
             }
             if (error && error.response?.status === 401) {
@@ -376,26 +383,26 @@ const EditCourse = () => {
                 Cookies.remove('accessToken');
                 localStorage.clear();
                 setTimeout(() => {
-                  window.location.replace('/pages/mentor/login');
+                    window.location.replace('/pages/mentor/login');
                 }, 3000);
                 return;
-              }
-              if (
+            }
+            if (
                 error &&
                 error?.response?.status === 403 &&
                 error?.response?.data?.message === 'Mentor Blocked'
-              ) {
+            ) {
                 toast.warn(error?.response?.data?.message);
                 Cookies.remove('accessToken');
                 localStorage.clear();
                 setTimeout(() => {
-                  window.location.replace('/pages/mentor/login');
+                    window.location.replace('/pages/mentor/login');
                 }, 3000);
                 return;
-              }
-            if(error && error?.status === 403){
+            }
+            if (error && error?.status === 403) {
                 toast.warn('Course Name Already Exist')
-              }
+            }
         } finally {
             setIsLoading(false);
         }
@@ -416,105 +423,166 @@ const EditCourse = () => {
                     pauseOnFocusLoss={true}
                 />
 
-                <div className="min-h-screen bg-gray-100 flex items-center justify-center py-10">
-                    <div className="w-full max-w-3xl bg-white rounded-lg shadow-md p-6">
-                        <h1 className="text-3xl text-[#433D8B] font-bold text-center mb-6">Edit Course</h1>
+                {course?._id ? (
 
-                        <form onSubmit={handleSubmit(onSubmit)}>
-                            {/* Course Name */}
-                            <label className="block font-semibold mb-2">Course Name</label>
-                            <input {...register("courseName", { required: "Course Name is required" })} type="text" className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black" />
-                            {errors.courseName && <p className="text-red-500 text-sm">{errors.courseName.message}</p>}
+                    <div className="min-h-screen bg-gray-100 flex items-center justify-center py-10">
+                        <div className="w-full max-w-3xl bg-white rounded-lg shadow-md p-6">
+                            <h1 className="text-3xl text-[#433D8B] font-bold text-center mb-6">Edit Course</h1>
 
-                            {/* Description */}
-                            <label className="block font-semibold mb-2">Description</label>
-                            <textarea {...register("description", { required: "Description is required" })} className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black" rows={4} />
-                            {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
+                            <form onSubmit={handleSubmit(onSubmit)}>
+                                {/* Course Name */}
+                                <label className="block font-semibold mb-2">Course Name</label>
+                                <input {...register("courseName",
+                                    {
+                                        required: "Course Name is required",
+                                        minLength: {
+                                            value: 10,
+                                            message: "Course name must be at least 10 characters",
+                                        },
+                                        pattern: {
+                                            value: /^[A-Za-z]+(?:\s[A-Za-z]+)*$/,
+                                            message: "Course name cannot have leading/trailing spaces or multiple spaces between words",
+                                        }
+                                    })}
+                                    type="text"
+                                    className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black" />
+                                {errors.courseName && <p className="text-red-500 text-sm">{errors.courseName.message}</p>}
 
-                            <label className="block font-semibold mb-2">Category</label>
-                            <select
-                                {...register("category", { required: "Category is required" })}
-                                className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black"
-                            >
-                                <option value="">Select Category</option>
-                                {
-                                    categories?.map((cat, index) => {
-                                        return <option key={index} value={cat?.categoryName}>{cat?.categoryName}</option>
-                                    })
-                                }
-                                {/* <option value="programming">Programming</option>
+                                {/* Description */}
+                                <label className="block font-semibold mb-2">Description</label>
+                                <textarea {...register("description",
+                                    {
+                                        required: "Description is required",
+                                        minLength: {
+                                            value: 10,
+                                            message: "Descriptiom must be at least 10 characters",
+                                        },
+                                        pattern: {
+                                            value: /^[A-Za-z]+(?:\s[A-Za-z]+)*$/,
+                                            message: "Description cannot have leading/trailing spaces or multiple spaces between words",
+                                        }
+
+                                    })}
+                                    className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black" rows={4} />
+                                {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
+
+                                <label className="block font-semibold mb-2">Category</label>
+                                <select
+                                    {...register("category", { required: "Category is required" })}
+                                    className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black"
+                                >
+                                    <option value="">Select Category</option>
+                                    {
+                                        categories?.map((cat, index) => {
+                                            return <option key={index} value={cat?.categoryName}>{cat?.categoryName}</option>
+                                        })
+                                    }
+                                    {/* <option value="programming">Programming</option>
                                 <option value="design">Design</option>
                                 <option value="business">Business</option> */}
-                            </select>
-                            {errors.category && <p className="text-red-500 text-sm">{errors.category.message}</p>}
+                                </select>
+                                {errors.category && <p className="text-red-500 text-sm">{errors.category.message}</p>}
 
-                            <label className="block font-semibold mb-2">Level</label>
-                            <select
-                                {...register("level", { required: "Level is required" })}
-                                className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black"
-                            >
-                                <option value="">Select Level</option>
-                                <option value="beginner">Beginner</option>
-                                <option value="intermediate">Intermediate</option>
-                                <option value="advanced">Advanced</option>
-                            </select>
-                            {errors.level && <p className="text-red-500 text-sm">{errors.level.message}</p>}
+                                <label className="block font-semibold mb-2">Level</label>
+                                <select
+                                    {...register("level", { required: "Level is required" })}
+                                    className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black"
+                                >
+                                    <option value="">Select Level</option>
+                                    <option value="beginner">Beginner</option>
+                                    <option value="intermediate">Intermediate</option>
+                                    <option value="advanced">Advanced</option>
+                                </select>
+                                {errors.level && <p className="text-red-500 text-sm">{errors.level.message}</p>}
 
-                            <label className="block font-semibold mb-2">Duration (Hours)</label>
-                            <input
-                                {...register("duration", { required: "Duration is required" })}
-                                type="text"
-                                className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black"
-                            />
-                            {errors.duration && <p className="text-red-500 text-sm">{errors.duration.message}</p>}
+                                <label className="block font-semibold mb-2">Duration (Hours)</label>
+                                <input
+                                    {...register("duration",
+                                        {
+                                            required: "Duration is required",
+                                            minLength: {
+                                                value: 3,
+                                                message: "Duration must be at least 3 characters",
+                                            },
+                                            pattern: {
+                                                value: /^(\d+(\.\d{1,2})?)\s?hr$/,
+                                                message: "Duration must be in the format 'X hr' or 'X.XX hr'"
+                                            }
 
-                            <label className="block font-semibold mb-2">Price</label>
-                            <input
-                                {...register("price", { required: "Price is required" })}
-                                type="text"
-                                className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black"
-                            />
-                            {errors.price && <p className="text-red-500 text-sm">{errors.price.message}</p>}
+                                        })}
+                                    type="text"
+                                    className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black"
+                                />
+                                {errors.duration && <p className="text-red-500 text-sm">{errors.duration.message}</p>}
+
+                                <label className="block font-semibold mb-2">Price</label>
+                                <input
+                                    {...register("price",
+                                        {
+                                            required: "Price is required",
+                                            minLength: {
+                                                value: 3,
+                                                message: "Price must be at least 3 characters",
+                                            },
+                                            pattern: {
+                                                value: /^[1-9]\d*$/,  // Ensures only positive whole numbers (no leading/trailing spaces)
+                                                message: "Price must be a valid number",
+                                            }
+
+                                        })}
+                                    type="text"
+                                    className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black"
+                                />
+                                {errors.price && <p className="text-red-500 text-sm">{errors.price.message}</p>}
 
 
-                            {/* Demo Video */}
-                            <label className="block font-semibold mb-2">Demo Video (optional)</label>
-                            <input
-                                {...register("demoVideo")}
-                                type="file"
-                                accept="video/*"
-                                className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black"
-                            />
-                            {demoVideoUrl && (
-                                <div className="mb-4">
-                                    <button onClick={() => setIsModalOpen({ ...isModalOpen, video: true })} type="button" className="px-4 py-2 bg-blue-500 text-white rounded">
-                                        Play Demo Video
-                                    </button>
-                                </div>
-                            )}
+                                {/* Demo Video */}
+                                <label className="block font-semibold mb-2">Demo Video (optional)</label>
+                                <input
+                                    {...register("demoVideo")}
+                                    type="file"
+                                    accept="video/*"
+                                    className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black"
+                                />
+                                {demoVideoUrl && (
+                                    <div className="mb-4">
+                                        <button onClick={() => setIsModalOpen({ ...isModalOpen, video: true })} type="button" className="px-4 py-2 bg-blue-500 text-white rounded">
+                                            Play Demo Video
+                                        </button>
+                                    </div>
+                                )}
 
-                            {/* Thumbnail */}
-                            <label className="block font-semibold mb-2">Thumbnail (optional)</label>
-                            <input
-                                {...register("thumbnail")}
-                                type="file"
-                                accept="image/*"
-                                className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black"
-                            />
-                            {thumbnailUrl && (
-                                <div className="mb-4">
-                                    <button onClick={() => setIsModalOpen({ ...isModalOpen, image: true })} type="button" className="px-4 py-2 bg-green-500 text-white rounded">
-                                        Show Thumbnail
-                                    </button>
-                                </div>
-                            )}
+                                {/* Thumbnail */}
+                                <label className="block font-semibold mb-2">Thumbnail (optional)</label>
+                                <input
+                                    {...register("thumbnail")}
+                                    type="file"
+                                    accept="image/*"
+                                    className="w-full p-3 mb-4 rounded border border-[#D6D1F0] bg-[#F4F1FD] text-black"
+                                />
+                                {thumbnailUrl && (
+                                    <div className="mb-4">
+                                        <button onClick={() => setIsModalOpen({ ...isModalOpen, image: true })} type="button" className="px-4 py-2 bg-green-500 text-white rounded">
+                                            Show Thumbnail
+                                        </button>
+                                    </div>
+                                )}
 
-                            <button type="submit" className="w-full bg-[#433D8B] text-white px-6 py-3 rounded-lg hover:opacity-90">
-                                Submit
-                            </button>
-                        </form>
+                                <button type="submit" className="w-full bg-[#433D8B] text-white px-6 py-3 rounded-lg hover:opacity-90">
+                                    Submit
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                </div>
+                ) : (
+                    <div className="min-h-screen bg-gray-100 flex items-center justify-center py-10">
+                        <div className="w-full max-w-3xl bg-white rounded-lg shadow-md p-6">
+                            <h1 className="text-3xl text-red-600 font-bold text-center mb-6">Unauthorized</h1>
+                            <p className="text-center text-gray-500">You do not have permission to edit this course.</p>
+                        </div>
+                    </div>
+                )
+                }
 
                 {/* Demo Video Modal */}
                 {isModalOpen.video && (

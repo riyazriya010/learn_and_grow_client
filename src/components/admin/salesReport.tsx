@@ -275,9 +275,7 @@
 
 
 'use client'
-import { useEffect, useState } from "react"
-import Navbar from "../navbar"
-import MentorFooter from "./footer"
+import { useCallback, useEffect, useState } from "react"
 import axios from "axios"
 import jsPDF from "jspdf"
 import "jspdf-autotable" // Import the autoTable plugin
@@ -319,7 +317,7 @@ const AdminSalesReport = () => {
         "July", "August", "September", "October", "November", "December"
     ];
 
-    const fetchReport = async () => {
+    const fetchReport = useCallback(async () => {
         try {
             const filters: any = {};
             if (selectedYear && selectedMonth) {
@@ -330,25 +328,27 @@ const AdminSalesReport = () => {
             } else if (selectedDate) {
                 filters.date = selectedDate;
             }
-
+    
             const queryString = `filter=${encodeURIComponent(JSON.stringify(filters))}`;
-            const response = await axios.get(`${ADMIN_SERVICE_URL}/get/admin/report?${queryString}`,{
+            const response = await axios.get(`${ADMIN_SERVICE_URL}/get/admin/report?${queryString}`, {
                 withCredentials: true
             });
-            console.log('report response ', response)
-            if(response){
-                setReportData(response?.data?.result?.report);
-                setSalescount(response?.data?.result?.salesCount)
+    
+            console.log("report response ", response);
+    
+            if (response) {
+                setReportData(response?.data?.result?.report || []);
+                setSalescount(response?.data?.result?.salesCount || 0);
             }
         } catch (error: any) {
             console.log(error);
             setReportData([]); // Reset to an empty array on error
         }
-    }
-
+    }, [selectedYear, selectedMonth, selectedDate]); // Dependencies
+    
     useEffect(() => {
         fetchReport();
-    }, []);
+    }, [fetchReport]);
 
     const handleStartDateChange = (date: string | "") => {
         setSelectedDate(prev => ({ ...prev, startDate: date }));

@@ -3,14 +3,12 @@
 import { useEffect, useState } from "react";
 import MentorFooter from "../mentors/footer";
 import Navbar from "../navbar";
-import Link from "next/link";
 import ReusableTable from "../re-usable/table";
 import Image from "next/image";
-import { FaLock, FaUnlock } from "react-icons/fa";
 import { useRouter, useSearchParams } from "next/navigation";
 import { mentorApis } from "@/app/api/mentorApi";
 import Cookies from "js-cookie";
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface ChapterData {
@@ -23,7 +21,6 @@ interface ChapterData {
 const Chapters = () => {
   const headers = ['Chapter Title', 'Description'];
   const [chapters, setChapters] = useState<ChapterData[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [courseId, setCourseId] = useState<string | null>(null);
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -32,7 +29,6 @@ const Chapters = () => {
     const courseId = searchParams.get("courseId");
     if (courseId) {
       setCourseId(courseId)
-      setIsLoading(false)
       const fetchData = async (courseId: string) => {
         try {
           const response = await mentorApis.getAllChapters(courseId)
@@ -63,13 +59,9 @@ const Chapters = () => {
             }, 3000);
             return;
           }
-        } finally {
-          setIsLoading(false)
-        }
+        } 
       }
       fetchData(courseId)
-    } else {
-      setIsLoading(false)
     }
 
   }, [])
@@ -170,7 +162,7 @@ const Chapters = () => {
                 className="mb-4"
               />
               <h2 className="text-2xl font-semibold text-gray-800">No chapters Uploaded Yet</h2>
-              <p className="text-gray-600 mt-2">It looks like you haven't added any cahpters. Start by clicking the button above!</p>
+              <p className="text-gray-600 mt-2">It looks like you haven&apos;t added any cahpters. Start by clicking the button above</p>
             </div>
           ) : (
             <ReusableTable

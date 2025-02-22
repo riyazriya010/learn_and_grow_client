@@ -3,7 +3,7 @@
 import { adminApis } from "@/app/api/adminApis";
 import MentorFooter from "../mentors/footer";
 import { useForm } from "react-hook-form";
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useState } from "react";
 import LoadingModal from "../re-usable/loadingModal";

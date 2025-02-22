@@ -6,13 +6,11 @@ import MentorFooter from "../mentors/footer";
 import Link from "next/link";
 import ReusableTable from "../re-usable/table";
 import Image from "next/image";
-import { FaLock, FaUnlock } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import AdminHeader from "./header";
 import Pagination from "../re-usable/pagination";
-import Swal from "sweetalert2";
 import Cookies from "js-cookie";
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface BadgeData {
@@ -59,60 +57,60 @@ const BadgeManagement = () => {
     fetchData(currentPage);
   }, [currentPage]);
 
-  const handleListUnlist = async (categoryId: string, isListed: boolean) => {
-    try {
-      let result;
-      if (isListed) {
-        result = await Swal.fire({
-          title: "Are you sure?",
-          text: "You want to unlist this category.",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#d33",
-          cancelButtonColor: "#3085d6",
-          confirmButtonText: "Yes, unlist it!",
-        });
+  // const handleListUnlist = async (categoryId: string, isListed: boolean) => {
+  //   try {
+  //     let result;
+  //     if (isListed) {
+  //       result = await Swal.fire({
+  //         title: "Are you sure?",
+  //         text: "You want to unlist this category.",
+  //         icon: "warning",
+  //         showCancelButton: true,
+  //         confirmButtonColor: "#d33",
+  //         cancelButtonColor: "#3085d6",
+  //         confirmButtonText: "Yes, unlist it!",
+  //       });
 
-        if (result.isConfirmed) {
-          const response = await adminApis.unListCategory(categoryId);
-          if (response) {
-            console.log('Category unlisted: ', response);
-            fetchData(currentPage)
-            Swal.fire(
-              "UnListed!",
-              `The category has been "unlisted".`,
-              "success"
-            );
-          }
-        }
-      } else {
-        result = await Swal.fire({
-          title: "Are you sure?",
-          text: "You want to list this category.",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, list it!",
-        });
+  //       if (result.isConfirmed) {
+  //         const response = await adminApis.unListCategory(categoryId);
+  //         if (response) {
+  //           console.log('Category unlisted: ', response);
+  //           fetchData(currentPage)
+  //           Swal.fire(
+  //             "UnListed!",
+  //             `The category has been "unlisted".`,
+  //             "success"
+  //           );
+  //         }
+  //       }
+  //     } else {
+  //       result = await Swal.fire({
+  //         title: "Are you sure?",
+  //         text: "You want to list this category.",
+  //         icon: "warning",
+  //         showCancelButton: true,
+  //         confirmButtonColor: "#3085d6",
+  //         cancelButtonColor: "#d33",
+  //         confirmButtonText: "Yes, list it!",
+  //       });
 
-        if (result.isConfirmed) {
-          const response = await adminApis.listCategory(categoryId);
-          if (response) {
-            console.log('Category listed: ', response);
-            fetchData(currentPage);
-            Swal.fire(
-              "Listed!",
-              `The category has been "listed".`,
-              "success"
-            );
-          }
-        }
-      }
-    } catch (error) {
-      console.error("Error updating category status:", error);
-    }
-  };
+  //       if (result.isConfirmed) {
+  //         const response = await adminApis.listCategory(categoryId);
+  //         if (response) {
+  //           console.log('Category listed: ', response);
+  //           fetchData(currentPage);
+  //           Swal.fire(
+  //             "Listed!",
+  //             `The category has been "listed".`,
+  //             "success"
+  //           );
+  //         }
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating category status:", error);
+  //   }
+  // };
 
   const editCategory = async (badgeId: string) => {
     try {
@@ -156,7 +154,7 @@ const BadgeManagement = () => {
               />
               <h2 className="text-2xl font-semibold text-gray-800">No Courses Uploaded Yet</h2>
               <p className="text-gray-600 mt-2">
-                It looks like you haven't added any courses. Start by clicking the button above!
+                It looks like you haven&apos;t added any courses. Start by clicking the button above
               </p>
             </div>
           ) : (

@@ -1,11 +1,8 @@
 "use client"
 import Image from "next/image"
 import Footer from "./loggedoutNav/footer"
-import Header from "./loggedoutNav/header"
 import faqData from "@/data"
 import { useState } from "react"
-import LoggedOutHeader from "./loggedoutNav/header"
-import LoggedInHeader from "./loggedInNav/header"
 import Navbar from "./navbar"
 
 

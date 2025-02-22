@@ -1,5 +1,7 @@
 "use client"
 
+import Link from "next/link";
+
 const LoggedOutHeader = () => {
     return (
         <header className="bg-white shadow-md py-4 pl-[4rem] pr-[1rem]">
@@ -11,10 +13,10 @@ const LoggedOutHeader = () => {
 
                 {/* Right Side: Navigation */}
                 <nav className="flex gap-x-8 text-black ml-4">
-                    <a href="/" className="hover:text-[#433D8B]">Home</a>
-                    <a href="#" className="hover:text-[#433D8B]">Courses</a>
-                    <a href="/pages/login-role" className="hover:text-[#433D8B]">Login</a>
-                    <a href="/pages/signup-role" className="hover:text-[#433D8B]">Signup</a>
+                    <Link href="/" className="hover:text-[#433D8B]">Home</Link>
+                    <Link href="#" className="hover:text-[#433D8B]">Courses</Link>
+                    <Link href="/pages/login-role" className="hover:text-[#433D8B]">Login</Link>
+                    <Link href="/pages/signup-role" className="hover:text-[#433D8B]">Signup</Link>
                 </nav>
             </div>
         </header>

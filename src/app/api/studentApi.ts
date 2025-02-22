@@ -1,10 +1,8 @@
 import { StudentLoginCredentials } from "@/components/students/login"
-import { UserProfile } from "@/components/students/profile"
 import { Credentials } from "@/components/students/signup"
 import { USER_SERVICE_URL } from "@/utils/constant"
 import axios from "axios"
 import { User } from "firebase/auth"
-import { headers } from "next/headers"
 
 export const studentApis = {
 
@@ -134,7 +132,8 @@ export const studentApis = {
         try {
             const response = await axios.patch(`${USER_SERVICE_URL}/student/profile-update`, data, {
                 headers: {
-                    "Content-Type": "multipart/form-data"
+                    // "Content-Type": "multipart/form-data"
+                    "Content-Type": "application/json",
                 },
                 withCredentials: true
             })
@@ -228,7 +227,7 @@ export const studentApis = {
     },
 
 
-    getPurchasedCourses: async (filters: {page: number, limit: number}) => {
+    getPurchasedCourses: async (filters: { page: number, limit: number }) => {
         try {
             const response = await axios.get(`${USER_SERVICE_URL}/get/buyedCourses`, {
                 params: filters,
@@ -253,9 +252,9 @@ export const studentApis = {
     },
 
 
-    chapterVideoEnd: async (chapterId: string) => {
+    chapterVideoEnd: async (chapterId: string, studiedTime: any) => {
         try {
-            const response = await axios.patch(`${USER_SERVICE_URL}/chapter-end?chapterId=${chapterId}`, {}, {
+            const response = await axios.patch(`${USER_SERVICE_URL}/chapter-end?chapterId=${chapterId}&studiedTime=${studiedTime}`, {}, {
                 withCredentials: true
             })
             return response
@@ -266,51 +265,51 @@ export const studentApis = {
 
 
     getCertificate: async (certificateId: string) => {
-        try{
-            const response = await axios.get(`${USER_SERVICE_URL}/get/certificate?certificateId=${certificateId}`,{
+        try {
+            const response = await axios.get(`${USER_SERVICE_URL}/get/certificate?certificateId=${certificateId}`, {
                 withCredentials: true
             })
             return response
-        }catch(error: any){
+        } catch (error: any) {
             throw error
         }
     },
 
 
     getQuizz: async (courseId: string) => {
-        try{
-            const response = await axios.get(`${USER_SERVICE_URL}/get/quizz?courseId=${courseId}`,{
+        try {
+            const response = await axios.get(`${USER_SERVICE_URL}/get/quizz?courseId=${courseId}`, {
                 withCredentials: true
             })
             return response
-        }catch(error: any){
+        } catch (error: any) {
             throw error
         }
     },
 
 
     completeCourse: async (courseId: string) => {
-        try{
+        try {
             const response = await axios.get(`${USER_SERVICE_URL}/complete/course?courseId=${courseId}`, {
                 withCredentials: true
             })
             return response
-        }catch(error: any){
+        } catch (error: any) {
             throw error
         }
     },
 
 
     createCertificate: async (data: any) => {
-        try{
+        try {
             const response = await axios.post(`${USER_SERVICE_URL}/create/certificate`, data, {
                 headers: {
                     "Content-Type": "application/json"
                 },
                 withCredentials: true
-             })
-             return response
-        }catch(error: any){
+            })
+            return response
+        } catch (error: any) {
             throw error
         }
     },
@@ -318,27 +317,102 @@ export const studentApis = {
 
 
     getCertificates: async () => {
-        try{
-            const response = await axios.get(`${USER_SERVICE_URL}/get/certificates`,{
+        try {
+            const response = await axios.get(`${USER_SERVICE_URL}/get/certificates`, {
                 withCredentials: true
             })
             return response
-        }catch(error: any){
+        } catch (error: any) {
             throw error
         }
     },
 
 
     getBadges: async () => {
-        try{
-            const response = await axios.get(`${USER_SERVICE_URL}/get/badges`,{
+        try {
+            const response = await axios.get(`${USER_SERVICE_URL}/get/badges`, {
                 withCredentials: true
             })
             return response
-        }catch(error: any){
+        } catch (error: any) {
+            throw error
+        }
+    },
+
+
+
+    /////// new 
+
+    profile: async (data: any) => {
+        try {
+            const response = await axios.patch(`${USER_SERVICE_URL}/student/profile-update`, data, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+            })
+            return response
+        } catch (error: any) {
+            throw error
+        }
+    },
+
+    preSignedUrl: async (data: any) => {
+        try {
+            const response = await axios.post(
+                `${USER_SERVICE_URL}/student/generate-presigned-url`,
+                {
+                    files: data
+                },
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true,
+                }
+            );
+            return response
+        } catch (error: any) {
             throw error
         }
     }
 
 
+
+
+
+
+
+
+
+
+
+    //////////////////////////////////// Auth Apis /////////////////////////////////
+
+
+
+
+    /////////////////////////////////// Course Apis ////////////////////////////////
+
+
+
+
+    ///////////////////////////////// Certificate Apis ///////////////////////////////
+
+
+
+
+
+    //////////////////////////////// Chat Apis //////////////////////////////////////
+
+
+
+
+
+    //////////////////////////////// Notifications Apis //////////////////////////////
+
+
+
+
+
+    /////////////////////////////// Reward Apis /////////////////////////////////////
+
+
 }
+

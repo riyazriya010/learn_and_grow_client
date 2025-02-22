@@ -13,6 +13,7 @@ import LoadingModal from '../re-usable/loadingModal';
 import Cookies from "js-cookie";
 
 interface CertificateData {
+    _id: string;
     courseName: string;
     userName: string;
     mentorName?: string;
@@ -43,23 +44,23 @@ const CertificatePage = () => {
                         Cookies.remove('accessToken');
                         localStorage.clear();
                         setTimeout(() => {
-                          window.location.replace('/pages/student/login');
+                            window.location.replace('/pages/student/login');
                         }, 3000);
                         return;
-                      }
-                      if (
+                    }
+                    if (
                         error &&
                         error?.response?.status === 403 &&
                         error?.response?.data?.message === 'Student Blocked'
-                      ) {
+                    ) {
                         toast.warn(error?.response?.data?.message);
                         Cookies.remove('accessToken');
                         localStorage.clear();
                         setTimeout(() => {
-                          window.location.replace('/pages/student/login');
+                            window.location.replace('/pages/student/login');
                         }, 3000);
                         return;
-                      }
+                    }
                 } finally {
                     setIsLoading(false);
                 }
@@ -99,7 +100,7 @@ const CertificatePage = () => {
                     closeOnClick={false}
                     pauseOnFocusLoss={true}
                 />
-                <div className="min-h-screen flex items-center justify-center py-10 bg-white-100">
+                {/* <div className="min-h-screen flex items-center justify-center py-10 bg-white-100">
                     <div className="min-h-screen flex flex-col items-center bg-white-100 py-10 px-4">
                         <h1 className="text-3xl font-bold text-gray-800 mb-6">Your Certificate</h1>
                         <button
@@ -115,7 +116,7 @@ const CertificatePage = () => {
                         >
                             <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-blue-100"></div>
                             <div className="relative z-10 flex flex-col items-center justify-center h-full">
-                                {/* Certificate Header */}
+                                
                                 <h2 className="text-5xl font-extrabold text-blue-700 tracking-widest uppercase">
                                     Certificate
                                 </h2>
@@ -123,28 +124,28 @@ const CertificatePage = () => {
                                     Of Achievement
                                 </p>
 
-                                {/* Decorative Divider */}
+                               
                                 <div className="h-1 w-3/4 bg-blue-400 rounded-full mt-4 mb-8"></div>
 
-                                {/* Recipient's Name */}
+                                
                                 <p className="text-lg text-gray-500">This Certificate is Presented To</p>
                                 <h1 className="text-4xl font-bold text-blue-600 italic mt-4 font-serif tracking-wider mb-6">
                                     {certificate?.userName}
                                 </h1>
 
-                                {/* Decorative Underline for Name */}
+                                
                                 <div className="w-1/2 border-b-4 border-dashed border-blue-400 mt-2 mb-6"></div>
 
-                                {/* Certificate Content */}
+                                
                                 <p className="text-md text-gray-600 max-w-3xl text-center">
                                     In recognition of their outstanding dedication and exceptional performance
                                     in successfully completing the course{' '}
                                     <span className="font-semibold">{certificate?.courseName}</span>.
                                 </p>
 
-                                {/* Signature and Date Section */}
+                               
                                 <div className="flex justify-between w-full px-10 mt-12">
-                                    {/* Date Section */}
+                                    
                                     <div className="text-left">
                                         <p className="px-5">
                                             {certificate?.issuedDate
@@ -155,7 +156,7 @@ const CertificatePage = () => {
                                         <p className="text-sm text-gray-500 mt-2">Date of Completion</p>
                                     </div>
 
-                                    {/* Mentor's Signature */}
+                                    
                                     <div className="text-right">
                                         <p className="text-xl italic font-signature text-gray-700">
                                             {certificate?.mentorName}
@@ -166,7 +167,85 @@ const CertificatePage = () => {
                             </div>
                         </div>
                     </div>
+                </div> */}
+
+                <div className="min-h-screen flex items-center justify-center py-10 bg-white-100">
+                    {certificate?._id ? (
+                        <div className="min-h-screen flex flex-col items-center bg-white-100 py-10 px-4">
+                            <h1 className="text-3xl font-bold text-gray-800 mb-6">Your Certificate</h1>
+                            <button
+                                onClick={handleDownload}
+                                className="mb-8 px-8 py-3 text-white bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg shadow-md hover:from-indigo-500 hover:to-purple-500 focus:ring focus:ring-indigo-300"
+                            >
+                                Download Certificate
+                            </button>
+
+                            <div
+                                ref={certificateRef}
+                                className="w-full max-w-5xl aspect-video border-8 border-blue-300 bg-white shadow-2xl rounded-lg p-8 relative min-h-[600px]"
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-blue-100"></div>
+                                <div className="relative z-10 flex flex-col items-center justify-center h-full">
+                                    {/* Certificate Header */}
+                                    <h2 className="text-5xl font-extrabold text-blue-700 tracking-widest uppercase">
+                                        Certificate
+                                    </h2>
+                                    <p className="text-2xl font-semibold text-gray-600 mt-2 tracking-wide">
+                                        Of Achievement
+                                    </p>
+
+                                    {/* Decorative Divider */}
+                                    <div className="h-1 w-3/4 bg-blue-400 rounded-full mt-4 mb-8"></div>
+
+                                    {/* Recipient's Name */}
+                                    <p className="text-lg text-gray-500">This Certificate is Presented To</p>
+                                    <h1 className="text-4xl font-bold text-blue-600 italic mt-4 font-serif tracking-wider mb-6">
+                                        {certificate?.userName}
+                                    </h1>
+
+                                    {/* Decorative Underline for Name */}
+                                    <div className="w-1/2 border-b-4 border-dashed border-blue-400 mt-2 mb-6"></div>
+
+                                    {/* Certificate Content */}
+                                    <p className="text-md text-gray-600 max-w-3xl text-center">
+                                        In recognition of their outstanding dedication and exceptional performance
+                                        in successfully completing the course{' '}
+                                        <span className="font-semibold">{certificate?.courseName}</span>.
+                                    </p>
+
+                                    {/* Signature and Date Section */}
+                                    <div className="flex justify-between w-full px-10 mt-12">
+                                        {/* Date Section */}
+                                        <div className="text-left">
+                                            <p className="px-5">
+                                                {certificate?.issuedDate
+                                                    ? new Date(certificate?.issuedDate).toLocaleDateString()
+                                                    : 'Date not available'}
+                                            </p>
+                                            <div className="h-1 w-35 bg-gray-300 rounded-full"></div>
+                                            <p className="text-sm text-gray-500 mt-2">Date of Completion</p>
+                                        </div>
+
+                                        {/* Mentor's Signature */}
+                                        <div className="text-right">
+                                            <p className="text-xl italic font-signature text-gray-700">
+                                                {certificate?.mentorName}
+                                            </p>
+                                            <p className="text-sm text-gray-500">Mentor&apos;s Signature</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col items-center justify-center">
+                            <p className="text-2xl text-red-500 font-semibold">🚫 Unauthorized Access</p>
+                            <p className="text-gray-500 mt-2">You are not authorized to view this certificate.</p>
+                        </div>
+                    )}
                 </div>
+
+
                 <Footer />
             </div>
         </>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import dynamic from "next/dynamic";
 import {
@@ -46,7 +46,6 @@ const Dashboard = () => {
     const [courseSales, setCourseSales] = useState<CourseSales[]>([]);
     const [revenueOrders, setRevenueOrders] = useState<RevenueOrders[]>([]);
     const [year, setYear] = useState<number>(new Date().getFullYear());
-    const [filterYear, setFilterYear] = useState<number>(new Date().getFullYear());
 
     const currentYear = new Date().getFullYear();
     const [selectedYear, setSelectedYear] = useState<number>(currentYear);
@@ -68,13 +67,15 @@ const Dashboard = () => {
         fetchData();
     }, []);
 
-    const fetchChartGraphData = async (year: number) => {
+    const fetchChartGraphData = useCallback(async (year: number) => {
         try {
-            setSelectedYear(year)
-            console.log('year: ', year)
+            setSelectedYear(year);
+            console.log("year: ", year);
+    
             const response = await axios.get(`http://localhost:8001/get/chart/graph/data?year=${year}`);
+    
             if (response?.data?.result) {
-                console.log('res ', response)
+                console.log("res ", response);
                 setCourseSales(response.data.result.courseSales || []);
                 setRevenueOrders(response.data.result.revenueOrders || []);
                 setYear(response.data.result.year || new Date().getFullYear());
@@ -82,16 +83,15 @@ const Dashboard = () => {
         } catch (error) {
             console.error("Error fetching chart graph data:", error);
         }
-    };
-
-
+    }, [setSelectedYear, setCourseSales, setRevenueOrders, setYear]); // Dependencies
+    
     useEffect(() => {
         fetchChartGraphData(Number(year));
-    }, []);
+    }, [fetchChartGraphData, year]); 
 
     // Function to generate distinct colors for each course dynamically
     const generateColors = (count: number) => {
-        const colors = [];
+        const colors: any = [];
         for (let i = 0; i < count; i++) {
             const hue = (i * 137) % 360; // Using golden angle for better distribution
             colors.push(`hsl(${hue}, 70%, 50%)`);

@@ -20,7 +20,7 @@ const EditChapter: React.FC = () => {
     const [chapterId, setChapterId] = useState<string | null>(null);
     const [chapterVideoUrl, setChapterVideoUrl] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    // const [isLoading, setIsLoading] = useState<boolean>(true);
     const router = useRouter();
 
     const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<FormValues>();
@@ -38,7 +38,7 @@ const EditChapter: React.FC = () => {
             setValue('title', String(chapterTitle));
             setValue('description', String(chapterDescription));
         }
-        setIsLoading(false);
+        // setIsLoading(false);
     }, [setValue]);
 
 
@@ -128,7 +128,19 @@ const EditChapter: React.FC = () => {
                                 id="title"
                                 placeholder="Enter chapter title"
                                 className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
-                                {...register('title', { required: 'Title is required' })}
+                                {...register('title',
+                                    {
+                                        required: 'Title is required',
+                                        minLength: {
+                                            value: 3,
+                                            message: "Chapter name must be at least 5 characters",
+                                        },
+                                        pattern: {
+                                            value: /^[A-Za-z]+(?:\s[A-Za-z]+)*$/,
+                                            message: "Chapter name cannot have leading/trailing spaces or multiple spaces between words",
+                                        }
+
+                                    })}
                             />
                             {errors.title && <p className="text-red-600">{errors.title.message}</p>}
                         </div>
@@ -143,7 +155,19 @@ const EditChapter: React.FC = () => {
                                 placeholder="Enter chapter description"
                                 rows={4}
                                 className="w-full p-3 border border-[#433D8B] bg-[#F4F1FD] rounded-none focus:outline-none focus:border-[#433D8B]"
-                                {...register('description', { required: 'Description is required' })}
+                                {...register('description',
+                                    {
+                                        required: 'Description is required',
+                                        minLength: {
+                                            value: 10,
+                                            message: "Description name must be at least 10 characters",
+                                        },
+                                        pattern: {
+                                            value: /^[A-Za-z]+(?:\s[A-Za-z]+)*$/,
+                                            message: "Description name cannot have leading/trailing spaces or multiple spaces between words",
+                                        }
+
+                                    })}
                             ></textarea>
                             {errors.description && <p className="text-red-600">{errors.description.message}</p>}
                         </div>

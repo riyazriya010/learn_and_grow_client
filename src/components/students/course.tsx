@@ -1,13 +1,12 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { studentApis } from '@/app/api/studentApi';
 import Navbar from '../navbar';
-import MentorFooter from '../mentors/footer';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Pagination from '../re-usable/pagination';
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from 'js-cookie';
 import Footer from '../loggedoutNav/footer';
@@ -27,11 +26,11 @@ const CoursesPage = () => {
   const categories = ['Programming', 'Machine Learning', 'Data Science', 'Cyber Security'];
   const levels = ['Beginner', 'Intermediate', 'Advanced'];
 
-  // Fetch courses with pagination and filters
-  const fetchCourses = async (page: number) => {
+
+  const fetchCourses = useCallback(async (page: number) => {
+    console.log('fun')
     try {
-      // const filters = { page, limit: 6, selectedCategory, selectedLevel, searchTerm };
-      const filters = { page, limit: 1 };
+      const filters = { page, limit: 2 };
       const response = await studentApis.fetchAllCourse(filters);
       if (response?.data) {
         console.log('res ', response)
@@ -39,6 +38,7 @@ const CoursesPage = () => {
         setCurrentPage(response?.data?.result.currentPage);
         setTotalPages(response?.data?.result.totalPages);
         setTotalCourses(response?.data?.result.totalCourses);
+        console.log('totalCourse ',totalCourses)
       } else {
         setCourses([]);
       }
@@ -56,13 +56,47 @@ const CoursesPage = () => {
         }, 3000);
         return;
       }
-      if(error && error?.response?.status === 404 && error?.response?.data?.message === 'Courses Not Found'){
+      if (error && error?.response?.status === 404 && error?.response?.data?.message === 'Courses Not Found') {
         toast.warn('Courses Not Foundd')
       }
-      // console.error('Error fetching courses:', error);
       setCourses([]);
     }
-  };
+  }, [courses])
+
+
+  // const fetchCourses = async (page: number) => {
+  //   try {
+  //     const filters = { page, limit: 2 };
+  //     const response = await studentApis.fetchAllCourse(filters);
+  //     if (response?.data) {
+  //       console.log('res ', response)
+  //       setCourses(response?.data?.result.courses);
+  //       setCurrentPage(response?.data?.result.currentPage);
+  //       setTotalPages(response?.data?.result.totalPages);
+  //       setTotalCourses(response?.data?.result.totalCourses);
+  //     } else {
+  //       setCourses([]);
+  //     }
+  //   } catch (error: any) {
+  //     if (
+  //       error &&
+  //       error?.response?.status === 403 &&
+  //       error?.response?.data?.message === 'Student Blocked'
+  //     ) {
+  //       toast.warn(error?.response?.data?.message);
+  //       Cookies.remove('accessToken');
+  //       localStorage.clear();
+  //       setTimeout(() => {
+  //         window.location.replace('/pages/student/login');
+  //       }, 3000);
+  //       return;
+  //     }
+  //     if (error && error?.response?.status === 404 && error?.response?.data?.message === 'Courses Not Found') {
+  //       toast.warn('Courses Not Foundd')
+  //     }
+  //     setCourses([]);
+  //   }
+  // };
 
 
   const restoreFilters = () => {
@@ -94,7 +128,7 @@ const CoursesPage = () => {
             setTotalPages(response?.data?.result?.totalPages);
             setTotalCourses(response?.data?.result?.totalCourses);
           } else {
-            setCourses([]); // Set empty array if courses are not found
+            setCourses([]);
           }
 
         } catch (error: any) {
@@ -139,7 +173,7 @@ const CoursesPage = () => {
 
   const commonFilter = async () => {
     try {
-      setFliter(false) // to visible remove filter button
+      setFliter(false)
       const filters: any = {};
       if (selectedCategory) filters.selectedCategory = selectedCategory;
       if (selectedLevel) filters.selectedLevel = selectedLevel;
@@ -151,7 +185,7 @@ const CoursesPage = () => {
         localStorage.setItem('filters', JSON.stringify(filters))
       }
 
-      const response = await studentApis.filterData(filters);
+      const response = await studentApis.filterData(filters)
       console.log('res filtered: ', response.data.result.courses)
       if (response && response?.data) {
         setCourses(response?.data?.result?.courses);
@@ -245,29 +279,15 @@ const CoursesPage = () => {
 
           {/* Buttons */}
           {
-            filter ? <button 
-            className='px-4 py-2 bg-[#22177A] text-white rounded-[13px]'
-            onClick={commonFilter}
-            > Apply Filter</button> 
-            : <button
-            className='px-4 py-2 border border-[#22177A] bg-[#ffffff] text-gray-600 rounded-[13px] hover:bg-gray-200 transition-colors'
-            onClick={removeFilters}
-            > Remove Filter</button>
-          }
-          {/* <div className="flex gap-4">
-            <button
-              className="px-4 py-2 bg-[#6E40FF] text-white rounded-[0px]"
+            filter ? <button
+              className='px-4 py-2 bg-[#22177A] text-white rounded-[13px]'
               onClick={commonFilter}
-            >
-              Apply
-            </button>
-            <button
-              className="px-4 py-2 bg-[#6E40FF] text-white rounded-[0px]"
-              onClick={removeFilters}
-            >
-              Remove
-            </button>
-          </div> */}
+            > Apply Filter</button>
+              : <button
+                className='px-4 py-2 border border-[#22177A] bg-[#ffffff] text-gray-600 rounded-[13px] hover:bg-gray-200 transition-colors'
+                onClick={removeFilters}
+              > Remove Filter</button>
+          }
         </div>
 
         {/* Courses Section */}
@@ -347,16 +367,20 @@ const CoursesPage = () => {
               totalPages={totalPages}
             />
           </div>
-          
+
         </div>
       </div>
 
       <footer>
         {/* <MentorFooter /> */}
         <Footer />
-        </footer>
+      </footer>
     </div>
   );
 };
 
 export default CoursesPage;
+
+
+
+

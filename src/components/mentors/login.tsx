@@ -1,12 +1,11 @@
 "use client"
 
-import React, { useState } from "react";
+import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Footer from "../loggedoutNav/footer";
-import LoggedOutHeader from "../loggedoutNav/header";
 import { mentorApis } from "@/app/api/mentorApi";
 import { useRouter } from "next/navigation";
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { app } from "@/lib/firebase/config";
@@ -66,19 +65,19 @@ const MentorLogin = () => {
             const result = await signInWithPopup(auth, provider)
             const user = result.user;
 
-            let response = await mentorApis.googleLogin(user)
+            const response = await mentorApis.googleLogin(user)
 
             if (response) {
-                const googleUser = response.data.googleUser;
+                // const googleUser = response.data.googleUser;
                 if (response.data.success) {
                     // localStorage.setItem("user", JSON.stringify(googleUser));
                     toast.success("You were Logged");
                     dispatch(
                         setUser({
-                            userId: response.data.user._id,
-                            username: response.data.user.username,
-                            email: response.data.user.email,
-                            role: response.data.user.role
+                            userId: response.data.result._id,
+                            username: response.data.result.username,
+                            email: response.data.result.email,
+                            role: response.data.result.role
                         })
                     )
                     setTimeout(() => {
@@ -202,7 +201,7 @@ const MentorLogin = () => {
 
                     <div className="text-center mt-6">
                         <p className="text-sm text-black">
-                            Don't have an account?{' '}
+                            Don&apos;t have an account?{' '}
                             <a href="/pages/mentor/signup" className="text-base text-[#191919] font-semibold hover:underline">
                                 Signup
                             </a>

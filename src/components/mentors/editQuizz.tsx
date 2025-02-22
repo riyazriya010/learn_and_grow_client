@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from '../navbar';
 import MentorFooter from './footer';
@@ -19,7 +19,6 @@ export interface IQuizForm {
 
 const EditQuiz = () => {
     const [courseId, setCourseId] = useState<string | null>(null)
-    const [isLoading, setIsLoading] = useState<boolean>(true)
     const searchParams = useSearchParams()
 
     const {
@@ -34,9 +33,6 @@ const EditQuiz = () => {
         
         if(getCourseId){
             setCourseId(getCourseId)
-            setIsLoading(false)
-        }else{
-            setIsLoading(false)
         }
         
     },[searchParams])

@@ -1,13 +1,9 @@
 "use client"
 
-import React, { useState } from "react";
+import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { studentApis } from "@/app/api/studentApi";
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useRouter } from "next/navigation";
-import AdminHeader from "./header";
-import AdminFooter from "./footer";
 import { adminApis } from "@/app/api/adminApis";
 import axios from "axios";
 
@@ -19,7 +15,6 @@ export interface AdminLoginCredentials {
 
 const AdminLogin = () => {
 
-    const router = useRouter()
 
     // const notify = () => toast.error("Invalid Credentials!");
 

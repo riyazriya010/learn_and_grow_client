@@ -3,12 +3,11 @@
 import { useEffect, useState } from "react";
 import MentorFooter from "../mentors/footer";
 import Navbar from "../navbar";
-import Link from "next/link";
 import ReusableTable from "../re-usable/table";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { mentorApis } from "@/app/api/mentorApi";
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
@@ -31,7 +30,6 @@ interface QuizzData {
 const Quizz = () => {
     const headers = ['Question', 'Option 1', 'Option 2', 'Correct Answer'];
     const [quizzes, setQuizzes] = useState<QuizzData[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [courseId, setCourseId] = useState<string | null>(null);
     const router = useRouter();
     const searchParams = useSearchParams()
@@ -41,7 +39,6 @@ const Quizz = () => {
 
         if (getCourseId) {
             setCourseId(getCourseId);
-            setIsLoading(true); // Set loading to true before fetching data
 
             const fetchData = async () => {
                 try {
@@ -88,14 +85,10 @@ const Quizz = () => {
                         }, 3000);
                         return;
                     }
-                } finally {
-                    setIsLoading(false); // Set loading to false after fetching
                 }
             };
 
             fetchData();
-        } else {
-            setIsLoading(false); // Set loading to false if no courseId
         }
     }, []);
 
@@ -197,7 +190,7 @@ const Quizz = () => {
                                 className="mb-4"
                             />
                             <h2 className="text-2xl font-semibold text-gray-800">No quizzes uploaded yet</h2>
-                            <p className="text-gray-600 mt-2">It looks like you haven't added any quizzes. Start by clicking the button above!</p>
+                            <p className="text-gray-600 mt-2">It looks like you haven&apos;t added any quizzes. Start by clicking the button above!</p>
                         </div>
                     ) : (
                         <ReusableTable

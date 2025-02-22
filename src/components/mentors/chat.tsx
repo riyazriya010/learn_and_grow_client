@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import socket from "@/utils/socket";
-import MentorHeader from "./header";
 import Navbar from "../navbar";
 import MentorFooter from "./footer";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -88,7 +87,7 @@ const MentoChat = () => {
         console.log('401 log', error.response.data.message)
         toast.warn(error.response.data.message);
         return;
-    }
+      }
       if (error && error.response?.status === 401) {
         toast.warn(error.response.data.message);
         Cookies.remove('accessToken');
@@ -119,7 +118,7 @@ const MentoChat = () => {
         setTimeout(() => {
           // router.push('/pages/mentor/login')
           window.location.replace('/pages/mentor/login')
-        },3000)
+        }, 3000)
         return
       }
       if (error && error.response?.status === 401) {
@@ -308,8 +307,9 @@ const MentoChat = () => {
         setMessages(response?.data?.result);
         // Set the last message from the fetched messages
         const filteredMsg = response?.data?.result?.filter((msg: any) => {
-          !msg.deletedForReceiver || !msg.deletedForSender && msg.senderId !== selectedStudent?._id
-        }).pop()
+          return !msg.deletedForReceiver || (!msg.deletedForSender && msg.senderId !== selectedStudent?._id);
+        }).pop();
+        
         const lstMsg = filteredMsg?.message
         setLastMessage(lstMsg || "")
       } else {
@@ -381,6 +381,7 @@ const MentoChat = () => {
   const handleUpdateList = async () => {
     await fetchData();
     setRefreshState(prev => prev + 1);
+    console.log('refreshState ', refreshState);
     console.log('Student list updated');
   };
 
@@ -869,10 +870,17 @@ const MentoChat = () => {
                     }`}
                   onClick={() => createRoom(student)}
                 >
-                  <img
+                  {/* <img
                     src={student?.profilePicUrl}
                     alt={`profile`}
                     className="w-14 h-14 rounded-full mr-4 object-cover border border-gray-200"
+                  /> */}
+                  <Image
+                    src={student?.profilePicUrl || "/default-profile.png"} // Provide a fallback image
+                    alt="profile"
+                    width={56} // w-14 (14 * 4px = 56px)
+                    height={56} // h-14 (14 * 4px = 56px)
+                    className="rounded-full mr-4 object-cover border border-gray-200"
                   />
                   <div>
                     <p className="font-medium text-lg text-gray-700">{student.username}</p>
@@ -900,11 +908,20 @@ const MentoChat = () => {
             {selectedStudent && (
               <div className="flex items-center justify-between mb-4 p-4 bg-gray-50 rounded-lg shadow-sm">
                 <div className="flex items-center">
-                  <img
+                  {/* <img
                     src={selectedStudent.profilePicUrl}
                     alt="profile"
                     className="w-14 h-14 rounded-full mr-4 object-cover border border-gray-200"
+                  /> */}
+
+                  <Image
+                    src={selectedStudent.profilePicUrl}
+                    alt="profile"
+                    width={56} // Equivalent to w-14 (14 * 4px = 56px)
+                    height={56} // Equivalent to h-14
+                    className="rounded-full mr-4 object-cover border border-gray-200"
                   />
+
                   <div>
                     <p className="text-lg font-bold text-gray-700">{selectedStudent.username}</p>
                     {isTyping && <div className="text-gray-500 italic">Typing...</div>}
@@ -986,7 +1003,7 @@ const MentoChat = () => {
 
                       const isDeletedMessage = messageContent === "Deleted by you" || messageContent === "Deleted by student";
 
-                      const handleClick = (e: React.MouseEvent) => {
+                      const handleClick = () => {
                         if (!isMentorMessage && !isDeletedMessage) {
                           deleteMessage(data._id);
                         }

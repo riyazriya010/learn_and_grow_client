@@ -9,7 +9,7 @@ import Image from 'next/image';
 import ReusableTable from '../re-usable/table';
 import Pagination from '../re-usable/pagination';
 import { mentorApis } from '@/app/api/mentorApi';
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from "js-cookie";
 

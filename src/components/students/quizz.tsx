@@ -107,10 +107,12 @@ const StudentQuizz = () => {
     }
 
     const handleNextQuestion = () => {
-        if (currentQuestionIndex < quizz?.questions.length! - 1) {
+        const totalQuestions = quizz?.questions?.length ?? 0; // Ensures a default value of 0
+        if (currentQuestionIndex < totalQuestions - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
         }
     };
+    
 
     const handleSubmitQuiz = async () => {
         console.log(corretAnswers)
@@ -207,7 +209,13 @@ const StudentQuizz = () => {
                 <div className="min-h-screen flex items-center justify-center py-10 bg-white-100">
                     {isLoading ? (
                         <p>Loading quiz...</p>
-                    ) : (
+                    ) : quizz?._id === '' ? ( // Check if quiz response is empty
+                        <div className="flex flex-col items-center justify-center mt-10">
+                            <p className="text-red-500 text-lg font-bold">Unauthorized Access</p>
+                            <p className="text-gray-600 mt-2">You must purchase the course to access this quiz.</p>
+                        </div>
+                    ) : 
+                     (
                         quizCompleted ?
                             <>
                                 <div className="flex flex-col items-center justify-center bg-gradient-to-r from-purple-500 to-indigo-600 text-white p-6 rounded-lg shadow-lg">
@@ -216,7 +224,7 @@ const StudentQuizz = () => {
                                         You have successfully completed your course. Your dedication and hard work have paid off!
                                     </p>
                                     <p className="text-md mb-6 text-center">
-                                        Keep pushing forward and continue your learning journey. The knowledge you've gained will open up new opportunities.
+                                        Keep pushing forward and continue your learning journey. The knowledge you&apos;ve gained will open up new opportunities.
                                     </p>
                                     <button
                                         className="bg-white text-indigo-600 py-3 px-6 rounded-full font-semibold hover:bg-indigo-100 transition-all"
@@ -244,7 +252,7 @@ const StudentQuizz = () => {
                                         className="mb-4"
                                     />
                                     <p className="text-gray-500 text-lg">No quizz available</p>
-                                    <p className="text-gray-600 mt-2">It looks like you haven't completed any courses</p>
+                                    <p className="text-gray-600 mt-2">It looks like you haven&apos;t completed any courses</p>
                                 </div>
                                 :
                                 <div className="bg-white border-2 border-[#D6D1F0] shadow-lg w-[400px] p-6 rounded-lg">
@@ -252,12 +260,12 @@ const StudentQuizz = () => {
 
                                     {/* Display current question */}
                                     <div className="text-center text-xl mb-4">
-                                        {quizz?.questions[currentQuestionIndex].question}
+                                        {quizz?.questions[currentQuestionIndex]?.question}
                                     </div>
 
                                     {/* Display options */}
                                     <div className="flex justify-around mb-6">
-                                        {quizz?.questions[currentQuestionIndex].options.map((option, index) => (
+                                        {quizz?.questions[currentQuestionIndex]?.options.map((option, index) => (
                                             <button
                                                 key={index}
                                                 onClick={() => handleOption(option, currentQuestionIndex)}
@@ -275,7 +283,7 @@ const StudentQuizz = () => {
                                     </div>
 
                                     {/* Display Next Button */}
-                                    {currentQuestionIndex < quizz?.questions.length! - 1 ? (
+                                    {currentQuestionIndex < (quizz?.questions?.length ?? 0) - 1 ? (
                                         <button
                                             onClick={handleNextQuestion}
                                             disabled={!selectedAnswers[currentQuestionIndex]}

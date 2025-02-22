@@ -9,7 +9,6 @@ const MentorVerifyEmail = () => {
     const searchParams = useSearchParams();
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(true);
-    const [isVerified, setIsVerified] = useState(false);
 
     useEffect(() => {
         const verifyUser = async () => {
@@ -25,8 +24,8 @@ const MentorVerifyEmail = () => {
 
             try {
                 const response = await axios.patch(`${MENTOR_SERVICE_URL}/verify?token=${token}`);
+                console.log(response)
                 setMessage('Verified successfully.');
-                setIsVerified(true);
             } catch (error: any) {
                 if (error.response?.status === 401) {
                     setMessage('Token expired. Please go to your profile to verify your account.');

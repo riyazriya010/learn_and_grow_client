@@ -23,10 +23,10 @@ const userSlice = createSlice({
     reducers: {
         setUser: (state, action: PayloadAction<User>) => {
             const { userId, username, email, role } = action.payload;
-            state.userId = userId,
-                state.username = username,
-                state.email = email,
-                state.role = role
+            state.userId = userId;
+                state.username = username;
+                state.email = email;
+                state.role = role;
 
             if (typeof window !== 'undefined') {
                 localStorage.setItem('user', JSON.stringify(state));

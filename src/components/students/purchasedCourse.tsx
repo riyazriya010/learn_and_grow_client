@@ -9,7 +9,7 @@ import Navbar from "../navbar";
 import Image from "next/image";
 import ReusableTable from "../re-usable/table";
 import Pagination from "../re-usable/pagination";
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from "js-cookie";
 
@@ -27,6 +27,9 @@ const PurchasedCourse = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const router = useRouter()
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
 
   useEffect(() => {
     setIsLoading(false)
@@ -75,6 +78,12 @@ const PurchasedCourse = () => {
     router.push(`/pages/student/course-play?buyedId=${id}`)
   }
 
+  const checkProgress = (id: string) => {
+    console.log('id: ', id)
+    setSelectedId(id);
+        setIsOpen(true);
+  }
+
   if (isLoading) return <LoadingModal isOpen={isLoading} message="Please wait..." />
 
   return (
@@ -104,7 +113,7 @@ const PurchasedCourse = () => {
                 className="mb-4"
               />
               <h2 className="text-2xl font-semibold text-gray-800">No Courses Buyed Yet</h2>
-              <p className="text-gray-600 mt-2">It looks like you haven't buyed any courses.</p>
+              <p className="text-gray-600 mt-2">It looks like you haven&apos;t buyed any courses.</p>
             </div>
           ) : (
             <ReusableTable
@@ -112,13 +121,17 @@ const PurchasedCourse = () => {
               data={course.map((c) => ({
                 "_id": c._id,
                 "Course Name": c.courseDetails.courseName,
-                'Level': c.courseDetails.level
+                'Level': c.courseDetails.level,
               }))}
               handlers={(row) => [
 
                 {
                   handler: () => viewCourse(row._id),
                   name: "View"
+                },
+                {
+                  handler: () => checkProgress(row._id),
+                  name: "Progress"
                 },
               ]}
               buttonStyles="bg-[#433D8B] text-white text-sm font-medium rounded hover:opacity-90"
@@ -140,6 +153,24 @@ const PurchasedCourse = () => {
             />
           </div>
         </div>
+
+        {/* Modal */}
+        {isOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+              <h2 className="text-xl font-semibold mb-4">Progress Details</h2>
+              <p className="text-gray-600">ID: {selectedId}</p>
+
+              {/* Close Button */}
+              <button
+                onClick={() => setIsOpen(false)}
+                className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
 
         <MentorFooter />
       </div>

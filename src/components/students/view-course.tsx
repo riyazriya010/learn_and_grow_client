@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import LoadingModal from "../re-usable/loadingModal";
 import { studentApis } from "@/app/api/studentApi";
 import Image from "next/image";
-import MentorFooter from "../mentors/footer";
 import Navbar from "../navbar";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSelector } from "react-redux";
@@ -75,7 +74,7 @@ const StudentViewCourse = () => {
     }, []);
 
 
-    const buyCourse = async (id: string) => {
+    const buyCourse = async () => {
         if (!user.userId) {
             toast.warn('Please Login to buy the course')
             setTimeout(() => {
@@ -172,7 +171,7 @@ const StudentViewCourse = () => {
                                     <li>Lifetime access</li>
                                     <li>Expert mentors</li>
                                 </ul>
-                                <h2 className="text-lg font-semibold text-[#323232] mt-6 mb-4">What You'll Learn</h2>
+                                <h2 className="text-lg font-semibold text-[#323232] mt-6 mb-4">What You&apos;ll Learn</h2>
                                 <p className="text-[#7F7F7F] text-sm">
                                     Gain essential skills to excel in this field. Comprehensive lessons and hands-on exercises designed to build expertise and confidence.
                                 </p>
@@ -209,7 +208,7 @@ const StudentViewCourse = () => {
                                 </button>
                                     :
                                     <button
-                                        onClick={() => buyCourse(course._id)}
+                                        onClick={() => buyCourse()}
                                         className="bg-[#22177A] text-white rounded-[13px] font-semibold py-2 px-6"
                                     >
                                         Buy Course

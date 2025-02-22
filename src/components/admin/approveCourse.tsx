@@ -1,15 +1,12 @@
 'use client'
 
-import { studentApis } from "@/app/api/studentApi";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
 import LoadingModal from "../re-usable/loadingModal";
-import MentorFooter from "../mentors/footer";
-import Navbar from "../navbar";
 import Image from "next/image";
 import ReusableTable from "../re-usable/table";
 import Pagination from "../re-usable/pagination";
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from "js-cookie";
 import AdminHeader from "./header";

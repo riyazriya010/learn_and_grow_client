@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import dynamic from "next/dynamic";
 import {
@@ -11,8 +11,6 @@ import {
 } from "chart.js";
 import { Pie } from "react-chartjs-2";
 import { ApexOptions } from "apexcharts";
-import Navbar from "../navbar";
-import MentorFooter from "./footer";
 import AdminHeader from "./header";
 import AdminFooter from "./footer";
 import { ADMIN_SERVICE_URL } from "@/utils/constant";
@@ -41,8 +39,8 @@ interface DashboardData {
     prevYearRevenue: number;
     totalRevenue: number;
     totalCourses: number;
-    mostEnrolledCourse: { categoryName:string, courseName: string; enrollments: number } | null;
-    leastEnrolledCourse: { categoryName:string, courseName: string; enrollments: number } | null;
+    mostEnrolledCourse: { categoryName: string, courseName: string; enrollments: number } | null;
+    leastEnrolledCourse: { categoryName: string, courseName: string; enrollments: number } | null;
     totalStudents: number;
     activeStudents: number;
     courseCompletionRate: number;
@@ -54,8 +52,7 @@ const AdminDashboard = () => {
 
     const [courseSales, setCourseSales] = useState<CourseSales[]>([]);
     const [revenueOrders, setRevenueOrders] = useState<RevenueOrders[]>([]);
-    const [year, setYear] = useState<number>(new Date().getFullYear());
-    const [filterYear, setFilterYear] = useState<number>(new Date().getFullYear());
+    // const [year, setYear] = useState<number>(new Date().getFullYear());
 
     const currentYear = new Date().getFullYear();
     const [selectedYear, setSelectedYear] = useState<number | "">(currentYear);
@@ -64,7 +61,6 @@ const AdminDashboard = () => {
 
     // Generate the last 10 years dynamically
     const yearList = Array.from({ length: 10 }, (_, index) => currentYear - index);
-    const dayList = Array.from({ length: 31 }, (_, index) => index + 1);
     const monthList = [
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
@@ -75,10 +71,10 @@ const AdminDashboard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`${ADMIN_SERVICE_URL}/get/admin/dashboard`,{
+                const response = await axios.get(`${ADMIN_SERVICE_URL}/get/admin/dashboard`, {
                     withCredentials: true
                 });
-                console.log('dashboard: ',response)
+                console.log('dashboard: ', response)
                 if (response?.data?.result) {
                     setData(response.data.result);
                 }
@@ -108,7 +104,7 @@ const AdminDashboard = () => {
         }
     };
 
-    const fetchChartGraphData = async () => {
+    const fetchChartGraphData = useCallback(async () => {
         try {
             const filters: any = {};
 
@@ -126,29 +122,30 @@ const AdminDashboard = () => {
             // Convert the filters object into a query string
             const queryString = `filter=${encodeURIComponent(JSON.stringify(filters))}`;
 
-            const response = await axios.get(`${ADMIN_SERVICE_URL}/get/admin/chart/graph/data?${queryString}`,{
+            const response = await axios.get(`${ADMIN_SERVICE_URL}/get/admin/chart/graph/data?${queryString}`, {
                 withCredentials: true
             });
             if (response?.data?.result) {
                 console.log('res ', response)
                 setCourseSales(response.data.result.courseSales || []);
                 setRevenueOrders(response.data.result.revenue || []);
-                setYear(response.data.result.year || new Date().getFullYear());
+                // setYear(response.data.result.year || new Date().getFullYear());
             }
         } catch (error) {
             console.error("Error fetching chart graph data:", error);
         }
-    };
+    }, [selectedYear, selectedMonth, selectedDate])
 
 
     useEffect(() => {
         // setSelectedYear(year)
         fetchChartGraphData();
-    }, []);
+    }, [fetchChartGraphData]);
+
 
     // Function to generate distinct colors for each course dynamically
     const generateColors = (count: number) => {
-        const colors = [];
+        const colors: any = [];
         for (let i = 0; i < count; i++) {
             const hue = (i * 137) % 360; // Using golden angle for better distribution
             colors.push(`hsl(${hue}, 70%, 50%)`);

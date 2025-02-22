@@ -1,7 +1,6 @@
 "use client";
 import axios from "axios";
-import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {  useEffect, useRef, useState } from "react";
 import socket from "@/utils/socket";
 import Swal from "sweetalert2";
 import Navbar from "../navbar";
@@ -293,8 +292,9 @@ const StudentChat = () => {
                 setMessages(response?.data?.result)
 
                 const filteredMsg = response?.data?.result?.filter((msg: any) => {
-                    !msg.deletedForReceiver || !msg.deletedForSender && msg.senderId === selectedMentor?._id
-                }).pop()
+                    return !msg.deletedForReceiver || (!msg.deletedForSender && msg.senderId === selectedMentor?._id);
+                }).pop();
+                
                 const lstMsg = filteredMsg?.message
                 setLastMessage(lstMsg || "")
 
@@ -364,6 +364,7 @@ const StudentChat = () => {
     const handleUpdateList = async () => {
         await fetchData();
         setRefreshState(prev => prev + 1);
+        console.log('Mentors list updated');
         console.log('Mentors list updated');
     };
 
@@ -612,6 +613,7 @@ const StudentChat = () => {
                 await fetchMessage(selectedMentor._id);
             }
             setRefreshState(prev => prev + 1);
+            console.log('refreshState ', refreshState)
         };
 
         socket.on('deletedMessage', handlefetchMessage);
@@ -1010,7 +1012,7 @@ const StudentChat = () => {
 
                                                     const isDeletedMessage = messageContent === "Deleted by you" || messageContent === "Deleted by mentor";
 
-                                                    const handleClick = (e: React.MouseEvent) => {
+                                                    const handleClick = () => {
                                                         if (!isMentorMessage && !isDeletedMessage) {
                                                             deleteMessage(data._id);
                                                         }

@@ -10,7 +10,7 @@ import { mentorApis } from "@/app/api/mentorApi";
 import { FaLock, FaUnlock } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import Pagination from "../re-usable/pagination";
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
@@ -45,6 +45,11 @@ const MentorCourses = () => {
         setTotalPages(response?.data?.result.totalPages);
       }
     } catch (error: any) {
+      if (error && error.response?.status === 404 &&
+        error?.response?.data?.message === 'Courses Not Found') {
+        toast.warn(error.response.data.message);
+        return
+      }
       if (error && error.response?.status === 401) {
         toast.warn(error.response.data.message);
         Cookies.remove('accessToken');
@@ -128,9 +133,9 @@ const MentorCourses = () => {
         toast.warn(error.response.data.message);
         setTimeout(() => {
           router.push('/pages/mentor/profile')
-        },2000)
+        }, 2000)
         return;
-    }
+      }
       if (error && error.response?.status === 401) {
         toast.warn(error.response.data.message);
         Cookies.remove('accessToken');
@@ -271,7 +276,7 @@ const MentorCourses = () => {
               className="mb-4"
             />
             <h2 className="text-2xl font-semibold text-gray-800">No Courses Uploaded Yet</h2>
-            <p className="text-gray-600 mt-2">It looks like you haven't added any courses. Start by clicking the button above!</p>
+            <p className="text-gray-600 mt-2">It looks like you haven&apos;t added any courses. Start by clicking the button above!</p>
           </div>
         ) : (
           <ReusableTable

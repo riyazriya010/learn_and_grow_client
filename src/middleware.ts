@@ -14,6 +14,7 @@ export async function middleware(req: NextRequest) {
         return NextResponse.next();
     }
 
+    // const role = await tokenVerify("refreshToken", req)
     const role = await tokenVerify("accessToken", req)
     console.log('role: ', role)
 
@@ -125,8 +126,12 @@ export async function middleware(req: NextRequest) {
         url.pathname.startsWith('/pages/add-badges') ||
         url.pathname.startsWith('/pages/badge-management') ||
         url.pathname.startsWith('/pages/course-details') ||
-        url.pathname.startsWith('/pages/approve-course') || 
-        url.pathname.startsWith('/pages/sales-report')
+        url.pathname.startsWith('/pages/approve-course') ||
+        url.pathname.startsWith('/pages/sales-report') ||
+        url.pathname.startsWith('/pages/add-category') ||
+        url.pathname.startsWith('/pages/edit-badge') ||
+        url.pathname.startsWith('/pages/edit-category')
+
     ) {
         if (role !== 'admin') {
             url.pathname = '/pages/login';

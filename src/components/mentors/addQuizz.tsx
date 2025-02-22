@@ -2,13 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from '../navbar';
 import MentorFooter from './footer';
 import { mentorApis } from '@/app/api/mentorApi';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Swal from "sweetalert2";
 import Cookies from 'js-cookie';
 
 export interface IQuizForm {
@@ -20,7 +19,6 @@ export interface IQuizForm {
 
 const AddQuiz = () => {
     const [courseId, setCourseId] = useState<string | null>(null)
-    const [isLoading, setIsLoading] = useState<boolean>(true)
     const searchParams = useSearchParams()
 
     const router = useRouter()
@@ -38,9 +36,6 @@ const AddQuiz = () => {
 
         if (getCourseId) {
             setCourseId(getCourseId)
-            setIsLoading(false)
-        } else {
-            setIsLoading(false)
         }
     }, [searchParams])
 
@@ -136,8 +131,8 @@ const AddQuiz = () => {
                                             message: "Question must be at least 10 characters",
                                         },
                                         pattern: {
-                                            value: /^[A-Za-z]+(?:\s[A-Za-z]+)*$/,
-                                            message: "Question cannot have leading/trailing spaces or multiple spaces between words",
+                                            value: /^[A-Za-z]+(?:\s[A-Za-z]+)*\s?\?$/,
+                                            message: "Question must end with a question mark and cannot have leading/trailing spaces or multiple spaces between words",
                                         },
                                     })}
                                     className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#433D8B] focus:border-[#433D8B] text-sm ${errors.question ? "border-red-500" : "border-gray-300"}`}

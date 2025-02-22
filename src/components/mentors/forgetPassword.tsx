@@ -1,10 +1,9 @@
 "use client"
 
-import React, { useState } from "react";
+import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Footer from "../loggedoutNav/footer";
-import LoggedOutHeader from "../loggedoutNav/header";
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/navigation";
 import { mentorApis } from "@/app/api/mentorApi";
@@ -21,7 +20,7 @@ const MentorForgetPassword = () => {
 
     const router = useRouter()
 
-    const { register, handleSubmit, reset, getValues, formState: { errors }, } = useForm<MentorForgetCredentials>()
+    const { register, handleSubmit, getValues, formState: { errors }, } = useForm<MentorForgetCredentials>()
 
     const onSubmit: SubmitHandler<MentorForgetCredentials> = async (data) => {
         try {

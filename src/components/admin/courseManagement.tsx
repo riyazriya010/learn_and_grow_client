@@ -7,11 +7,10 @@ import Link from "next/link";
 import ReusableTable from "../re-usable/table";
 import Image from "next/image";
 import { FaLock, FaUnlock } from "react-icons/fa";
-import { useRouter } from "next/navigation";
 import AdminHeader from "./header";
 import Pagination from "../re-usable/pagination";
 import Swal from "sweetalert2";
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from "js-cookie";
 
@@ -25,7 +24,6 @@ interface CourseData {
 const CourseManagement = () => {
   const headers = ['Course Name', 'Category'];
   const [course, setCourse] = useState<CourseData[]>([]);
-  const router = useRouter()
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -156,7 +154,7 @@ const CourseManagement = () => {
                 className="mb-4"
               />
               <h2 className="text-2xl font-semibold text-gray-800">No Courses found Yet</h2>
-              <p className="text-gray-600 mt-2">It looks like haven't added any courses.</p>
+              <p className="text-gray-600 mt-2">It looks like haven&apos;t added any courses.</p>
             </div>
           ) : (
             <ReusableTable

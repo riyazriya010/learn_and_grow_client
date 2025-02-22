@@ -1,12 +1,10 @@
 "use client"
 
 import React from "react"
-import { useForm, SubmitHandler } from "react-hook-form"
-import Footer from "../loggedoutNav/footer"
-import LoggedOutHeader from "../loggedoutNav/header";
+import { useForm, SubmitHandler } from "react-hook-form";
+import Footer from "../loggedoutNav/footer";
 import { mentorApis } from "@/app/api/mentorApi";
-import { useRouter } from "next/navigation";
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { app } from "@/lib/firebase/config";
@@ -27,7 +25,6 @@ export interface MentorSignUpCredential {
 
 const MentorSignup = () => {
 
-    const router = useRouter()
     const dispatch = useDispatch()
 
     // signup functionality
@@ -73,10 +70,10 @@ const MentorSignup = () => {
             const result = await signInWithPopup(auth, provider)
             const user = result.user;
 
-            let response = await mentorApis.googleSignup(user)
+            const response = await mentorApis.googleSignup(user)
 
             if (response) {
-                const googleUser = response.data.googleUser;
+                // const googleUser = response.data.googleUser;
                 if (response.data.success) {
                     // localStorage.setItem("user", JSON.stringify(googleUser));
                     toast.success("You were Logged");
@@ -146,8 +143,8 @@ const MentorSignup = () => {
                                     {...register("username", {
                                         required: "username required",
                                         pattern: {
-                                            value: /^(?=.{1,15}$)[A-Za-z][A-Za-z0-9._]*$/,
-                                            message: "Username can only contain letters, numbers, periods, and underscores. It must start with a letter.",
+                                            value: /^[A-Za-z][A-Za-z0-9]*(?:\s[A-Za-z][A-Za-z0-9]*)*$/,
+                                            message: "User Name must start with a letter and contain only single spaces",
                                         },
                                     })}
                                 />
@@ -209,8 +206,8 @@ const MentorSignup = () => {
                                     {...register("expertise", {
                                         required: "expertise area required",
                                         pattern: {
-                                            value: /^(?=.{1,15}$)[A-Za-z][A-Za-z0-9._]*$/,
-                                            message: "expertise can only contain letters, numbers, periods, and underscores. It must start with a letter.",
+                                            value: /^[A-Za-z][A-Za-z0-9]*(?:\s[A-Za-z][A-Za-z0-9]*)*$/,
+                                            message: "User Name must start with a letter and contain only single spaces",
                                         },
                                     })}
                                 />
@@ -230,8 +227,8 @@ const MentorSignup = () => {
                                     {...register("skills", {
                                         required: "skills required",
                                         pattern: {
-                                            value: /^(?=.{1,15}$)[A-Za-z][A-Za-z0-9._]*$/,
-                                            message: "skills can only contain letters, numbers, periods, and underscores. It must start with a letter.",
+                                            value: /^[A-Za-z][A-Za-z0-9]*(?:\s[A-Za-z][A-Za-z0-9]*)*$/,
+                                            message: "User Name must start with a letter and contain only single spaces",
                                         },
                                     })}
                                 />

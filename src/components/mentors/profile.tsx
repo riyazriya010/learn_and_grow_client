@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import MentorHeader from "./header";
-import MentorFooter from "./footer";
-import { ToastContainer, toast, Slide, Flip, Zoom, Bounce } from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from "js-cookie";
 import jwt from "jsonwebtoken";
@@ -190,7 +188,9 @@ const MentorProfile = () => {
 
 
       const response = await mentorApis.profileUpdate(formData)
+      
       console.log('profile update: ', response)
+
       if (response && response.data && response.data.success) {
         toast.success('Profile Updated')
         dispatch(setUser({
