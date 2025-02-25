@@ -425,7 +425,14 @@ const Navbar = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 7 7.388 7 9v5.159c0 .538-.214 1.055-.595 1.436L5 17h5m5 0a3 3 0 11-6 0h6z" />
                     </svg>
                   </div>
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">3</span>
+
+                  {/* Notification Count Badge */}
+                  {mentorCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                      {mentorCount}
+                    </span>
+                  )}
+
                 </button>
               </div>
 
@@ -442,13 +449,13 @@ const Navbar = () => {
 
                 {/* Dropdown Menu */}
                 {isDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 shadow-md rounded-md">
-                      <a href="/pages/mentor/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#22177A] hover:text-white">View Profile</a>
-                      <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#FF474C] hover:text-white" onClick={handleLogout}>
-                        Logout
-                      </button>
-                    </div>
-                  )}
+                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 shadow-md rounded-md">
+                    <a href="/pages/mentor/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#22177A] hover:text-white">View Profile</a>
+                    <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#FF474C] hover:text-white" onClick={handleLogout}>
+                      Logout
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
