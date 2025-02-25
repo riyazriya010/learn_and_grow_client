@@ -419,7 +419,7 @@ const Navbar = () => {
             <div className="flex items-center gap-4 mt-4 md:mt-0">
               {/* Notification Bell */}
               <div className="relative">
-                <button className="relative focus:outline-none">
+                <button className="relative focus:outline-none" onClick={handleBel}>
                   <div className="w-10 h-10 flex items-center justify-center rounded-full">
                     <svg className="h-6 w-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 7 7.388 7 9v5.159c0 .538-.214 1.055-.595 1.436L5 17h5m5 0a3 3 0 11-6 0h6z" />
@@ -431,7 +431,7 @@ const Navbar = () => {
 
               {/* User Profile Section */}
               <div className="relative">
-                <div className="flex items-center gap-2 cursor-pointer">
+                <div className="flex items-center gap-2 cursor-pointer" onClick={toggleDropdown}>
                   <div className="w-8 h-8 rounded-full bg-[#22177A] text-white flex items-center justify-center font-bold">
                     {initials}
                   </div>
@@ -439,11 +439,19 @@ const Navbar = () => {
                     {mentor.username}
                   </span>
                 </div>
+
+                {/* Dropdown Menu */}
+                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 shadow-md rounded-md hidden">
+                  <a href="/pages/mentor/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#22177A] hover:text-white">View Profile</a>
+                  <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#FF474C] hover:text-white" onClick={handleLogout}>
+                    Logout
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Mobile Menu (Fixed - Now Opens on Click) */}
+          {/* Mobile Menu (Now Opens on Click) */}
           <nav className="hidden peer-checked:flex flex-col md:hidden bg-white shadow-md rounded-md mt-2 p-4">
             <a href="/pages/mentor/dashboard" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Dashboard</a>
             <a href="/pages/mentor/courses" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Courses</a>
@@ -453,6 +461,7 @@ const Navbar = () => {
           </nav>
         </header>
       </>
+
 
 
     );
