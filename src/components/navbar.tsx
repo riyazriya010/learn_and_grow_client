@@ -604,27 +604,66 @@ const Navbar = () => {
   }
 
   return (
-    <header className="bg-white border-b border-gray-200 py-4 pl-[4rem] pr-[1rem]">
-      <div className="max-w-6xl mx-auto flex items-center justify-between">
-        {/* Left Side: Logo */}
-        {/* <div className="text-[#433D8B] text-xl font-bold">Learn&Grow</div> */}
+    // <header className="bg-white border-b border-gray-200 py-4 pl-[4rem] pr-[1rem]">
+    //   <div className="max-w-6xl mx-auto flex items-center justify-between">
+    //     {/* Left Side: Logo */}
+    //     {/* <div className="text-[#433D8B] text-xl font-bold">Learn&Grow</div> */}
 
-        <div className="flex items-center justify-center space-x-2 text-xl font-bold">
-          <span className="text-[#22177A] ">Learn</span>
+    //     <div className="flex items-center justify-center space-x-2 text-xl font-bold">
+    //       <span className="text-[#22177A] ">Learn</span>
+    //       <span className="px-3 py-1 text-white bg-[#22177A] rounded-full shadow-md">
+    //         &Grow
+    //       </span>
+    //     </div>
+
+
+    //     {/* Right Side: Navigation */}
+    //     <nav className="flex items-center gap-x-8 text-black ml-4">
+    //       <Link href="/" className="inline-block py-1 px-4 hover:decoration-[#6E40FF] hover:decoration-4 rounded-lg transition-all">Home</Link>
+    //       <Link href="/pages/student/course" className="inline-block py-1 px-4 hover:decoration-[#6E40FF] hover:decoration-4 rounded-lg transition-all">Courses</Link>
+    //       <Link href="/pages/login-role" className="inline-block py-1 px-4 hover:decoration-[#6E40FF] hover:decoration-4 rounded-lg transition-all">Login</Link>
+    //       <Link href="/pages/signup-role" className="inline-block py-1 px-4 hover:decoration-[#6E40FF] hover:decoration-4 rounded-lg transition-all">Signup</Link>
+    //     </nav>
+    //   </div>
+    // </header>
+
+    <header className="bg-white border-b border-gray-200 py-4 px-4 md:px-[4rem]">
+      <div className="max-w-6xl mx-auto flex items-center justify-between">
+
+        {/* Logo Section */}
+        <div className="flex items-center space-x-2 text-xl font-bold">
+          <span className="text-[#22177A]">Learn</span>
           <span className="px-3 py-1 text-white bg-[#22177A] rounded-full shadow-md">
             &Grow
           </span>
         </div>
 
-
-        {/* Right Side: Navigation */}
-        <nav className="flex items-center gap-x-8 text-black ml-4">
-          <Link href="/" className="inline-block py-1 px-4 hover:decoration-[#6E40FF] hover:decoration-4 rounded-lg transition-all">Home</Link>
-          <Link href="/pages/student/course" className="inline-block py-1 px-4 hover:decoration-[#6E40FF] hover:decoration-4 rounded-lg transition-all">Courses</Link>
-          <Link href="/pages/login-role" className="inline-block py-1 px-4 hover:decoration-[#6E40FF] hover:decoration-4 rounded-lg transition-all">Login</Link>
-          <Link href="/pages/signup-role" className="inline-block py-1 px-4 hover:decoration-[#6E40FF] hover:decoration-4 rounded-lg transition-all">Signup</Link>
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-x-8 text-black">
+          <Link href="/" className="inline-block py-2 px-4 hover:underline underline-offset-4">Home</Link>
+          <Link href="/pages/student/course" className="inline-block py-2 px-4 hover:underline underline-offset-4">Courses</Link>
+          <Link href="/pages/login-role" className="inline-block py-2 px-4 hover:underline underline-offset-4">Login</Link>
+          <Link href="/pages/signup-role" className="inline-block py-2 px-4 hover:underline underline-offset-4">Signup</Link>
         </nav>
+
+        {/* Mobile Menu Button */}
+        <label htmlFor="menu-toggle" className="md:hidden cursor-pointer">
+          <svg className="w-8 h-8 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </label>
       </div>
+
+      {/* Mobile Menu */}
+      <input type="checkbox" id="menu-toggle" className="hidden peer" />
+      <nav className="hidden peer-checked:flex flex-col md:hidden bg-white shadow-md rounded-md mt-2 p-4">
+        <Link href="/" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Home</Link>
+        <Link href="/pages/student/course" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Courses</Link>
+        <Link href="/pages/login-role" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Login</Link>
+        <Link href="/pages/signup-role" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Signup</Link>
+      </nav>
     </header>
   );
 
