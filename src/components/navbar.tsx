@@ -387,7 +387,7 @@ const Navbar = () => {
           <div className="flex items-center justify-center space-x-2 text-xl font-bold">
             <span className="text-white">Learn</span>
             <span className="px-3 py-1 text-[#22177A] bg-white rounded-full shadow-md">
-              &Grow
+              &grow
             </span>
           </div>
         </header>
