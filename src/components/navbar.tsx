@@ -441,12 +441,14 @@ const Navbar = () => {
                 </div>
 
                 {/* Dropdown Menu */}
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 shadow-md rounded-md hidden">
-                  <a href="/pages/mentor/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#22177A] hover:text-white">View Profile</a>
-                  <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#FF474C] hover:text-white" onClick={handleLogout}>
-                    Logout
-                  </button>
-                </div>
+                {isDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 shadow-md rounded-md hidden">
+                      <a href="/pages/mentor/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#22177A] hover:text-white">View Profile</a>
+                      <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#FF474C] hover:text-white" onClick={handleLogout}>
+                        Logout
+                      </button>
+                    </div>
+                  )}
               </div>
             </div>
           </div>
