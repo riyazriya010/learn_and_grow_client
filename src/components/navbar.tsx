@@ -406,7 +406,7 @@ const Navbar = () => {
             </nav>
 
             {/* Mobile Menu Button */}
-            <input type="checkbox" id="menu-toggle" className="hidden peer" />
+            {/* <input type="checkbox" id="menu-toggle" className="hidden peer" /> */}
             <label htmlFor="menu-toggle" className="md:hidden cursor-pointer">
               <svg className="w-8 h-8 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="3" y1="12" x2="21" y2="12" />
@@ -452,6 +452,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu (Now Opens on Click) */}
+          <input type="checkbox" id="menu-toggle" className="hidden peer" />
           <nav className="hidden peer-checked:flex flex-col md:hidden bg-white shadow-md rounded-md mt-2 p-4">
             <a href="/pages/mentor/dashboard" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Dashboard</a>
             <a href="/pages/mentor/courses" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Courses</a>
@@ -666,6 +667,7 @@ const Navbar = () => {
         <Link href="/pages/signup-role" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Signup</Link>
       </nav>
     </header>
+
   );
 
 };
