@@ -398,11 +398,11 @@ const Navbar = () => {
 
             {/* Navigation Links (Hidden on Small Screens) */}
             <nav className="hidden md:flex gap-x-6 text-black">
-              <a href="#" className="inline-block py-2 px-4 hover:underline underline-offset-4">Dashboard</a>
-              <a href="#" className="inline-block py-2 px-4 hover:underline underline-offset-4">Courses</a>
-              <a href="#" className="inline-block py-2 px-4 hover:underline underline-offset-4">Chat</a>
-              <a href="#" className="inline-block py-2 px-4 hover:underline underline-offset-4">Wallet</a>
-              <a href="#" className="inline-block py-2 px-4 hover:underline underline-offset-4">Sales Report</a>
+              <a href="/pages/mentor/dashboard" className="inline-block py-2 px-4 hover:underline underline-offset-4">Dashboard</a>
+              <a href="/pages/mentor/courses" className="inline-block py-2 px-4 hover:underline underline-offset-4">Courses</a>
+              <a href="/pages/mentor/chat" className="inline-block py-2 px-4 hover:underline underline-offset-4">Chat</a>
+              <a href="/pages/mentor/wallet" className="inline-block py-2 px-4 hover:underline underline-offset-4">Wallet</a>
+              <a href="/pages/mentor/sales-report" className="inline-block py-2 px-4 hover:underline underline-offset-4">Sales Report</a>
             </nav>
 
             {/* Mobile Menu Button */}
@@ -454,11 +454,11 @@ const Navbar = () => {
 
           {/* Mobile Menu (Initially Hidden) */}
           <nav className="md:hidden bg-white shadow-md rounded-md mt-2 p-4 flex flex-col gap-y-2 hidden">
-            <a href="#" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Dashboard</a>
-            <a href="#" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Courses</a>
-            <a href="#" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Chat</a>
-            <a href="#" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Wallet</a>
-            <a href="#" className="py-2 px-4 block hover:bg-red-200 rounded-lg">Sales Report</a>
+            <a href="/pages/mentor/dashboard" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Dashboard</a>
+            <a href="/pages/mentor/courses" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Courses</a>
+            <a href="/pages/mentor/chat" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Chat</a>
+            <a href="/pages/mentor/wallet" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Wallet</a>
+            <a href="/pages/mentor/sales-report" className="py-2 px-4 block hover:bg-red-200 rounded-lg">Sales Report</a>
           </nav>
         </header>
       </>
