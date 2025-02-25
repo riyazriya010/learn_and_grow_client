@@ -458,7 +458,7 @@ const Navbar = () => {
             <a href="#" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Courses</a>
             <a href="#" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Chat</a>
             <a href="#" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Wallet</a>
-            <a href="#" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Sales Report</a>
+            <a href="#" className="py-2 px-4 block hover:bg-red-200 rounded-lg">Sales Report</a>
           </nav>
         </header>
       </>
