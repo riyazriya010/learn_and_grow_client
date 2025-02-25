@@ -422,7 +422,7 @@ const Navbar = () => {
 
               {/* Notification Bell */}
               <div className="relative">
-                <button className="relative focus:outline-none">
+                <button className="relative focus:outline-none" onClick={handleBel}>
                   <div className="w-10 h-10 flex items-center justify-center rounded-full">
                     <svg className="h-6 w-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 7 7.388 7 9v5.159c0 .538-.214 1.055-.595 1.436L5 17h5m5 0a3 3 0 11-6 0h6z" />
@@ -436,10 +436,10 @@ const Navbar = () => {
               <div className="relative">
                 <div className="flex items-center gap-2 cursor-pointer">
                   <div className="w-8 h-8 rounded-full bg-[#22177A] text-white flex items-center justify-center font-bold">
-                    U
+                    {initials}
                   </div>
                   <span className="text-sm font-medium text-[#22177A] hidden sm:block">
-                    Username
+                    {mentor.username}
                   </span>
                 </div>
 
