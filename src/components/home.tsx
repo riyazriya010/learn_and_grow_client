@@ -41,7 +41,7 @@ const LoggedOutHome = () => {
 
     return (
         <>
-            
+
 
             <div className="flex flex-col min-h-screen bg-white">
                 <Navbar />
@@ -77,15 +77,15 @@ const LoggedOutHome = () => {
                         Expand Your <span className="text-[#433D8B]">Career Opportunity</span> <br /> With Our Courses
                     </h2>
 
-                    <div className="flex justify-center mt-8 overflow-x-auto gap-8"> {/* Increased gap for more space between cards */}
+                    <div className="flex justify-center mt-8 overflow-x-auto gap-4 md:gap-8 flex-wrap">
                         {/* First Card */}
-                        <div className="bg-[#F8F9FA] border-2 border-[#D6D1F0] rounded-lg w-[300px] h-[auto] p-4 text-center flex flex-col">
+                        <div className="bg-[#F8F9FA] border-2 border-[#D6D1F0] rounded-lg w-full sm:w-[300px] h-auto p-4 text-center flex flex-col">
                             {/* Image */}
                             <Image
                                 src="/images/web-development.jpg"
                                 alt="courses"
-                                width={300} // Adjusted width for the image to fit the card
-                                height={160} // Adjusted height for the image
+                                width={300}
+                                height={160}
                                 className="w-full h-auto object-cover rounded-lg mb-4"
                             />
                             {/* Card content */}
@@ -100,7 +100,7 @@ const LoggedOutHome = () => {
                                         <span className="text-yellow-400">★★★★☆</span>
                                     </div>
                                 </div>
-                                {/* Price and Student Count - Positioned opposite */}
+                                {/* Price and Student Count */}
                                 <div className="flex justify-between items-center mt-4">
                                     <p className="text-left text-lg">₹ 450.45</p>
                                     <p className="text-right text-sm text-gray-500">30 students</p>
@@ -109,28 +109,22 @@ const LoggedOutHome = () => {
                         </div>
 
                         {/* Second Card */}
-                        <div className="bg-[#F8F9FA] border-2 border-[#D6D1F0] rounded-lg w-[300px] h-[auto] p-4 text-center flex flex-col">
-                            {/* Image */}
+                        <div className="bg-[#F8F9FA] border-2 border-[#D6D1F0] rounded-lg w-full sm:w-[300px] h-auto p-4 text-center flex flex-col">
                             <Image
                                 src="/images/web-development.jpg"
                                 alt="courses"
-                                width={300} // Adjusted width for the image to fit the card
-                                height={160} // Adjusted height for the image
+                                width={300}
+                                height={160}
                                 className="w-full h-auto object-cover rounded-lg mb-4"
                             />
-                            {/* Card content */}
                             <div className="flex flex-col justify-between h-full space-y-4">
                                 <div className="flex flex-col justify-start space-y-2">
-                                    {/* Course Title */}
                                     <h4 className="font-semibold text-left">MERN Stack Web Developer Course</h4>
-                                    {/* Series Description */}
                                     <p className="text-sm text-left">Series Using Typescript</p>
-                                    {/* Rating */}
                                     <div className="flex justify-start items-center mt-2">
                                         <span className="text-yellow-400">★★★★☆</span>
                                     </div>
                                 </div>
-                                {/* Price and Student Count - Positioned opposite */}
                                 <div className="flex justify-between items-center mt-4">
                                     <p className="text-left text-lg">₹ 450.45</p>
                                     <p className="text-right text-sm text-gray-500">30 students</p>
@@ -139,37 +133,31 @@ const LoggedOutHome = () => {
                         </div>
 
                         {/* Third Card */}
-                        <div className="bg-[#F8F9FA] border-2 border-[#D6D1F0] rounded-lg w-[300px] h-[auto] p-4 text-center flex flex-col">
-                            {/* Image */}
+                        <div className="bg-[#F8F9FA] border-2 border-[#D6D1F0] rounded-lg w-full sm:w-[300px] h-auto p-4 text-center flex flex-col">
                             <Image
                                 src="/images/web-development.jpg"
                                 alt="courses"
-                                width={300} // Adjusted width for the image to fit the card
-                                height={160} // Adjusted height for the image
+                                width={300}
+                                height={160}
                                 className="w-full h-auto object-cover rounded-lg mb-4"
                             />
-                            {/* Card content */}
                             <div className="flex flex-col justify-between h-full space-y-4">
                                 <div className="flex flex-col justify-start space-y-2">
-                                    {/* Course Title */}
                                     <h4 className="font-semibold text-left">MERN Stack Web Developer Course</h4>
-                                    {/* Series Description */}
                                     <p className="text-sm text-left">Series Using Typescript</p>
-                                    {/* Rating */}
                                     <div className="flex justify-start items-center mt-2">
                                         <span className="text-yellow-400">★★★★☆</span>
                                     </div>
                                 </div>
-                                {/* Price and Student Count - Positioned opposite */}
                                 <div className="flex justify-between items-center mt-4">
                                     <p className="text-left text-lg">₹ 450.45</p>
                                     <p className="text-right text-sm text-gray-500">30 students</p>
                                 </div>
                             </div>
                         </div>
-
-                        {/* Add more cards as needed */}
                     </div>
+
+
                 </section>
 
 
