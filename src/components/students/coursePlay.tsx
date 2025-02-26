@@ -201,7 +201,9 @@ const CoursePlay = () => {
     if (isLoading) return <LoadingModal isOpen={isLoading} message="Please Wait" />;
 
     return (
+
         <div className="flex flex-col min-h-screen bg-white">
+
             <header>
                 <Navbar />
             </header>
@@ -216,18 +218,18 @@ const CoursePlay = () => {
             />
 
             {(!purchasedCourse || Object.keys(purchasedCourse).length === 0) ? (
-                // Unauthorized Message
-                <div className="flex justify-center items-center h-screen">
+                <div className="flex justify-center items-center h-screen px-4 text-center">
                     <h2 className="text-2xl font-bold text-red-500">Unauthorized Access - Not Available</h2>
                 </div>
             ) : (
+                <div className="flex flex-col md:flex-row w-full px-4 py-8 md:px-8 lg:px-16">
 
-                <div className="flex flex-1 w-full px-4 py-8 md:px-8 lg:px-16">
-                    {/* Left Side */}
-                    <div className="w-full md:w-3/5 pr-8 border-r border-gray-300">
+                    {/* Left Side (Video & Description) */}
+                    <div className="w-full md:w-3/5 md:pr-8 md:border-r border-gray-300">
+
                         {/* Video Player */}
                         <div
-                            className="relative w-full h-[340px] mb-4"
+                            className="relative w-full h-[200px] xs:h-[250px] sm:h-[300px] md:h-[340px] lg:h-[400px] mb-4"
                             onMouseEnter={() => setShowControls(true)}
                             onMouseLeave={() => setShowControls(false)}
                         >
@@ -255,8 +257,8 @@ const CoursePlay = () => {
                         </div>
 
                         {/* Course Description */}
-                        <div className="mb-4">
-                            <h2 className="text-xl font-bold mb-2">{course?.courseName}</h2>
+                        <div className="mb-4 px-2 sm:px-4">
+                            <h2 className="text-lg sm:text-xl font-bold mb-2">{course?.courseName}</h2>
                             <p className="text-gray-700 mb-2">{course?.description}</p>
                             <p className="text-sm text-gray-500 mb-2">Category: {course?.category}</p>
                             <p className="text-sm text-gray-500 mb-2">Level: {course?.level}</p>
@@ -264,8 +266,8 @@ const CoursePlay = () => {
                         </div>
                     </div>
 
-                    {/* Right Side */}
-                    <div className="w-full md:w-2/5 pl-8">
+                    {/* Right Side (Chapters) */}
+                    <div className="w-full md:w-2/5 md:pl-8 mt-8 md:mt-0">
                         <h3 className="text-lg font-bold mb-4">Chapters</h3>
                         <div className="space-y-4">
                             {chapters.map((chapter, index) => {
@@ -277,10 +279,10 @@ const CoursePlay = () => {
                                     <div
                                         key={chapter._id}
                                         className={`p-4 rounded-lg border shadow-sm transition-colors cursor-pointer ${index === currentChapterIndex
-                                            ? "border-blue-500 text-blue-500 bg-blue-50" // Current chapter being watched
-                                            : completedChapter?.isCompleted
-                                                ? "border-green-500 text-green-500 bg-green-50" // Completed chapter
-                                                : "border-gray-300 bg-white" // Default style for incomplete chapters
+                                                ? "border-blue-500 text-blue-500 bg-blue-50"
+                                                : completedChapter?.isCompleted
+                                                    ? "border-green-500 text-green-500 bg-green-50"
+                                                    : "border-gray-300 bg-white"
                                             }`}
                                         onClick={() => handleChapterClick(index)}
                                     >
@@ -303,8 +305,9 @@ const CoursePlay = () => {
                         </div>
                     </div>
                 </div>
-
             )}
+
+
 
             <Footer />
         </div>
