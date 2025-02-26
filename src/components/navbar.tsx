@@ -520,8 +520,8 @@ const Navbar = () => {
 
 
       <>
-        <header className="bg-white border-b border-gray-300 py-4 px-4 sm:px-6 md:px-8 lg:pl-[4rem] lg:pr-[1rem] relative">
-          <div className="max-w-6xl mx-auto flex items-center justify-between">
+        <header className="bg-white border-b border-gray-300 py-4 px-4 md:px-[4rem] relative">
+          <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between">
 
             {/* Left Side: Logo */}
             <div className="flex items-center space-x-2 text-lg sm:text-xl font-bold">
@@ -531,15 +531,27 @@ const Navbar = () => {
               </span>
             </div>
 
-            {/* Right Side: Navigation */}
-            <nav className="flex items-center gap-x-4 sm:gap-x-6 text-black">
-              <Link href="/pages/home" className="py-1 px-3 hover:underline">
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex gap-x-6 text-black">
+              <Link href="/pages/home" className="py-2 px-4 hover:underline">
                 Home
               </Link>
-              <Link href="/pages/student/course" className="py-1 px-3 hover:underline">
+              <Link href="/pages/student/course" className="py-2 px-4 hover:underline">
                 Courses
               </Link>
+            </nav>
 
+            {/* Mobile Menu Button */}
+            <label htmlFor="menu-toggle" className="md:hidden cursor-pointer">
+              <svg className="w-8 h-8 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </label>
+
+            {/* Profile & Notification */}
+            <div className="flex items-center gap-4 mt-4 md:mt-0">
               {/* Notification Bell */}
               <div className="relative">
                 <button className="relative focus:outline-none" onClick={handleBell}>
@@ -561,7 +573,7 @@ const Navbar = () => {
                 <div className="w-8 h-8 rounded-full bg-[#22177A] text-white flex items-center justify-center font-bold">
                   {initials}
                 </div>
-                <span className="text-sm font-medium text-[#22177A] hidden sm:inline">
+                <span className="text-sm font-medium text-[#22177A] hidden sm:block">
                   {user.username}
                 </span>
               </div>
@@ -577,10 +589,22 @@ const Navbar = () => {
                   </button>
                 </div>
               )}
-            </nav>
+            </div>
           </div>
+
+          {/* Mobile Menu */}
+          <input type="checkbox" id="menu-toggle" className="hidden peer" />
+          <nav className="hidden peer-checked:flex flex-col md:hidden bg-white shadow-md rounded-md mt-2 p-4">
+            <Link href="/pages/home" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">
+              Home
+            </Link>
+            <Link href="/pages/student/course" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">
+              Courses
+            </Link>
+          </nav>
         </header>
       </>
+
 
 
 
