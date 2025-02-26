@@ -141,7 +141,7 @@ const StudentViewCourse = () => {
 
                 <ToastContainer autoClose={2000} transition={Slide} />
 
-                <div className="flex flex-1 w-full px-4 py-8 md:px-8 lg:px-16">
+                <div className="flex flex-1 w-full px-4 py-8 md:px-4 lg:px-16">
                     {course ? (
                         <div className="max-w-7xl mx-auto flex flex-col md:flex-row">
                             <div className="w-full md:w-[60%] pr-6">
