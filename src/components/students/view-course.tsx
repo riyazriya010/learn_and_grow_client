@@ -175,7 +175,7 @@ const StudentViewCourse = () => {
                             </div>
                             <div className="hidden md:block border-l border-gray-300 mx-6"></div>
                             <div className="w-full md:w-[40%] flex flex-col items-center md:items-start mt-6 md:mt-0">
-                                <div className="w-full h-[250px] md:h-[340px] md:w-[500px] mb-4 rounded-[18px] shadow-[0_4px_10px_rgba(0,123,255,0.1)]">
+                            <div className="w-full h-[340px] md:w-[400px] lg:w-[500px] mb-4 rounded-[18px] shadow-[0_4px_10px_rgba(0,123,255,0.1)]">
                                     {course.thumbnailUrl && (
                                         <div className="relative w-full h-full">
                                             <video
