@@ -531,6 +531,44 @@ const Navbar = () => {
               </span>
             </div>
 
+            {/* Right Side: Notification + Profile (ALWAYS VISIBLE) */}
+            <div className="flex items-center md:hidden gap-3">
+              {/* Notification Bell */}
+              <button className="relative focus:outline-none" onClick={handleBell}>
+                <div className="w-8 h-8 flex items-center justify-center rounded-full">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 7 7.388 7 9v5.159c0 .538-.214 1.055-.595 1.436L5 17h5m5 0a3 3 0 11-6 0h6z" />
+                  </svg>
+                </div>
+                {studentCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                    {studentCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Profile Icon */}
+              <div className="relative">
+                <div className="flex items-center gap-2 cursor-pointer" onClick={toggleDropdown}>
+                  <div className="w-8 h-8 rounded-full bg-[#22177A] text-white flex items-center justify-center font-bold">
+                    {initials}
+                  </div>
+                </div>
+
+                {/* Dropdown Menu - Positioned Below Initials */}
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 shadow-md rounded-md">
+                    <Link href="/pages/student/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#22177A] hover:text-white">
+                      View Profile
+                    </Link>
+                    <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#FF474C] hover:text-white" onClick={handleLogout}>
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* Mobile Menu Button */}
             <label htmlFor="menu-toggle" className="md:hidden cursor-pointer">
               <svg className="w-8 h-8 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -560,28 +598,6 @@ const Navbar = () => {
                   )}
                 </button>
               </div>
-
-              {/* User Profile */}
-              <div className="relative">
-                <div className="flex items-center gap-2 cursor-pointer" onClick={toggleDropdown}>
-                  <div className="w-8 h-8 rounded-full bg-[#22177A] text-white flex items-center justify-center font-bold">
-                    {initials}
-                  </div>
-                  <span className="text-sm font-medium text-[#22177A] hidden sm:inline">{user.username}</span>
-                </div>
-
-                {/* Dropdown Menu - Positioned Below Initials */}
-                {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 shadow-md rounded-md">
-                    <Link href="/pages/student/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#22177A] hover:text-white">
-                      View Profile
-                    </Link>
-                    <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#FF474C] hover:text-white" onClick={handleLogout}>
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </div>
             </nav>
           </div>
 
@@ -590,11 +606,23 @@ const Navbar = () => {
           <nav className="hidden peer-checked:flex flex-col md:hidden bg-white shadow-md rounded-md mt-2 p-4">
             <Link href="/pages/home" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Home</Link>
             <Link href="/pages/student/course" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Courses</Link>
+
+            {/* Mobile Notification */}
+            <div className="flex items-center gap-3 py-2 px-4 hover:bg-gray-200 rounded-lg">
+              <button className="relative focus:outline-none" onClick={handleBell}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 7 7.388 7 9v5.159c0 .538-.214 1.055-.595 1.436L5 17h5m5 0a3 3 0 11-6 0h6z" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Profile & Logout */}
             <Link href="/pages/student/profile" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Profile</Link>
             <button className="w-full text-left py-2 px-4 block hover:bg-red-200 rounded-lg" onClick={handleLogout}>Logout</button>
           </nav>
         </header>
       </>
+
 
 
 
