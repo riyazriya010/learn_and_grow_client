@@ -121,7 +121,7 @@ const CertificatePage = () => {
                             {/* Certificate Container */}
                             <div
                                 ref={certificateRef}
-                                className="w-full max-w-4xl sm:max-w-5xl aspect-video border-8 border-blue-300 bg-white shadow-2xl rounded-lg p-4 sm:p-8 relative min-h-[400px] sm:min-h-[500px] md:min-h-[600px]"
+                                className="w-full max-w-4xl sm:max-w-5xl border-8 border-blue-300 bg-white shadow-2xl rounded-lg p-4 sm:p-8 relative min-h-[450px] sm:min-h-[550px] md:min-h-[600px]"
                             >
                                 <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-blue-100"></div>
 
@@ -156,10 +156,10 @@ const CertificatePage = () => {
                                     </p>
 
                                     {/* Signature and Date Section */}
-                                    <div className="flex flex-col sm:flex-row justify-between w-full px-6 sm:px-10 mt-8 sm:mt-12">
+                                    <div className="flex flex-col sm:flex-row justify-between w-full px-4 sm:px-10 mt-8 sm:mt-12">
 
                                         {/* Date Section */}
-                                        <div className="text-center sm:text-left">
+                                        <div className="w-full sm:w-1/2 text-center sm:text-left">
                                             <p className="px-4 sm:px-5">
                                                 {certificate?.issuedDate
                                                     ? new Date(certificate?.issuedDate).toLocaleDateString()
@@ -170,10 +170,11 @@ const CertificatePage = () => {
                                         </div>
 
                                         {/* Mentor's Signature */}
-                                        <div className="text-center sm:text-right mt-6 sm:mt-0">
+                                        <div className="w-full sm:w-1/2 text-center sm:text-right mt-6 sm:mt-0">
                                             <p className="text-lg sm:text-xl italic font-signature text-gray-700">
                                                 {certificate?.mentorName}
                                             </p>
+                                            <div className="h-1 w-24 sm:w-32 bg-gray-300 rounded-full mx-auto sm:mx-0"></div>
                                             <p className="text-xs sm:text-sm text-gray-500">Mentor&apos;s Signature</p>
                                         </div>
                                     </div>
@@ -188,7 +189,6 @@ const CertificatePage = () => {
                         </div>
                     )}
                 </div>
-
 
 
                 <Footer />
