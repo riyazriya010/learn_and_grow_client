@@ -859,33 +859,40 @@ const MentoChat = () => {
 
         {/* Main Content - Grows to push Footer down */}
 
-
-        <div className="flex-grow flex flex-col md:flex-row justify-between items-start p-4 md:p-6 bg-white">
+        <div className="flex-grow flex justify-between items-start p-6 bg-white-100">
 
           {/* Left Section: Chat List */}
-          <div className="w-full md:w-1/3 max-h-[600px] overflow-y-auto pr-4">
-            <h1 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-800">Student Chat</h1>
+          <div className="w-1/3 max-h-[600px] overflow-y-auto pr-4">
+            <h1 className="text-2xl font-bold mb-6 text-gray-800">Student Chat</h1>
             <ul className="space-y-4">
               {students.slice(0, 6).map((student) => (
                 <li
                   key={student._id}
-                  className={`border border-gray-300 shadow-sm p-3 md:p-4 rounded-lg flex items-center cursor-pointer transition hover:shadow-md hover:bg-gray-50 ${selectedStudent?._id === student._id ? 'bg-gray-100 border-blue-500' : ''}`}
+                  className={`border border-gray-300 shadow-sm p-4 rounded-lg flex items-center cursor-pointer transition hover:shadow-md hover:bg-gray-50 ${selectedStudent?._id === student._id ? 'bg-gray-100 border-blue-500' : ''
+                    }`}
                   onClick={() => createRoom(student)}
                 >
+                  {/* <img
+          src={student?.profilePicUrl}
+          alt={`profile`}
+          className="w-14 h-14 rounded-full mr-4 object-cover border border-gray-200"
+        /> */}
                   <Image
-                    src={student?.profilePicUrl || "/default-profile.png"}
+                    src={student?.profilePicUrl || "/default-profile.png"} // Provide a fallback image
                     alt="profile"
-                    width={48} height={48}
-                    className="rounded-full mr-3 md:mr-4 object-cover border border-gray-200"
+                    width={56}
+                    height={56}
+                    className="rounded-full mr-4 object-cover border border-gray-200"
                   />
                   <div>
-                    <p className="font-medium text-md md:text-lg text-gray-700">{student.username}</p>
+                    <p className="font-medium text-lg text-gray-700">{student.username}</p>
                     <p className="text-sm text-gray-500">
+                      {' '}
                       {student._id === selectedStudent?._id ? lastMessage || student.lastMessage : student.lastMessage}
                     </p>
                   </div>
                   {student._id !== selectedStudent?._id && student.mentorMsgCount > 0 && (
-                    <span className="ml-auto w-5 h-5 md:w-6 md:h-6 flex items-center justify-center border border-green-500 bg-green-500 text-white rounded-full text-xs">
+                    <span className="ml-auto w-6 h-6 flex items-center justify-center border border-green-500 bg-green-500 text-white rounded-full">
                       {student?.mentorMsgCount}
                     </span>
                   )}
@@ -898,21 +905,28 @@ const MentoChat = () => {
           </div>
 
           {/* Right Section: Messages */}
-          <div className="w-full md:w-2/3 flex flex-col bg-white shadow-lg rounded-lg p-4 md:p-6 h-full">
-
+          <div className="w-2/3 flex flex-col bg-white shadow-lg rounded-lg p-6 h-full">
             {/* Chat Header */}
             {selectedStudent && (
-              <div className="flex items-center justify-between mb-3 md:mb-4 p-3 md:p-4 bg-gray-50 rounded-lg shadow-sm">
+              <div className="flex items-center justify-between mb-4 p-4 bg-gray-50 rounded-lg shadow-sm">
                 <div className="flex items-center">
+                  {/* <img
+          src={selectedStudent.profilePicUrl}
+          alt="profile"
+          className="w-14 h-14 rounded-full mr-4 object-cover border border-gray-200"
+        /> */}
+
                   <Image
                     src={selectedStudent.profilePicUrl}
                     alt="profile"
-                    width={48} height={48}
-                    className="rounded-full mr-3 md:mr-4 object-cover border border-gray-200"
+                    width={56}
+                    height={56}
+                    className="rounded-full mr-4 object-cover border border-gray-200"
                   />
+
                   <div>
-                    <p className="text-md md:text-lg font-bold text-gray-700">{selectedStudent.username}</p>
-                    {isTyping && <div className="text-gray-500 italic text-sm">Typing...</div>}
+                    <p className="text-lg font-bold text-gray-700">{selectedStudent.username}</p>
+                    {isTyping && <div className="text-gray-500 italic">Typing...</div>}
                   </div>
                 </div>
               </div>
@@ -920,14 +934,16 @@ const MentoChat = () => {
 
             {/* Messages List */}
             <div
+
               ref={messagesContainerRef}
-              className="flex-1 overflow-y-auto mb-4 space-y-3 p-3 md:p-4 bg-gray-50 rounded-lg scrollbar-hide"
-              style={{ maxHeight: '60vh' }}
+              className="flex-1 overflow-y-auto mb-4 space-y-3 p-4 bg-gray-50 rounded-lg scrollbar-hide"
+              style={{ maxHeight: '65vh' }}
             >
               {(() => {
+                const groupedMessages: { dateLabel: string; messages: MessageData[] }[] = [];
                 let currentGroup: { dateLabel: string; messages: MessageData[] } | null = null;
 
-                return messages.reduce((acc, data: MessageData) => {
+                messages.forEach((data: MessageData) => {
                   const messageDate = new Date(data.createdAt);
                   const today = new Date();
                   const yesterday = new Date(today);
@@ -936,6 +952,7 @@ const MentoChat = () => {
                   const messageDateFormatted = messageDate.toLocaleDateString();
                   const todayFormatted = today.toLocaleDateString();
                   const yesterdayFormatted = yesterday.toLocaleDateString();
+
 
                   let dateLabel = "";
                   if (messageDateFormatted === todayFormatted) {
@@ -947,19 +964,27 @@ const MentoChat = () => {
                   }
 
                   if (!currentGroup || currentGroup.dateLabel !== dateLabel) {
-                    if (currentGroup) acc.push(currentGroup);
+                    if (currentGroup) {
+                      groupedMessages.push(currentGroup);
+                    }
                     currentGroup = { dateLabel, messages: [data] };
                   } else {
                     currentGroup.messages.push(data);
                   }
+                });
 
-                  return acc;
-                }, [] as { dateLabel: string; messages: MessageData[] }[]).map((group, groupIndex) => (
+                if (currentGroup) {
+                  groupedMessages.push(currentGroup);
+                }
+
+                return groupedMessages.map((group, groupIndex) => (
                   <div key={groupIndex}>
-                    <div className="w-full text-center text-gray-500 text-xs md:text-sm my-2">
+
+                    <div className="w-full text-center text-gray-500 text-sm my-2">
                       {group.dateLabel}
                     </div>
-                    {group.messages.map((data, messageIndex) => {
+
+                    {group.messages.map((data: MessageData, messageIndex: number) => {
                       const isMentorMessage = data.senderId === selectedStudent?._id;
                       const deleteForMe = data.deletedForSender && data.senderId !== selectedStudent?._id;
                       const deleteForEveryOneMentor = data.deletedForReceiver && data.senderId === selectedStudent?._id;
@@ -976,18 +1001,24 @@ const MentoChat = () => {
                         messageClass = 'bg-gray-300 text-black-700';
                       }
 
+                      const isDeletedMessage = messageContent === "Deleted by you" || messageContent === "Deleted by student";
+
+                      const handleClick = () => {
+                        if (!isMentorMessage && !isDeletedMessage) {
+                          deleteMessage(data._id);
+                        }
+                      };
+
                       return (
                         <div key={messageIndex} className={`flex ${isMentorMessage ? 'justify-start' : 'justify-end'} w-full`}>
                           <div
-                            onClick={() => {
-                              if (!isMentorMessage && messageContent !== "Deleted by you" && messageContent !== "Deleted by student") {
-                                deleteMessage(data._id);
-                              }
-                            }}
-                            className={`relative p-2 md:p-3 mt-3 md:mt-4 rounded-lg shadow-md max-w-[80%] md:max-w-[75%] min-w-[50px] cursor-pointer text-xs md:text-sm transition-transform hover:scale-105 ${messageClass} break-words flex justify-between items-center`}
+                            onClick={handleClick}
+                            className={`relative p-3 mt-4 rounded-lg shadow-md max-w-[75%] min-w-[50px] cursor-pointer text-sm transition-transform hover:scale-105 ${messageClass} break-words flex justify-between items-center`}
                           >
+
                             <span className="text-left">{messageContent}</span>
-                            <span className="text-[9px] md:text-[10px] text-gray-500 whitespace-nowrap ml-2">
+
+                            <span className="text-[10px] text-gray-500 whitespace-nowrap ml-2">
                               {new Date(data.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
                             </span>
                           </div>
@@ -1000,32 +1031,36 @@ const MentoChat = () => {
             </div>
 
             {/* Input Field and Send Button */}
+            {/* Emoji picker */}
             {showEmojiPicker && (
-              <div className="bottom-14 left-4 w-48 md:w-64">
+              <div className="bottom-14 left-4 w-64">
                 <EmojiPicker onEmojiClick={handleEmojiClick} />
               </div>
             )}
-            <div className="flex items-center space-x-2 md:space-x-3 mt-3">
-              <button onClick={toggleEmojiPicker} className="text-lg">😀</button>
+            <div className="flex items-center space-x-3 mt-4">
+              {/* Show emoji picker button */}
+              <button onClick={toggleEmojiPicker} className="emoji-button">
+                😀
+              </button>
               <input
                 type="text"
                 value={inputData}
-                className="border border-gray-300 p-2 md:p-3 w-full rounded-lg shadow-sm focus:ring focus:ring-blue-300 focus:outline-none"
+                className="border border-gray-300 p-3 w-full rounded-lg shadow-sm focus:ring focus:ring-blue-300 focus:outline-none"
                 onChange={handleInputChange}
                 placeholder="Type your message..."
               />
               <button
                 type="submit"
-                className="bg-blue-500 text-white px-4 md:px-5 py-2 md:py-3 rounded-lg shadow-md hover:bg-blue-600 focus:ring focus:ring-blue-300 transition"
+                className="bg-blue-500 text-white px-5 py-3 rounded-lg shadow-md hover:bg-blue-600 focus:ring focus:ring-blue-300 transition"
                 onClick={sendMessage}
               >
                 Send
               </button>
             </div>
-
           </div>
-        </div>
 
+
+        </div>
 
         {/* Footer - Always stays at the bottom */}
         <MentorFooter />
@@ -1036,5 +1071,7 @@ const MentoChat = () => {
 };
 
 export default MentoChat;
+
+
 
 
