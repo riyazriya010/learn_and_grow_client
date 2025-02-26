@@ -108,15 +108,15 @@ const StudentViewCourse = () => {
                 error &&
                 error?.response?.status === 403 &&
                 error?.response?.data?.message === 'Student Blocked'
-              ) {
+            ) {
                 toast.warn(error?.response?.data?.message);
                 Cookies.remove('accessToken');
                 localStorage.clear();
                 setTimeout(() => {
-                  window.location.replace('/pages/student/login');
+                    window.location.replace('/pages/student/login');
                 }, 3000);
                 return;
-              }
+            }
         }
 
         const courseDetails = {
@@ -143,24 +143,21 @@ const StudentViewCourse = () => {
 
                 <div className="flex flex-1 w-full px-4 py-8 md:px-8 lg:px-16">
                     {course ? (
-                        <div className="max-w-7xl mx-auto flex">
-                            <div className="w-[60%] pr-6">
+                        <div className="max-w-7xl mx-auto flex flex-col md:flex-row">
+                            <div className="w-full md:w-[60%] pr-6">
                                 <h1 className="text-2xl font-bold text-[#323232] mb-2">{course.courseName}</h1>
                                 {course.ratings ? (
                                     <p className="text-[#A7A7A7] text-sm mb-4">{course.ratings} ⭐</p>
                                 ) : (
-                                    // <p className="text-[#7F7F7F] text-sm mb-4">No ratings</p>
                                     <p className="text-[#7F7F7F] text-sm mb-4">⭐ ⭐ ⭐ ⭐ ⭐</p>
                                 )}
                                 <p className="text-[#7F7F7F] text-sm mb-6">{course.description}</p>
                                 <hr className="border-t border-gray-300 my-4" />
                                 <h2 className="text-lg font-semibold text-[#323232] mb-4">Chapters</h2>
                                 <ul className="text-[#7F7F7F] text-sm list-disc list-inside">
-                                    {
-                                        chapters.map((chapter: any, index: any) => {
-                                            return <li key={index}>{chapter.chapterTitle}</li>
-                                        })
-                                    }
+                                    {chapters.map((chapter, index) => (
+                                        <li key={index}>{chapter.chapterTitle}</li>
+                                    ))}
                                 </ul>
                                 <hr className="border-t border-gray-300 my-4" />
                                 <h2 className="text-lg font-semibold text-[#323232] mb-4">Course Highlights</h2>
@@ -176,11 +173,11 @@ const StudentViewCourse = () => {
                                     Gain essential skills to excel in this field. Comprehensive lessons and hands-on exercises designed to build expertise and confidence.
                                 </p>
                             </div>
-                            <div className="border-l border-gray-300 mx-6"></div>
-                            <div className="w-[40%] flex flex-col items-start">
-                                <div className="w-full h-[340px] w-[500px] mb-4 rounded-[18px] shadow-[0_4px_10px_rgba(0,123,255,0.1)]">
+                            <div className="hidden md:block border-l border-gray-300 mx-6"></div>
+                            <div className="w-full md:w-[40%] flex flex-col items-center md:items-start mt-6 md:mt-0">
+                                <div className="w-full h-[250px] md:h-[340px] md:w-[500px] mb-4 rounded-[18px] shadow-[0_4px_10px_rgba(0,123,255,0.1)]">
                                     {course.thumbnailUrl && (
-                                        <div className="relative w-full h-full ">
+                                        <div className="relative w-full h-full">
                                             <video
                                                 ref={videoRef}
                                                 src={course.demoVideo[0].url}
@@ -198,23 +195,22 @@ const StudentViewCourse = () => {
                                 <p className="text-[#7F7F7F] text-sm mb-4">Category: {course.category}</p>
                                 <div className="flex justify-between items-center w-full mb-4">
                                     <p className="text-xl font-semibold text-[#000000]">₹{course.price}</p>
-                                    {/* <p className="text-green-600 font-semibold">65% off</p> */}
                                 </div>
-                                {alreadyBuyed ? <button
-                                    onClick={() => router.push('/pages/student/purchased-course')}
-                                    className="font-semibold py-2 px-6 border border-[#22177A] bg-[#ffffff] text-gray-600 rounded-[13px] hover:bg-gray-200 transition-colors"
-                                >
-                                    Enrolled
-                                </button>
-                                    :
+                                {alreadyBuyed ? (
+                                    <button
+                                        onClick={() => router.push('/pages/student/purchased-course')}
+                                        className="font-semibold py-2 px-6 border border-[#22177A] bg-[#ffffff] text-gray-600 rounded-[13px] hover:bg-gray-200 transition-colors"
+                                    >
+                                        Enrolled
+                                    </button>
+                                ) : (
                                     <button
                                         onClick={() => buyCourse()}
                                         className="bg-[#22177A] text-white rounded-[13px] font-semibold py-2 px-6"
                                     >
                                         Buy Course
                                     </button>
-                                }
-
+                                )}
                             </div>
                         </div>
                     ) : (
@@ -233,6 +229,7 @@ const StudentViewCourse = () => {
 
                 <Footer />
             </div>
+
         </>
     );
 };
