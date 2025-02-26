@@ -520,8 +520,8 @@ const Navbar = () => {
 
 
       <>
-        <header className="bg-white border-b border-gray-300 py-4 px-4 md:px-[4rem] relative">
-          <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between">
+        <header className="bg-white border-b border-gray-300 py-4 px-4 sm:px-6 md:px-8 lg:pl-[4rem] lg:pr-[1rem] relative">
+          <div className="max-w-6xl mx-auto flex items-center justify-between">
 
             {/* Left Side: Logo */}
             <div className="flex items-center space-x-2 text-lg sm:text-xl font-bold">
@@ -530,16 +530,6 @@ const Navbar = () => {
                 &Grow
               </span>
             </div>
-
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex gap-x-6 text-black">
-              <Link href="/pages/home" className="py-2 px-4 hover:underline">
-                Home
-              </Link>
-              <Link href="/pages/student/course" className="py-2 px-4 hover:underline">
-                Courses
-              </Link>
-            </nav>
 
             {/* Mobile Menu Button */}
             <label htmlFor="menu-toggle" className="md:hidden cursor-pointer">
@@ -550,8 +540,11 @@ const Navbar = () => {
               </svg>
             </label>
 
-            {/* Profile & Notification */}
-            <div className="flex items-center gap-4 mt-4 md:mt-0">
+            {/* Right Side: Navigation (Hidden in Mobile) */}
+            <nav className="hidden md:flex items-center gap-x-4 sm:gap-x-6 text-black">
+              <Link href="/pages/home" className="py-1 px-3 hover:underline">Home</Link>
+              <Link href="/pages/student/course" className="py-1 px-3 hover:underline">Courses</Link>
+
               {/* Notification Bell */}
               <div className="relative">
                 <button className="relative focus:outline-none" onClick={handleBell}>
@@ -569,38 +562,36 @@ const Navbar = () => {
               </div>
 
               {/* User Profile */}
-              <div className="relative flex items-center gap-2 cursor-pointer" onClick={toggleDropdown}>
-                <div className="w-8 h-8 rounded-full bg-[#22177A] text-white flex items-center justify-center font-bold">
-                  {initials}
+              <div className="relative">
+                <div className="flex items-center gap-2 cursor-pointer" onClick={toggleDropdown}>
+                  <div className="w-8 h-8 rounded-full bg-[#22177A] text-white flex items-center justify-center font-bold">
+                    {initials}
+                  </div>
+                  <span className="text-sm font-medium text-[#22177A] hidden sm:inline">{user.username}</span>
                 </div>
-                <span className="text-sm font-medium text-[#22177A] hidden sm:block">
-                  {user.username}
-                </span>
-              </div>
 
-              {/* Dropdown Menu */}
-              {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 shadow-md rounded-md">
-                  <Link href="/pages/student/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#22177A] hover:text-white">
-                    View Profile
-                  </Link>
-                  <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#FF474C] hover:text-white" onClick={handleLogout}>
-                    Logout
-                  </button>
-                </div>
-              )}
-            </div>
+                {/* Dropdown Menu - Positioned Below Initials */}
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 shadow-md rounded-md">
+                    <Link href="/pages/student/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#22177A] hover:text-white">
+                      View Profile
+                    </Link>
+                    <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#FF474C] hover:text-white" onClick={handleLogout}>
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            </nav>
           </div>
 
-          {/* Mobile Menu */}
+          {/* Mobile Menu (Opens on Click) */}
           <input type="checkbox" id="menu-toggle" className="hidden peer" />
           <nav className="hidden peer-checked:flex flex-col md:hidden bg-white shadow-md rounded-md mt-2 p-4">
-            <Link href="/pages/home" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">
-              Home
-            </Link>
-            <Link href="/pages/student/course" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">
-              Courses
-            </Link>
+            <Link href="/pages/home" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Home</Link>
+            <Link href="/pages/student/course" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Courses</Link>
+            <Link href="/pages/student/profile" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Profile</Link>
+            <button className="w-full text-left py-2 px-4 block hover:bg-red-200 rounded-lg" onClick={handleLogout}>Logout</button>
           </nav>
         </header>
       </>
