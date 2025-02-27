@@ -25,16 +25,16 @@ const AdminLogin = () => {
         try {
             const response = await adminApis.login(data)
             console.log('admin log response : ', response)
-            if (response && response?.data?.message === 'Invalid Credentials') {
-                toast.error('Invalid Credential')
-            } else if (response && response?.data?.success) {
+            if (response && response?.data?.success) {
                 console.log('admin log : ', response)
-                router.push('/pages/dashboard')
+                router.replace('/pages/dashboard')
                 // window.location.replace('/pages/dashboard');
             }
 
         } catch (error: any) {
-            if (error && error.response?.status === 409) {
+            if (error && error.response?.status === 401) {
+                toast.error('Invalid Credential')
+            }else if (error && error.response?.status === 409) {
                 toast.error('Invalid Credential')
             }else if (axios.isAxiosError(error) && error.code === 'ERR_NETWORK') {
                 toast.error('Server is not running or cannot be reached');
