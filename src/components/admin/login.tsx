@@ -27,16 +27,18 @@ const AdminLogin = () => {
             console.log('admin log response : ', response)
             if (response && response?.data?.success) {
                 console.log('admin log : ', response)
-                router.replace('/pages/dashboard')
+                setTimeout(() => {
+                    router.replace('/pages/dashboard')
+                }, 2000)
                 // window.location.replace('/pages/dashboard');
             }
 
         } catch (error: any) {
             if (error && error.response?.status === 401) {
                 toast.error('Invalid Credential')
-            }else if (error && error.response?.status === 409) {
+            } else if (error && error.response?.status === 409) {
                 toast.error('Invalid Credential')
-            }else if (axios.isAxiosError(error) && error.code === 'ERR_NETWORK') {
+            } else if (axios.isAxiosError(error) && error.code === 'ERR_NETWORK') {
                 toast.error('Server is not running or cannot be reached');
             } else {
                 console.log('e ', error.message)
