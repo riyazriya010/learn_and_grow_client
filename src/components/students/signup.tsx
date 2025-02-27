@@ -49,10 +49,12 @@ const Signup = () => {
                         role: response.data.result.role
                     }),
                 )
+                const otpData = response.data.otp
                 setTimeout(() => {
                     // router.push('/pages/student/verify-alert') 
                     console.log('verify alert redirect')
-                    router.replace('/pages/student/verify-alert');
+                    // router.replace('/pages/student/verify-alert');
+                    router.replace(`/pages/student/otp?otp=${otpData}`);
                 }, 3000)
             }
         } catch (error: any) {
