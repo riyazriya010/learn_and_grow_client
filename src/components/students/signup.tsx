@@ -11,6 +11,7 @@ import { app } from "@/lib/firebase/config";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/slices/userSlice";
 import Navbar from "../navbar";
+import { useRouter } from "next/navigation";
 
 
 export interface Credentials {
@@ -29,6 +30,7 @@ export interface UserDetails {
 
 const Signup = () => {
     const dispatch = useDispatch()
+    const router = useRouter()
 
     // Signup Form Functionality
     const { register, handleSubmit, reset, getValues, formState: { errors } } = useForm<Credentials>()
@@ -50,8 +52,8 @@ const Signup = () => {
                 setTimeout(() => {
                     // router.push('/pages/student/verify-alert') 
                     console.log('verify alert redirect')
-                    window.location.replace('/pages/student/verify-alert');
-                }, 1000)
+                    router.replace('/pages/student/verify-alert');
+                }, 3000)
             }
         } catch (error: any) {
             console.log('signup error: ', error)
