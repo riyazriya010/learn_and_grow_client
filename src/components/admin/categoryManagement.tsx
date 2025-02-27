@@ -176,7 +176,7 @@ const CategoryManagement = () => {
                 },
               ]}
               buttonStyles="bg-[#22177A] text-white text-sm font-medium rounded hover:opacity-90"
-              tableWidth="max-w-[450px]"
+              tableWidth="max-w-[600px]"
             />
           )}
         </main>
