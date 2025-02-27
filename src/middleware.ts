@@ -79,7 +79,8 @@ export async function middleware(req: NextRequest) {
         url.pathname.startsWith('/pages/student/certificate-view') ||
         url.pathname.startsWith('/pages/student/chat') ||
         url.pathname.startsWith('/pages/student/badge') ||
-        url.pathname.startsWith('/pages/student/notifications')
+        url.pathname.startsWith('/pages/student/notifications') ||
+        url.pathname.startsWith('/pages/student/otp')
     ) {
         if (role !== 'student') {
             url.pathname = '/pages/student/login';
