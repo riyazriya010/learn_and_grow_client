@@ -577,10 +577,10 @@ const Navbar = () => {
 
             {/* Mobile Menu */}
             <div className="md:hidden flex items-center gap-3">
-              {/* User Initials */}
-              <div className="w-8 h-8 rounded-full bg-[#22177A] text-white flex items-center justify-center font-bold cursor-pointer" onClick={toggleDropdown}>
+              {/* User Initials (Clickable) */}
+              <label htmlFor="mobile-menu-toggle" className="w-8 h-8 rounded-full bg-[#22177A] text-white flex items-center justify-center font-bold cursor-pointer">
                 {initials}
-              </div>
+              </label>
 
               {/* Mobile Menu Button */}
               <label htmlFor="menu-toggle" className="cursor-pointer">
@@ -594,7 +594,18 @@ const Navbar = () => {
 
           </div>
 
-          {/* Mobile Dropdown */}
+          {/* Mobile Dropdown for Profile */}
+          <input type="checkbox" id="mobile-menu-toggle" className="hidden peer" />
+          <div className="hidden peer-checked:flex flex-col absolute right-4 top-16 bg-white border border-gray-300 shadow-md rounded-md w-48">
+            <Link href="/pages/student/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#22177A] hover:text-white">
+              View Profile
+            </Link>
+            <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#FF474C] hover:text-white" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
+
+          {/* Mobile Navigation Menu */}
           <input type="checkbox" id="menu-toggle" className="hidden peer" />
           <nav className="hidden peer-checked:flex flex-col md:hidden bg-white shadow-md rounded-md mt-2 p-4">
             <Link href="/pages/home" className="py-2 px-4 block hover:bg-gray-200 rounded-lg">Home</Link>
@@ -615,6 +626,7 @@ const Navbar = () => {
 
         </header>
       </>
+
 
 
     );
