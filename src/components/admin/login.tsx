@@ -6,6 +6,7 @@ import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { adminApis } from "@/app/api/adminApis";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 
 export interface AdminLoginCredentials {
@@ -14,7 +15,7 @@ export interface AdminLoginCredentials {
 }
 
 const AdminLogin = () => {
-
+    const router = useRouter()
 
     // const notify = () => toast.error("Invalid Credentials!");
 
@@ -27,8 +28,8 @@ const AdminLogin = () => {
             if (response && response?.data?.message === 'Invalid Credential') {
                 toast.error('Invalid Credential')
             } else if (response && response?.data?.success) {
-                // router.push('/pages/dashboard')
-                window.location.replace('/pages/dashboard');
+                router.push('/pages/dashboard')
+                // window.location.replace('/pages/dashboard');
             }
 
         } catch (error: any) {
