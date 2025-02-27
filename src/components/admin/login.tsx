@@ -25,7 +25,7 @@ const AdminLogin = () => {
         try {
             const response = await adminApis.login(data)
             console.log('admin log response : ', response)
-            if (response && response?.data?.message === 'Invalid Credential') {
+            if (response && response?.data?.message === 'Invalid Credentials') {
                 toast.error('Invalid Credential')
             } else if (response && response?.data?.success) {
                 console.log('admin log : ', response)
