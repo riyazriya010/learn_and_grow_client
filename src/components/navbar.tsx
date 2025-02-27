@@ -578,7 +578,7 @@ const Navbar = () => {
             {/* Mobile Menu */}
             <div className="md:hidden flex items-center gap-3">
               {/* User Initials (Clickable) */}
-              <label htmlFor="mobile-menu-toggle" className="w-8 h-8 rounded-full bg-[#22177A] text-white flex items-center justify-center font-bold cursor-pointer">
+              <label htmlFor="profile-menu-toggle" className="w-8 h-8 rounded-full bg-[#22177A] text-white flex items-center justify-center font-bold cursor-pointer">
                 {initials}
               </label>
 
@@ -595,8 +595,8 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Dropdown for Profile */}
-          <input type="checkbox" id="mobile-menu-toggle" className="hidden peer" />
-          <div className="hidden peer-checked:flex flex-col absolute right-4 top-16 bg-white border border-gray-300 shadow-md rounded-md w-48">
+          <input type="checkbox" id="profile-menu-toggle" className="hidden peer/profile" />
+          <div className="hidden peer-checked/profile:flex flex-col absolute right-4 top-16 bg-white border border-gray-300 shadow-md rounded-md w-48">
             <Link href="/pages/student/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#22177A] hover:text-white">
               View Profile
             </Link>
