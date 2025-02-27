@@ -24,10 +24,11 @@ const AdminLogin = () => {
     const onSubmit: SubmitHandler<AdminLoginCredentials> = async (data) => {
         try {
             const response = await adminApis.login(data)
-
+            console.log('admin log response : ', response)
             if (response && response?.data?.message === 'Invalid Credential') {
                 toast.error('Invalid Credential')
             } else if (response && response?.data?.success) {
+                console.log('admin log : ', response)
                 router.push('/pages/dashboard')
                 // window.location.replace('/pages/dashboard');
             }
