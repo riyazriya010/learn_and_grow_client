@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Navbar from '../navbar';
 import MentorFooter from './footer';
-import { mentorApis } from '@/app/api/mentorApi';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -108,7 +107,7 @@ const AddChapter: React.FC = () => {
             //     }
             //   );
 
-            
+
             const fileRequests: any = [];
             const formData = new FormData();
 
