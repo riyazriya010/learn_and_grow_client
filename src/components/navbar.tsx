@@ -77,7 +77,12 @@ const Navbar = () => {
   };
 
   // Studnet Handle logout
-  const studentLogout = () => {
+  const studentLogout = async () => {
+    await axios.post(
+      `${USER_SERVICE_URL}/student/logout`,
+      {},
+      { withCredentials: true }
+    );
     localStorage.clear();
     Cookies.remove("accessToken");
     // Cookies.remove("refreshToken");

@@ -1,9 +1,16 @@
 "use client"
+import { ADMIN_SERVICE_URL } from '@/utils/constant';
+import axios from 'axios';
 import Cookies from 'js-cookie'
 
 const AdminHeader = () => {
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        await axios.post(
+            `${ADMIN_SERVICE_URL}/admin/logout`,
+            {},
+            { withCredentials: true }
+        );
         localStorage.clear();
         Cookies.remove('accessToken');
         Cookies.remove('refreshToken');
