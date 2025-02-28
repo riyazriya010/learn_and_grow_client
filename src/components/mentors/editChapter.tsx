@@ -50,7 +50,7 @@ const EditChapter: React.FC = () => {
             // const formData = new FormData();
 
             let videoUrl = "";
-
+            console.log('data ',data)
             if (data.chapterVideo && data.chapterVideo.length > 0) {
                 // formData.append("chapterVideo", data.chapterVideo[0]);
                 fileRequests.push({
