@@ -46,55 +46,46 @@ const EditChapter: React.FC = () => {
 
     const onSubmit: SubmitHandler<FormValues> = async (data: any) => {
         try {
-            const fileRequests: any = [];
-            // const formData = new FormData();
-
+            console.log('data ', data)
             let videoUrl = "";
-            console.log('data ',data)
-            if (data.chapterVideo && data.chapterVideo.length > 0) {
-                // formData.append("chapterVideo", data.chapterVideo[0]);
-                fileRequests.push({
-                    fileName: data.chapterVideo[0].name,
-                    fileType: data.chapterVideo[0].type,
-                });
 
-                // Get Pre-Signed URL
+            // Check if a video file exists
+            if (data.chapterVideo && data.chapterVideo.length > 0) {
+                const file = data.chapterVideo[0];
+
+                // Step 1: Request a pre-signed URL
                 const presignedResponse = await axios.post(
                     `${MENTOR_SERVICE_URL}/mentor/generate-presigned-url`,
-                    { files: fileRequests },
+                    { files: [{ fileName: file.name, fileType: file.type }] },
                     {
                         headers: { "Content-Type": "application/json" },
                         withCredentials: true,
                     }
                 );
 
-                console.log("Pre-signed URLs response:", presignedResponse);
-                const urls = presignedResponse.data.urls;
+                console.log("Pre-signed URLs response:", presignedResponse.data);
 
-
-
-                for (let i = 0; i < urls.length; i++) {
-                    const fileToUpload = i === 0 && data.chapterVideo[0];
-
-                    const s3Upload = await axios.put(urls[i].presignedUrl, fileToUpload, {
-                        headers: { "Content-Type": fileToUpload.type },
+                const { urls } = presignedResponse.data;
+                if (urls.length > 0) {
+                    // Step 2: Upload file to S3 using the pre-signed URL
+                    const s3Upload = await axios.put(urls[0].presignedUrl, file, {
+                        headers: { "Content-Type": file.type },
                     });
+
                     console.log("s3Upload: ", s3Upload);
 
-                    if (i === 0)
-                        videoUrl = `https://learnandgrow.s3.amazonaws.com/${urls[i].fileKey}`;
+                    // Step 3: Set the video URL to save in the database
+                    videoUrl = `https://learnandgrow.s3.amazonaws.com/${urls[0].fileKey}`;
                 }
             }
 
-
-
-            // Step 3: Send file URLs and course details to the backend
+            // Step 4: Send course details to the backend
             const response = await axios.patch(
                 `${MENTOR_SERVICE_URL}/edit/chapter?chapterId=${chapterId}`,
                 {
-                    chapterTitle: data.title, // Correctly mapped field
-                    description: data.description, // Correctly mapped field
-                    videoUrl,
+                    chapterTitle: data.title,
+                    description: data.description,
+                    videoUrl: videoUrl || undefined, // Only send videoUrl if it's available
                 },
                 {
                     headers: { "Content-Type": "application/json" },
