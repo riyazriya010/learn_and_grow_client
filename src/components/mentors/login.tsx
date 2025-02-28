@@ -88,6 +88,9 @@ const MentorLogin = () => {
             }
 
         } catch (error: any) {
+            if (error && error.response?.status === 401) {
+                toast.warn(error.response?.data?.message)
+            }
             if (error && error.response?.status === 403) {
                 toast.warn(error.response?.data?.message)
             }

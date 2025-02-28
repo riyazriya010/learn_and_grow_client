@@ -12,6 +12,6 @@ export async function POST(req: any) {
   const { productinfo } = data;
 console.log(productinfo);
 
-  const redirectUrl = `/pages/student/payment-failure`;
+  const redirectUrl = `https://learngrow.live/pages/student/payment-failure`;
   redirect(redirectUrl);
 }
