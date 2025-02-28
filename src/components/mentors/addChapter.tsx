@@ -10,6 +10,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Cookies from "js-cookie";
 import LoadingModal from '../re-usable/loadingModal';
+import { MENTOR_SERVICE_URL } from '@/utils/constant';
+import axios from 'axios';
 
 export interface FormValues {
     title: string;
@@ -41,10 +43,80 @@ const AddChapter: React.FC = () => {
     const onSubmit: SubmitHandler<FormValues> = async (data: any) => {
         setIsLoading(true)
         try {
-            const formData = new FormData()
+
+            //         const fileRequests: any = [];
+            //         const formData = new FormData()
+
+            //         if (data.chapterVideo && data.chapterVideo[0]) {
+            //             // formData.append("chapterVideo", data.chapterVideo[0])
+            //             fileRequests.push({
+            //                 fileName: data.chapterVideo[0].name,
+            //                 fileType: data.chapterVideo[0].type,
+            //             });
+            //         }
+
+            //         // Append other fields
+            //         for (const key of Object.keys(data)) {
+            //             if (key !== "chapterVideo") {
+            //                 formData.append(key, data[key]);
+            //             }
+            //         }
+
+            //         // Log FormData entries
+            //         for (const [key, value] of formData.entries()) {
+            //             console.log(`${key}:`, value);
+            //         }
+
+            //         // Get Pre-Signed URL
+            //         const presignedResponse = await axios.post(
+            //             `${MENTOR_SERVICE_URL}/mentor/generate-presigned-url`,
+            //             { files: fileRequests },
+            //             {
+            //                 headers: { "Content-Type": "application/json" },
+            //                 withCredentials: true,
+            //             }
+            //         );
+
+            //         console.log("Pre-signed URLs response:", presignedResponse);
+            //         const urls = presignedResponse.data.urls;
+
+            //         let videoUrl = "";
+
+            //         for (let i = 0; i < urls.length; i++) {
+            //             const fileToUpload = i === 0 && data.chapterVideo[0]
+
+            //             const s3Upload = await axios.put(urls[i].presignedUrl, fileToUpload, {
+            //                 headers: { "Content-Type": fileToUpload.type },
+            //             });
+            //             console.log('s3Upload: ', s3Upload)
+
+            //             if (i === 0) videoUrl = `https://learnandgrow.s3.amazonaws.com/${urls[i].fileKey}`;
+            //         }
+
+            //         // Step 3: Send file URLs and course details to the backend
+            //   const response = await axios.post(
+            //     `${MENTOR_SERVICE_URL}/mentor/chapter-upload?courseId=${courseId}`,
+            //     {
+            //     //   ...data,
+            //       chapterTitle:
+            //       description:
+            //       videoUrl,
+            //     },
+            //     {
+            //       headers: { "Content-Type": "application/json" },
+            //       withCredentials: true,
+            //     }
+            //   );
+
+            
+            const fileRequests: any = [];
+            const formData = new FormData();
 
             if (data.chapterVideo && data.chapterVideo[0]) {
-                formData.append("chapterVideo", data.chapterVideo[0])
+                fileRequests.push({
+                    fileName: data.chapterVideo[0].name,
+                    fileType: data.chapterVideo[0].type,
+                });
             }
 
             // Append other fields
@@ -59,7 +131,50 @@ const AddChapter: React.FC = () => {
                 console.log(`${key}:`, value);
             }
 
-            const response = await mentorApis.addChapter(formData, String(courseId))
+            // Get Pre-Signed URL
+            const presignedResponse = await axios.post(
+                `${MENTOR_SERVICE_URL}/mentor/generate-presigned-url`,
+                { files: fileRequests },
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true,
+                }
+            );
+
+            console.log("Pre-signed URLs response:", presignedResponse);
+            const urls = presignedResponse.data.urls;
+
+            let videoUrl = "";
+
+            for (let i = 0; i < urls.length; i++) {
+                const fileToUpload = i === 0 && data.chapterVideo[0];
+
+                const s3Upload = await axios.put(urls[i].presignedUrl, fileToUpload, {
+                    headers: { "Content-Type": fileToUpload.type },
+                });
+                console.log("s3Upload: ", s3Upload);
+
+                if (i === 0)
+                    videoUrl = `https://learnandgrow.s3.amazonaws.com/${urls[i].fileKey}`;
+            }
+
+            // Step 3: Send file URLs and course details to the backend
+            const response = await axios.post(
+                `${MENTOR_SERVICE_URL}/mentor/chapter-upload?courseId=${courseId}`,
+                {
+                    chapterTitle: data.title, // Correctly mapped field
+                    description: data.description, // Correctly mapped field
+                    videoUrl,
+                },
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true,
+                }
+            );
+
+            console.log("Server Response:", response);
+
+            // const response = await mentorApis.addChapter(formData, String(courseId))
             if (response) {
                 toast.success('Chapter Added Successfully')
                 setTimeout(() => {
