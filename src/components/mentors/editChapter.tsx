@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Navbar from '../navbar';
 import MentorFooter from './footer';
-import { mentorApis } from '@/app/api/mentorApi';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
@@ -48,7 +47,7 @@ const EditChapter: React.FC = () => {
     const onSubmit: SubmitHandler<FormValues> = async (data: any) => {
         try {
             const fileRequests: any = [];
-            const formData = new FormData();
+            // const formData = new FormData();
 
             if (data.chapterVideo && data.chapterVideo.length > 0) {
                 // formData.append("chapterVideo", data.chapterVideo[0]);
