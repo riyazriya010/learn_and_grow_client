@@ -82,7 +82,7 @@ export default function StudentOTPVerification() {
                 if (response) {
                     toast.success('User Verified Successfully');
                     setTimeout(() => {
-                        router.push("/pages/student/profile");
+                        router.replace("/pages/student/profile");
                     }, 2000)
                 }
             } catch (error: any) {

@@ -128,8 +128,8 @@ const SummaryPage = () => {
             email: email,
             firstname: username,
             lastname: course?.courseName,
-            surl: 'https://www.learngrow.live/api/paymentSuccess',
-            furl: 'https://www.learngrow.live/api/paymentFailure',
+            surl: 'https://learngrow.live/api/paymentSuccess',
+            furl: 'https://learngrow.live/api/paymentFailure',
             phone: phone,
             hash: hash,
         };
