@@ -138,8 +138,9 @@ const StudentsProfile = () => {
     try {
       const response = await studentApis.reVerify(user.email);
       if (response && response.data.success) {
-        toast.success('Mail sent to your email');
-        router.push('/pages/student/verify-alert');
+        toast.success('Otp Mail sent to your email');
+        // router.push('/pages/student/verify-alert');
+        router.push('/pages/student/otp');
       }
     } catch (error: any) {
       if (
