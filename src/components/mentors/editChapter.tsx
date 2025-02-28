@@ -49,40 +49,44 @@ const EditChapter: React.FC = () => {
             const fileRequests: any = [];
             // const formData = new FormData();
 
+            let videoUrl = "";
+
             if (data.chapterVideo && data.chapterVideo.length > 0) {
                 // formData.append("chapterVideo", data.chapterVideo[0]);
                 fileRequests.push({
                     fileName: data.chapterVideo[0].name,
                     fileType: data.chapterVideo[0].type,
                 });
-            }
 
-            // Get Pre-Signed URL
-            const presignedResponse = await axios.post(
-                `${MENTOR_SERVICE_URL}/mentor/generate-presigned-url`,
-                { files: fileRequests },
-                {
-                    headers: { "Content-Type": "application/json" },
-                    withCredentials: true,
+                // Get Pre-Signed URL
+                const presignedResponse = await axios.post(
+                    `${MENTOR_SERVICE_URL}/mentor/generate-presigned-url`,
+                    { files: fileRequests },
+                    {
+                        headers: { "Content-Type": "application/json" },
+                        withCredentials: true,
+                    }
+                );
+
+                console.log("Pre-signed URLs response:", presignedResponse);
+                const urls = presignedResponse.data.urls;
+
+
+
+                for (let i = 0; i < urls.length; i++) {
+                    const fileToUpload = i === 0 && data.chapterVideo[0];
+
+                    const s3Upload = await axios.put(urls[i].presignedUrl, fileToUpload, {
+                        headers: { "Content-Type": fileToUpload.type },
+                    });
+                    console.log("s3Upload: ", s3Upload);
+
+                    if (i === 0)
+                        videoUrl = `https://learnandgrow.s3.amazonaws.com/${urls[i].fileKey}`;
                 }
-            );
-
-            console.log("Pre-signed URLs response:", presignedResponse);
-            const urls = presignedResponse.data.urls;
-
-            let videoUrl = "";
-
-            for (let i = 0; i < urls.length; i++) {
-                const fileToUpload = i === 0 && data.chapterVideo[0];
-
-                const s3Upload = await axios.put(urls[i].presignedUrl, fileToUpload, {
-                    headers: { "Content-Type": fileToUpload.type },
-                });
-                console.log("s3Upload: ", s3Upload);
-
-                if (i === 0)
-                    videoUrl = `https://learnandgrow.s3.amazonaws.com/${urls[i].fileKey}`;
             }
+
+
 
             // Step 3: Send file URLs and course details to the backend
             const response = await axios.patch(
