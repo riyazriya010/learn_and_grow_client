@@ -247,6 +247,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useRouter, useSearchParams } from "next/navigation";
 import LoadingModal from "../re-usable/loadingModal";
 import Cookies from "js-cookie";
+import axios from "axios";
+import { MENTOR_SERVICE_URL } from "@/utils/constant";
 
 interface FormValues {
     courseName: string;
@@ -338,36 +340,156 @@ const EditCourse = () => {
     }, [setValue || searchParams]);
 
 
+    // const onSubmit = async (data: FormValues) => {
+    //     setIsLoading(true);
+    //     try {
+    //         const formData = new FormData();
+    //         if (data.thumbnail && data.thumbnail.length > 0) {
+    //             console.log('first')
+    //             formData.append("thumbnail", data.thumbnail[0]);
+    //         }
+    //         if (data.demoVideo && data.demoVideo.length > 0) {
+    //             console.log('second')
+    //             formData.append("demoVideo", data.demoVideo[0]);
+    //         }
+    //         for (const key of Object.keys(data) as (keyof FormValues)[]) {
+    //             if (key !== "demoVideo" && key !== "thumbnail") {
+    //                 formData.append(key, data[key]);
+    //             }
+    //         }
+
+    //         // Log FormData entries
+    //         for (const [key, value] of formData.entries()) {
+    //             console.log(`${key}:`, value);
+    //         }
+
+    //         const response = await mentorApis.editCourseWithFiles(formData, String(courseId))
+    //         console.log('res edit: ', response)
+    //         if (response && response?.data) {
+    //             toast.success('Successfully Course Edited')
+    //             setTimeout(() => {
+    //                 router.push('/pages/mentor/courses')
+    //             }, 2000)
+    //         }
+    //     } catch (error: any) {
+    //         if (error && error.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
+    //             console.log('401 log', error.response.data.message)
+    //             toast.warn(error.response.data.message);
+    //             setTimeout(() => {
+    //                 router.push('/pages/mentor/profile')
+    //             }, 2000)
+    //             return;
+    //         }
+    //         if (error && error.response?.status === 401) {
+    //             toast.warn(error.response.data.message);
+    //             Cookies.remove('accessToken');
+    //             localStorage.clear();
+    //             setTimeout(() => {
+    //                 window.location.replace('/pages/mentor/login');
+    //             }, 3000);
+    //             return;
+    //         }
+    //         if (
+    //             error &&
+    //             error?.response?.status === 403 &&
+    //             error?.response?.data?.message === 'Mentor Blocked'
+    //         ) {
+    //             toast.warn(error?.response?.data?.message);
+    //             Cookies.remove('accessToken');
+    //             localStorage.clear();
+    //             setTimeout(() => {
+    //                 window.location.replace('/pages/mentor/login');
+    //             }, 3000);
+    //             return;
+    //         }
+    //         if (error && error?.status === 403) {
+    //             toast.warn('Course Name Already Exist')
+    //         }
+    //     } finally {
+    //         setIsLoading(false);
+    //     }
+    // }
+
+
     const onSubmit = async (data: FormValues) => {
         setIsLoading(true);
         try {
-            const formData = new FormData();
+            let thumbnailUrl = "";
+            let demoVideoUrl = "";
+
+            const fileRequests: { fileName: string; fileType: string }[] = [];
+
+            // Check for thumbnail and demo video, and prepare request data
             if (data.thumbnail && data.thumbnail.length > 0) {
-                console.log('first')
-                formData.append("thumbnail", data.thumbnail[0]);
+                fileRequests.push({
+                    fileName: data.thumbnail[0].name,
+                    fileType: data.thumbnail[0].type,
+                });
             }
             if (data.demoVideo && data.demoVideo.length > 0) {
-                console.log('second')
-                formData.append("demoVideo", data.demoVideo[0]);
+                fileRequests.push({
+                    fileName: data.demoVideo[0].name,
+                    fileType: data.demoVideo[0].type,
+                });
             }
-            for (const key of Object.keys(data) as (keyof FormValues)[]) {
-                if (key !== "demoVideo" && key !== "thumbnail") {
-                    formData.append(key, data[key]);
+
+            // If there are files, request pre-signed URLs
+            if (fileRequests.length > 0) {
+                const presignedResponse = await axios.post(
+                    `${MENTOR_SERVICE_URL}/mentor/generate-presigned-url`,
+                    { files: fileRequests },
+                    {
+                        headers: { "Content-Type": "application/json" },
+                        withCredentials: true,
+                    }
+                );
+
+                console.log("Pre-signed URLs response:", presignedResponse.data);
+
+                const { urls } = presignedResponse.data;
+
+                let urlIndex = 0;
+
+                // Upload files to S3
+                if (data.thumbnail && data.thumbnail.length > 0) {
+                    await axios.put(urls[urlIndex].presignedUrl, data.thumbnail[0], {
+                        headers: { "Content-Type": data.thumbnail[0].type },
+                    });
+                    thumbnailUrl = `https://learnandgrow.s3.amazonaws.com/${urls[urlIndex].fileKey}`;
+                    urlIndex++;
+                }
+                if (data.demoVideo && data.demoVideo.length > 0) {
+                    await axios.put(urls[urlIndex].presignedUrl, data.demoVideo[0], {
+                        headers: { "Content-Type": data.demoVideo[0].type },
+                    });
+                    demoVideoUrl = `https://learnandgrow.s3.amazonaws.com/${urls[urlIndex].fileKey}`;
                 }
             }
 
-            // Log FormData entries
-            for (const [key, value] of formData.entries()) {
-                console.log(`${key}:`, value);
-            }
+            // Prepare request data (excluding thumbnail and demoVideo)
+            const updatedData: any = { ...data };
+            delete updatedData.thumbnail;
+            delete updatedData.demoVideo;
 
-            const response = await mentorApis.editCourseWithFiles(formData, String(courseId))
-            console.log('res edit: ', response)
-            if (response && response?.data) {
-                toast.success('Successfully Course Edited')
+            if (thumbnailUrl) updatedData.thumbnailUrl = thumbnailUrl;
+            if (demoVideoUrl) updatedData.demoVideoUrl = demoVideoUrl;
+
+            // Update course data
+            const response = await axios.patch(
+                `${MENTOR_SERVICE_URL}/edit/course?courseId=${courseId}`,
+                updatedData,
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true,
+                }
+            );
+
+            console.log("Server Response:", response);
+            if (response?.data) {
+                toast.success("Successfully Updated Course");
                 setTimeout(() => {
-                    router.push('/pages/mentor/courses')
-                }, 2000)
+                    router.push("/pages/mentor/courses");
+                }, 2000);
             }
         } catch (error: any) {
             if (error && error.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
