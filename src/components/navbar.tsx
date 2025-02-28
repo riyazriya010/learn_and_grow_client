@@ -61,7 +61,7 @@ const Navbar = () => {
 
   // Mentor Handle logout
   const mentorLogout = async () => {
-    const response = await axios.post(
+    await axios.post(
       `${MENTOR_SERVICE_URL}/mentor/logout`,
       {},
       { withCredentials: true }
