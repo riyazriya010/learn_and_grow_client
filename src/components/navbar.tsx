@@ -59,8 +59,25 @@ const Navbar = () => {
     setDropdownOpen((prev) => !prev);
   };
 
+  // Mentor Handle logout
+  const mentorLogout = async () => {
+    const response = await axios.post(
+      `${MENTOR_SERVICE_URL}/mentor/logout`,
+      {},
+      { withCredentials: true }
+    );
+    localStorage.clear();
+    Cookies.remove("accessToken");
+    // Cookies.remove("refreshToken");
+
+    dispatch(clearUserDetials());
+    dispatch(clearMentor());
+
+    router.replace("/");
+  };
+
   // Studnet Handle logout
-  const handleLogout = () => {
+  const studentLogout = () => {
     localStorage.clear();
     Cookies.remove("accessToken");
     // Cookies.remove("refreshToken");
@@ -357,7 +374,7 @@ const Navbar = () => {
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 shadow-md rounded-md">
                     <a href="/pages/mentor/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#22177A] hover:text-white">View Profile</a>
-                    <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#FF474C] hover:text-white" onClick={handleLogout}>
+                    <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#FF474C] hover:text-white" onClick={mentorLogout}>
                       Logout
                     </button>
                   </div>
@@ -486,7 +503,7 @@ const Navbar = () => {
                     <Link href="/pages/student/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#22177A] hover:text-white">
                       View Profile
                     </Link>
-                    <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#FF474C] hover:text-white" onClick={handleLogout}>
+                    <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#FF474C] hover:text-white" onClick={studentLogout}>
                       Logout
                     </button>
                   </div>
@@ -519,7 +536,7 @@ const Navbar = () => {
             <Link href="/pages/student/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#22177A] hover:text-white">
               View Profile
             </Link>
-            <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#FF474C] hover:text-white" onClick={handleLogout}>
+            <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#FF474C] hover:text-white" onClick={studentLogout}>
               Logout
             </button>
           </div>
