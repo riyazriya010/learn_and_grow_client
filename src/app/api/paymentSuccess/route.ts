@@ -10,7 +10,7 @@ export async function POST(req: Request) {
       data[key] = value;
     });
 
-    const redirectUrl = `/pages/student/payment-success?courseName=${data.lastname}&courseId=${data.productinfo}&txnid=${data.txnid}&amountPaid=${data.amount}&bankRefNum=${data.bank_ref_num}`
+    const redirectUrl = `https://learngrow.live/pages/student/payment-success?courseName=${data.lastname}&courseId=${data.productinfo}&txnid=${data.txnid}&amountPaid=${data.amount}&bankRefNum=${data.bank_ref_num}`
   
     redirect(redirectUrl);
 
