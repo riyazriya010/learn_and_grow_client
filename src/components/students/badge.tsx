@@ -102,6 +102,7 @@ const StudentBadge = () => {
           });
 
           setCount((prevCount) => prevCount + 1);
+          console.log(count)
         }
       }
 
