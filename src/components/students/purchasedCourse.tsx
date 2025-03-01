@@ -12,6 +12,10 @@ import Pagination from "../re-usable/pagination";
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from "js-cookie";
+import axios from "axios";
+import { USER_SERVICE_URL } from "@/utils/constant";
+import { useDispatch } from "react-redux";
+import { clearUserDetials } from "@/redux/slices/userSlice";
 
 interface CourseData {
   _id?: string;
@@ -29,6 +33,7 @@ const PurchasedCourse = () => {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const dispatch = useDispatch()
 
 
   useEffect(() => {
@@ -51,8 +56,14 @@ const PurchasedCourse = () => {
           error?.response?.data?.message === 'Student Blocked'
         ) {
           toast.warn(error?.response?.data?.message);
+          await axios.post(
+            `${USER_SERVICE_URL}/student/logout`,
+            {},
+            { withCredentials: true }
+          );
           Cookies.remove('accessToken');
           localStorage.clear();
+          dispatch(clearUserDetials());
           setTimeout(() => {
             window.location.replace('/pages/student/login');
           }, 3000);
@@ -60,8 +71,14 @@ const PurchasedCourse = () => {
         }
         if (error && error.response?.status === 401) {
           toast.warn(error.response.data.message);
+          await axios.post(
+            `${USER_SERVICE_URL}/student/logout`,
+            {},
+            { withCredentials: true }
+          );
           Cookies.remove('accessToken');
           localStorage.clear();
+          dispatch(clearUserDetials());
           setTimeout(() => {
             window.location.replace('/pages/student/login');
           }, 3000);
@@ -81,7 +98,7 @@ const PurchasedCourse = () => {
   const checkProgress = (id: string) => {
     console.log('id: ', id)
     setSelectedId(id);
-        setIsOpen(true);
+    setIsOpen(true);
   }
 
   if (isLoading) return <LoadingModal isOpen={isLoading} message="Please wait..." />
