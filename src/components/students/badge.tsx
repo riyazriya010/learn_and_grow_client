@@ -12,13 +12,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import Footer from "../loggedoutNav/footer";
 import axios from "axios";
 import { USER_SERVICE_URL } from "@/utils/constant";
+import Swal from "sweetalert2";
 
 
 interface BadgeData {
-  _id: string; // ID of the StudentBadge entry
+  _id: string;
   userId: string;
   badgeId: {
-    _id: string; // ID of the Badge
+    _id: string;
     badgeName: string;
     description: string;
     value: string;
@@ -32,6 +33,7 @@ const StudentBadge = () => {
   const headers = ['Badge Name', 'Description', 'Value']
   const [badge, setBadge] = useState<BadgeData[] | []>([])
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [count, setCount] = useState(0)
 
   useEffect(() => {
     setIsLoading(false)
@@ -75,13 +77,35 @@ const StudentBadge = () => {
 
   const exchangeBadge = async (id: string) => {
     try {
-      console.log('badgeId to exchange: ', id)
-      const response = await axios.get(`${USER_SERVICE_URL}/convert-badge/money/${id}`, {
-        withCredentials: true
-      })
-      console.log('badge res ',response)
-      if(response){
+
+      const confirmResult = await Swal.fire({
+        title: "Are you sure?",
+        text: "Do you want to exchange this badge for money?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, exchange it!",
+        cancelButtonText: "Cancel",
+      });
+
+      if (confirmResult.isConfirmed) {
+        console.log('badgeId to exchange: ', id)
+        const response = await axios.get(`${USER_SERVICE_URL}/convert-badge/money/${id}`, {
+          withCredentials: true
+        })
+
+        console.log('badge res ', response)
+        if (response) {
+          Swal.fire({
+            title: "Success!",
+            text: "Badge successfully exchanged To Money.",
+            icon: "success",
+          });
+
+          setCount((prevCount) => prevCount + 1);
+        }
       }
+
+
     } catch (error: unknown) {
       console.log(error)
     }
