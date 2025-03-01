@@ -13,6 +13,7 @@ import Footer from "../loggedoutNav/footer";
 import axios from "axios";
 import { USER_SERVICE_URL } from "@/utils/constant";
 import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 
 interface BadgeData {
@@ -34,6 +35,7 @@ const StudentBadge = () => {
   const [badge, setBadge] = useState<BadgeData[] | []>([])
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [count, setCount] = useState(0)
+  const router = useRouter()
 
   useEffect(() => {
     setIsLoading(false)
@@ -103,6 +105,8 @@ const StudentBadge = () => {
 
           setCount((prevCount) => prevCount + 1);
           console.log(count)
+
+          router.push('/pages/student/wallet')
         }
       }
 

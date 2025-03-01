@@ -52,7 +52,8 @@ const Signup = () => {
                 setTimeout(() => {
                     // router.push('/pages/student/verify-alert')
                     console.log('verify alert redirect')
-                    router.replace('/pages/student/verify-alert');
+                    // router.replace('/pages/student/verify-alert');
+                    window.location.replace('/pages/student/verify-alert')
                     // router.replace(`/pages/student/otp?otp=${otpData}`);
                     // router.replace(`/pages/student/otp?email=${response.data.result.email}`);
                 }, 3000)

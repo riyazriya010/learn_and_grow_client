@@ -40,8 +40,11 @@ const Login = () => {
                             role: response.data.result.role
                         }),
                     )
-                    router.replace('/pages/home')
-                    // window.location.replace('/pages/home');
+                    setTimeout(() => {
+                        // router.replace('/pages/home')
+                    window.location.replace('/pages/home');
+                    }, 2000)
+                    
                 }
                 // router.replace('/pages/home')
             }
@@ -84,7 +87,8 @@ const Login = () => {
                     )
                     toast.success("You were Logged");
                     setTimeout(() => {
-                        router.replace('/pages/home')
+                        // router.replace('/pages/home')
+                        window.location.replace('/pages/home')
                     }, 2000);
                 }
             }

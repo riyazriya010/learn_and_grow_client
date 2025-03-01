@@ -39,7 +39,11 @@ const MentorLogin = () => {
                             role: response.data.result.role
                         }),
                     )
-                    router.replace('/pages/mentor/dashboard')
+                    setTimeout(() => {
+                        window.location.replace('/pages/mentor/dashboard')
+                    }, 2000)
+                    // router.replace('/pages/mentor/dashboard')
+                    // window.location.replace('/pages/mentor/dashboard')
                 }
             }
         } catch (error: any) {
@@ -82,7 +86,8 @@ const MentorLogin = () => {
                     )
                     setTimeout(() => {
                         // router.push(`/pages/home`);
-                        router.replace('/pages/mentor/dashboard');
+                        // router.replace('/pages/mentor/dashboard');
+                        window.location.replace('/pages/mentor/dashboard')
                     }, 2000);
                 }
             }
@@ -189,17 +194,17 @@ const MentorLogin = () => {
                     </div>
 
                     <button
-                    onClick={handleGoogleLogin}
-                    type="button"
-                    className="w-full flex items-center justify-center py-2 px-4 border border-[#22177A] rounded-[13px] bg-white text-gray-700 hover:bg-gray-200 transition mt-[-7%]"
-                >
-                    <img
-                        src="/images/glogo.png"
-                        alt="Google"
-                        className="w-5 h-5 mr-2"
-                    />
-                    Login with Google
-                </button>
+                        onClick={handleGoogleLogin}
+                        type="button"
+                        className="w-full flex items-center justify-center py-2 px-4 border border-[#22177A] rounded-[13px] bg-white text-gray-700 hover:bg-gray-200 transition mt-[-7%]"
+                    >
+                        <img
+                            src="/images/glogo.png"
+                            alt="Google"
+                            className="w-5 h-5 mr-2"
+                        />
+                        Login with Google
+                    </button>
 
 
                     <div className="text-center mt-6">

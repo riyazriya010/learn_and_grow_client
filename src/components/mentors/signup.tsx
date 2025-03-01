@@ -46,7 +46,7 @@ const MentorSignup = () => {
                 setTimeout(() => {
                     // router.push('/pages/mentor/verify-alert')
                     window.location.replace('/pages/mentor/verify-alert');
-                }, 1000)
+                }, 2000)
             }
         } catch (error: any) {
             if (error.response?.status === 409) {

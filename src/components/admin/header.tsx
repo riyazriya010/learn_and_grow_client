@@ -21,7 +21,8 @@ const AdminHeader = () => {
         localStorage.clear()
         toast.warn("Admin successfully Logged out!");
         setTimeout(() => {
-            router.replace('/pages/login')
+            // router.replace('/pages/login')
+            window.location.replace('/pages/login')
         }, 3000)
         // router.push(`/pages/login`);
         // window.location.replace('/pages/login')

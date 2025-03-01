@@ -28,7 +28,8 @@ const AdminLogin = () => {
             if (response && response?.data?.success) {
                 console.log('admin log : ', response)
                 setTimeout(() => {
-                    router.replace('/pages/dashboard')
+                    // router.replace('/pages/dashboard')
+                    window.location.replace('/pages/dashboard');
                 }, 2000)
                 // window.location.replace('/pages/dashboard');
             }

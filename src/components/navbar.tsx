@@ -72,8 +72,10 @@ const Navbar = () => {
 
     dispatch(clearUserDetials());
     dispatch(clearMentor());
-
-    router.replace("/");
+    setTimeout(() => {
+      window.location.replace("/");
+    }, 2000)
+    // router.replace("/");
   };
 
   // Studnet Handle logout
@@ -89,8 +91,10 @@ const Navbar = () => {
 
     dispatch(clearUserDetials());
     dispatch(clearMentor());
-
-    router.replace("/");
+    setTimeout(() => {
+      window.location.replace("/");
+    }, 2000)
+    // router.replace("/");
   };
 
   // Helper function to generate initials
