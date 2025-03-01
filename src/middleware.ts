@@ -14,8 +14,8 @@ export async function middleware(req: NextRequest) {
         return NextResponse.next();
     }
 
-    const role = await tokenVerify("refreshToken", req)
-    // const role = await tokenVerify("accessToken", req)
+    // const role = await tokenVerify("refreshToken", req)
+    const role = await tokenVerify("accessToken", req)
     console.log('role: ', role)
 
 
