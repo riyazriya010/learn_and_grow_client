@@ -211,7 +211,7 @@ const Quizz = () => {
                                 },
                             ]}
                             buttonStyles="bg-[#FF474c] text-white text-sm font-medium rounded hover:opacity-90"
-                            tableWidth="max-w-[900px]"
+                            tableWidth="max-w-[950px]"
                         />
                     )}
                 </main>
