@@ -44,6 +44,7 @@ const AdminAddBadges = () => {
                 }, 2000);
             }
         } catch (error: any) {
+            console.log('error add badge error: ',error)
             if (error?.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
                 toast.warn(error.response.data.message);
                 setTimeout(() => {

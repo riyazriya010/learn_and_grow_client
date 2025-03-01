@@ -44,7 +44,7 @@ const AddCategory = () => {
                 }, 3000);
                 return;
               }
-            if(error && error.response?.status === 403 && error.response?.data?.message === 'Category Already Exist'){
+            if(error && error.response?.status === 403 && error.response?.data?.message === 'Category Already Exists'){
                 toast.warn('Category Already Exist')
                 reset()
             }

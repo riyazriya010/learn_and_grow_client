@@ -38,6 +38,7 @@ const AdminEditBadges = () => {
         setIsLoading(false);
     }, [searchParams, setValue]);
 
+
     const onSubmit = async (data: BadgeData) => {
         try {
             const response = await adminApis.editBadge(data, String(badgeId));
@@ -49,6 +50,7 @@ const AdminEditBadges = () => {
                 }, 2000);
             }
         } catch (error: any) {
+            console.log('error edit badge error: ',error)
             if (error?.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
                 toast.warn(error.response.data.message);
                 setTimeout(() => {
