@@ -56,7 +56,7 @@ const PurchasedCourse = () => {
           error?.response?.data?.message === 'Student Blocked'
         ) {
           toast.warn(error?.response?.data?.message);
-          Cookies.remove('accessToken');
+          Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
           Cookies.remove('refreshToken');
           localStorage.clear();
           dispatch(clearUserDetials());
@@ -67,7 +67,7 @@ const PurchasedCourse = () => {
         }
         if (error && error.response?.status === 401) {
           toast.warn(error.response.data.message);
-          Cookies.remove('accessToken');
+          Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
           Cookies.remove('refreshToken');
           localStorage.clear();
           dispatch(clearUserDetials());
