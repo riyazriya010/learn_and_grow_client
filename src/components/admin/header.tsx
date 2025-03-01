@@ -2,8 +2,12 @@
 import { ADMIN_SERVICE_URL } from '@/utils/constant';
 import axios from 'axios';
 import Cookies from 'js-cookie'
+import { useRouter } from 'next/navigation';
+import { ToastContainer, toast, Slide } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AdminHeader = () => {
+    const router = useRouter()
 
     const handleLogout = async () => {
         await axios.post(
@@ -15,11 +19,16 @@ const AdminHeader = () => {
         Cookies.remove('accessToken');
         Cookies.remove('refreshToken');
         localStorage.clear()
+        toast.warn("Admin successfully Logged out!");
+        setTimeout(() => {
+            router.replace('/pages/login')
+        }, 3000)
         // router.push(`/pages/login`);
-        window.location.replace('/pages/login')
+        // window.location.replace('/pages/login')
     }
 
     return (
+
 
         // <>
         //     {/* First Header */}
@@ -58,6 +67,15 @@ const AdminHeader = () => {
             <header className="bg-[#433D8B] text-white py-4 text-center text-lg sm:text-xl font-bold">
                 Learn&Grow
             </header>
+
+            <ToastContainer
+                autoClose={2000}
+                pauseOnHover={false}
+                transition={Slide}
+                hideProgressBar={false}
+                closeOnClick={false}
+                pauseOnFocusLoss={true}
+            />
 
             {/* Second Header */}
             <header className="bg-white shadow-md py-4 px-4 sm:px-6 md:px-8">
