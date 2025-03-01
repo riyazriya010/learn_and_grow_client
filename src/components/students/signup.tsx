@@ -11,7 +11,7 @@ import { app } from "@/lib/firebase/config";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/slices/userSlice";
 import Navbar from "../navbar";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 
 export interface Credentials {
@@ -30,7 +30,7 @@ export interface UserDetails {
 
 const Signup = () => {
     const dispatch = useDispatch()
-    const router = useRouter()
+    // const router = useRouter()
 
     // Signup Form Functionality
     const { register, handleSubmit, reset, getValues, formState: { errors } } = useForm<Credentials>()

@@ -6,7 +6,7 @@ import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { adminApis } from "@/app/api/adminApis";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 
 export interface AdminLoginCredentials {
@@ -15,7 +15,7 @@ export interface AdminLoginCredentials {
 }
 
 const AdminLogin = () => {
-    const router = useRouter()
+    // const router = useRouter()
 
     // const notify = () => toast.error("Invalid Credentials!");
 

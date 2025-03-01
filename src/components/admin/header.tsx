@@ -2,12 +2,12 @@
 import { ADMIN_SERVICE_URL } from '@/utils/constant';
 import axios from 'axios';
 import Cookies from 'js-cookie'
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const AdminHeader = () => {
-    const router = useRouter()
+    // const router = useRouter()
 
     const handleLogout = async () => {
         await axios.post(
