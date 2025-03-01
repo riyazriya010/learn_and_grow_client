@@ -56,12 +56,8 @@ const PurchasedCourse = () => {
           error?.response?.data?.message === 'Student Blocked'
         ) {
           toast.warn(error?.response?.data?.message);
-          await axios.post(
-            `${USER_SERVICE_URL}/student/logout`,
-            {},
-            { withCredentials: true }
-          );
           Cookies.remove('accessToken');
+          Cookies.remove('refreshToken');
           localStorage.clear();
           dispatch(clearUserDetials());
           setTimeout(() => {
@@ -71,12 +67,8 @@ const PurchasedCourse = () => {
         }
         if (error && error.response?.status === 401) {
           toast.warn(error.response.data.message);
-          await axios.post(
-            `${USER_SERVICE_URL}/student/logout`,
-            {},
-            { withCredentials: true }
-          );
           Cookies.remove('accessToken');
+          Cookies.remove('refreshToken');
           localStorage.clear();
           dispatch(clearUserDetials());
           setTimeout(() => {
