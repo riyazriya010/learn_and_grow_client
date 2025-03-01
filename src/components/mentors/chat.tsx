@@ -1,7 +1,7 @@
 
 "use client";
 import axios from "axios";
-import Image from "next/image";
+// import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import socket from "@/utils/socket";
@@ -872,18 +872,18 @@ const MentoChat = () => {
                     }`}
                   onClick={() => createRoom(student)}
                 >
-                  {/* <img
+                  <img
           src={student?.profilePicUrl}
           alt={`profile`}
           className="w-14 h-14 rounded-full mr-4 object-cover border border-gray-200"
-        /> */}
-                  <Image
+        />
+                  {/* <Image
                     src={student?.profilePicUrl || "/default-profile.png"} // Provide a fallback image
                     alt="profile"
                     width={56}
                     height={56}
                     className="rounded-full mr-4 object-cover border border-gray-200"
-                  />
+                  /> */}
                   <div>
                     <p className="font-medium text-lg text-gray-700">{student.username}</p>
                     <p className="text-sm text-gray-500">
