@@ -910,19 +910,19 @@ const MentoChat = () => {
             {selectedStudent && (
               <div className="flex items-center justify-between mb-4 p-4 bg-gray-50 rounded-lg shadow-sm">
                 <div className="flex items-center">
-                  {/* <img
+                  <img
           src={selectedStudent.profilePicUrl}
           alt="profile"
           className="w-14 h-14 rounded-full mr-4 object-cover border border-gray-200"
-        /> */}
+        />
 
-                  <Image
+                  {/* <Image
                     src={selectedStudent.profilePicUrl}
                     alt="profile"
                     width={56}
                     height={56}
                     className="rounded-full mr-4 object-cover border border-gray-200"
-                  />
+                  /> */}
 
                   <div>
                     <p className="text-lg font-bold text-gray-700">{selectedStudent.username}</p>
