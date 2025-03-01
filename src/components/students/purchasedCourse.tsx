@@ -12,8 +12,8 @@ import Pagination from "../re-usable/pagination";
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from "js-cookie";
-import axios from "axios";
-import { USER_SERVICE_URL } from "@/utils/constant";
+// import axios from "axios";
+// import { USER_SERVICE_URL } from "@/utils/constant";
 import { useDispatch } from "react-redux";
 import { clearUserDetials } from "@/redux/slices/userSlice";
 
