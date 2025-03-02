@@ -161,7 +161,7 @@ const CoursesPage = () => {
       return
     }
     fetchCourses(currentPage);
-  }, [currentPage, selectedCategory, selectedLevel, searchTerm]);
+  }, [selectedCategory, selectedLevel, searchTerm]);
 
 
 
