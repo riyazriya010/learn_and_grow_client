@@ -222,6 +222,7 @@ const CoursesPage = () => {
         setCourses([]);
         setCurrentPage(1)
         setTotalPages(1)
+        return
       }
     }
   };
