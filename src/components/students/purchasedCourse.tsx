@@ -32,8 +32,8 @@ const PurchasedCourse = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const router = useRouter()
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  // const [isOpen, setIsOpen] = useState(false);
+  // const [selectedId, setSelectedId] = useState<string | null>(null);
   const dispatch = useDispatch()
 
 
@@ -91,11 +91,11 @@ const PurchasedCourse = () => {
     router.push(`/pages/student/course-play?buyedId=${id}`)
   }
 
-  const checkProgress = (id: string) => {
-    console.log('id: ', id)
-    setSelectedId(id);
-    setIsOpen(true);
-  }
+  // const checkProgress = (id: string) => {
+  //   console.log('id: ', id)
+  //   setSelectedId(id);
+  //   setIsOpen(true);
+  // }
 
   if (isLoading) return <LoadingModal isOpen={isLoading} message="Please wait..." />
 
@@ -142,10 +142,10 @@ const PurchasedCourse = () => {
                   handler: () => viewCourse(row._id),
                   name: "View"
                 },
-                {
-                  handler: () => checkProgress(row._id),
-                  name: "Progress"
-                },
+                // {
+                //   handler: () => checkProgress(row._id),
+                //   name: "Progress"
+                // },
               ]}
               buttonStyles="bg-[#433D8B] text-white text-sm font-medium rounded hover:opacity-90"
               tableWidth="max-w-[650px]"
@@ -168,13 +168,13 @@ const PurchasedCourse = () => {
         </div>
 
         {/* Modal */}
-        {isOpen && (
+        {/* {isOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-96">
               <h2 className="text-xl font-semibold mb-4">Progress Details</h2>
               <p className="text-gray-600">ID: {selectedId}</p>
 
-              {/* Close Button */}
+              
               <button
                 onClick={() => setIsOpen(false)}
                 className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
@@ -183,7 +183,7 @@ const PurchasedCourse = () => {
               </button>
             </div>
           </div>
-        )}
+        )} */}
 
         <MentorFooter />
       </div>

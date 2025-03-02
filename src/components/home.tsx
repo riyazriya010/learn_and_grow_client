@@ -4,6 +4,7 @@ import Footer from "./loggedoutNav/footer"
 import faqData from "@/data"
 import { useState } from "react"
 import Navbar from "./navbar"
+import Link from "next/link"
 
 
 const FAQItem: React.FC<{ question: string; answer: string }> = ({ question, answer }) => {
@@ -62,11 +63,13 @@ const LoggedOutHome = () => {
                         <h2 className="text-4xl font-normal">Improve Your</h2>
                         <h3 className="text-4xl font-normal mt-2">Online Learning Experience Better</h3>
 
-                        <button
-                            className="mt-6 px-9 py-3 bg-[#22177A] border border-[#001A6E] text-white rounded-[13px] text-lg font-medium transition-all"
-                        >
-                            Subscription
-                        </button>
+                        <Link href="/pages/student/course" passHref>
+                            <button
+                                className="mt-6 px-9 py-3 bg-[#22177A] border border-[#001A6E] text-white rounded-[13px] text-lg font-medium transition-all"
+                            >
+                                Courses
+                            </button>
+                        </Link>
 
                     </div>
                 </section>
