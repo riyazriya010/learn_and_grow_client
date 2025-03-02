@@ -9,7 +9,8 @@ import { useEffect, useState } from "react";
 import LoadingModal from "../re-usable/loadingModal";
 import { useRouter } from "next/navigation";
 import AdminHeader from "./header";
-import Cookies from "js-cookie";
+import { ADMIN_SERVICE_URL } from "@/utils/constant";
+import axios from "axios";
 
 export interface CategoryFormData {
     categoryName: string;
@@ -61,7 +62,7 @@ const EditCategory = () => {
         } catch (error: any) {
             if (error && error.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                await axios.post(`${ADMIN_SERVICE_URL}/admin/logout`, {}, { withCredentials: true });
                 localStorage.clear();
                 setTimeout(() => {
                   window.location.replace('/pages/login');

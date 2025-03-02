@@ -14,6 +14,8 @@ import { ApexOptions } from "apexcharts";
 import AdminHeader from "./header";
 import AdminFooter from "./footer";
 import { ADMIN_SERVICE_URL } from "@/utils/constant";
+import { ToastContainer, toast, Slide } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -78,8 +80,17 @@ const AdminDashboard = () => {
                 if (response?.data?.result) {
                     setData(response.data.result);
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.error("Error fetching dashboard data:", error);
+                if (error && error.response?.status === 401) {
+                    toast.warn(error.response.data.message);
+                    await axios.post(`${ADMIN_SERVICE_URL}/admin/logout`, {}, { withCredentials: true });
+                    localStorage.clear();
+                    setTimeout(() => {
+                        window.location.replace('/pages/login');
+                    }, 3000);
+                    return;
+                }
             }
         };
         fetchData();
@@ -131,8 +142,17 @@ const AdminDashboard = () => {
                 setRevenueOrders(response.data.result.revenue || []);
                 // setYear(response.data.result.year || new Date().getFullYear());
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error fetching chart graph data:", error);
+            if (error && error.response?.status === 401) {
+                toast.warn(error.response.data.message);
+                await axios.post(`${ADMIN_SERVICE_URL}/admin/logout`, {}, { withCredentials: true });
+                localStorage.clear();
+                setTimeout(() => {
+                    window.location.replace('/pages/login');
+                }, 3000);
+                return;
+            }
         }
     }, [selectedYear, selectedMonth, selectedDate])
 
@@ -227,6 +247,15 @@ const AdminDashboard = () => {
                 <header>
                     <AdminHeader />
                 </header>
+
+                <ToastContainer
+                    autoClose={2000}
+                    pauseOnHover={false}
+                    transition={Slide}
+                    hideProgressBar={false}
+                    closeOnClick={false}
+                    pauseOnFocusLoss={true}
+                />
 
                 <div className="min-h-screen p-6 bg-white-100">
                     {/* <h1 className="text-2xl font-bold mb-6">Mentor Dashboard</h1> */}

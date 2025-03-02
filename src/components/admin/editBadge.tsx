@@ -5,10 +5,11 @@ import { useForm } from 'react-hook-form';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Cookies from 'js-cookie';
 import { adminApis } from '@/app/api/adminApis';
 import AdminHeader from './header';
 import AdminFooter from './footer';
+import axios from 'axios';
+import { ADMIN_SERVICE_URL } from '@/utils/constant';
 
 export interface BadgeData {
     badgeName: string;
@@ -51,28 +52,12 @@ const AdminEditBadges = () => {
             }
         } catch (error: any) {
             console.log('error edit badge error: ',error)
-            if (error?.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
-                toast.warn(error.response.data.message);
-                setTimeout(() => {
-                    router.push('/pages/mentor/profile');
-                }, 2000);
-                return;
-            }
-            if (error?.response?.status === 403 && error?.response?.data?.message === 'Mentor Blocked') {
-                toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
-                localStorage.clear();
-                setTimeout(() => {
-                    window.location.replace('/pages/mentor/login');
-                }, 3000);
-                return;
-            }
             if (error?.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                await axios.post(`${ADMIN_SERVICE_URL}/admin/logout`, {}, { withCredentials: true });
                 localStorage.clear();
                 setTimeout(() => {
-                    window.location.replace('/pages/mentor/login');
+                    window.location.replace('/pages/login');
                 }, 3000);
                 return;
             }

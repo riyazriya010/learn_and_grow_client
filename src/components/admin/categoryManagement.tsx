@@ -11,9 +11,10 @@ import { useRouter } from "next/navigation";
 import AdminHeader from "./header";
 import Pagination from "../re-usable/pagination";
 import Swal from "sweetalert2";
-import Cookies from "js-cookie";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ADMIN_SERVICE_URL } from "@/utils/constant";
+import axios from "axios";
 
 interface CategoryData {
   _id?: string;
@@ -42,7 +43,7 @@ const CategoryManagement = () => {
     } catch (error: any) {
       if (error && error.response?.status === 401) {
         toast.warn(error.response.data.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${ADMIN_SERVICE_URL}/admin/logout`, {},{ withCredentials: true });
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/login');
@@ -106,8 +107,17 @@ const CategoryManagement = () => {
           }
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating category status:", error);
+      if (error && error.response?.status === 401) {
+        toast.warn(error.response.data.message);
+        await axios.post(`${ADMIN_SERVICE_URL}/admin/logout`, {},{ withCredentials: true });
+        localStorage.clear();
+        setTimeout(() => {
+          window.location.replace('/pages/login');
+        }, 3000);
+        return;
+      }
     }
   };
 

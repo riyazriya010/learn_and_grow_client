@@ -11,7 +11,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import Pagination from "../re-usable/pagination";
 import Image from "next/image";
 import ReusableTable from "../re-usable/table";
-import Cookies from "js-cookie";
+import { ADMIN_SERVICE_URL } from "@/utils/constant";
+import axios from "axios";
 
 interface Mentor {
   _id: string; // Ensure this matches the type returned by your API
@@ -42,7 +43,7 @@ const MentorManagement: React.FC = () => {
       } catch (error: any) {
         if (error && error.response?.status === 401) {
           toast.warn(error.response.data.message);
-          Cookies.remove('accessToken');
+          await axios.post(`${ADMIN_SERVICE_URL}/admin/logout`, {}, { withCredentials: true });
           localStorage.clear();
           setTimeout(() => {
             window.location.replace('/pages/login');
@@ -95,7 +96,7 @@ const MentorManagement: React.FC = () => {
       } catch (error: any) {
         if (error && error.response?.status === 401) {
           toast.warn(error.response.data.message);
-          Cookies.remove('accessToken');
+          await axios.post(`${ADMIN_SERVICE_URL}/admin/logout`, {}, { withCredentials: true });
           localStorage.clear();
           setTimeout(() => {
             window.location.replace('/pages/login');

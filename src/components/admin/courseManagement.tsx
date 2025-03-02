@@ -12,7 +12,8 @@ import Pagination from "../re-usable/pagination";
 import Swal from "sweetalert2";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Cookies from "js-cookie";
+import { ADMIN_SERVICE_URL } from "@/utils/constant";
+import axios from "axios";
 
 interface CourseData {
   _id?: string;
@@ -43,7 +44,7 @@ const CourseManagement = () => {
     } catch (error: any) {
       if (error && error.response?.status === 401) {
         toast.warn(error.response.data.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${ADMIN_SERVICE_URL}/admin/logout`, {}, { withCredentials: true });
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/login');
@@ -115,7 +116,7 @@ const CourseManagement = () => {
     } catch (error: any) {
       if (error && error.response?.status === 401) {
         toast.warn(error.response.data.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${ADMIN_SERVICE_URL}/admin/logout`, {}, { withCredentials: true });
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/login');

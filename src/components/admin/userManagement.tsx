@@ -10,7 +10,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import Pagination from "../re-usable/pagination";
 import Image from "next/image";
 import ReusableTable from "../re-usable/table";
-import Cookies from "js-cookie";
+import { ADMIN_SERVICE_URL } from "@/utils/constant";
+import axios from "axios";
 
 interface User {
   _id: string;
@@ -39,7 +40,7 @@ const UserManagement = () => {
       } catch (error: any) {
         if (error && error.response?.status === 401) {
           toast.warn(error.response.data.message);
-          Cookies.remove('accessToken');
+          await axios.post(`${ADMIN_SERVICE_URL}/admin/logout`, {}, { withCredentials: true });
           localStorage.clear();
           setTimeout(() => {
             window.location.replace('/pages/login');
@@ -50,6 +51,8 @@ const UserManagement = () => {
     };
     fetchUsers(currentPage);
   }, [currentPage]);
+
+
 
   const blockUser = async (id: string) => {
     const user = users.find((d) => d._id === id);
@@ -90,7 +93,7 @@ const UserManagement = () => {
       } catch (error: any) {
         if (error && error.response?.status === 401) {
           toast.warn(error.response.data.message);
-          Cookies.remove('accessToken');
+          await axios.post(`${ADMIN_SERVICE_URL}/admin/logout`, {}, { withCredentials: true });
           localStorage.clear();
           setTimeout(() => {
             window.location.replace('/pages/login');

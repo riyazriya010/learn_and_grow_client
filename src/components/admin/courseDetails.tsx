@@ -6,6 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import AdminHeader from "./header";
 import AdminFooter from "./footer";
 import { ADMIN_SERVICE_URL } from "@/utils/constant";
+import { ToastContainer, toast, Slide } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CourseDetails = () => {
     const router = useRouter()
@@ -25,8 +27,17 @@ const CourseDetails = () => {
                     });
                     console.log('res chap ', response);
                     setChapters(response.data.result);
-                } catch (error) {
+                } catch (error: any) {
                     console.log("Error fetching chapters:", error);
+                    if (error && error.response?.status === 401) {
+                        toast.warn(error.response.data.message);
+                        await axios.post(`${ADMIN_SERVICE_URL}/admin/logout`, {}, { withCredentials: true });
+                        localStorage.clear();
+                        setTimeout(() => {
+                            window.location.replace('/pages/login');
+                        }, 3000);
+                        return;
+                    }
                 }
             };
             fetchData();
@@ -43,8 +54,17 @@ const CourseDetails = () => {
                 setIsApproved(true);
                 router.replace('/pages/approve-course')
             }
-        } catch (error) {
+        } catch (error: any) {
             console.log("Error approving course:", error);
+            if (error && error.response?.status === 401) {
+                toast.warn(error.response.data.message);
+                await axios.post(`${ADMIN_SERVICE_URL}/admin/logout`, {}, { withCredentials: true });
+                localStorage.clear();
+                setTimeout(() => {
+                    window.location.replace('/pages/login');
+                }, 3000);
+                return;
+            }
         }
     };
 
@@ -59,6 +79,15 @@ const CourseDetails = () => {
 
             <div className="flex flex-col min-h-screen bg-white">
                 <AdminHeader />
+
+                <ToastContainer
+                    autoClose={2000}
+                    pauseOnHover={false}
+                    transition={Slide}
+                    hideProgressBar={false}
+                    closeOnClick={false}
+                    pauseOnFocusLoss={true}
+                />
 
                 {/* Main Content Wrapper */}
                 <div className="flex-grow max-w-6xl mx-auto p-8">

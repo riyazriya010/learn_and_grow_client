@@ -9,6 +9,10 @@ import ReusableTable from '../re-usable/table';
 import Pagination from '../re-usable/pagination';
 import { adminApis } from '@/app/api/adminApis';
 import AdminHeader from './header';
+import { ToastContainer, toast, Slide } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ADMIN_SERVICE_URL } from '@/utils/constant';
+import axios from 'axios';
 
 interface WalletData {
     _id?: string;
@@ -34,7 +38,7 @@ const AdminWallet = () => {
             try {
                 const filters = { page, limit: 3 };
                 const response = await adminApis.getWallet(filters);
-                console.log('wallet data: ',response)
+                console.log('wallet data: ', response)
                 if (response) {
                     const wallets = response.data?.result?.wallets;
                     console.log(wallets)
@@ -49,8 +53,17 @@ const AdminWallet = () => {
                         setWallet(null);
                     }
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.error(error);
+                if (error && error.response?.status === 401) {
+                    toast.warn(error.response.data.message);
+                    await axios.post(`${ADMIN_SERVICE_URL}/admin/logout`, {}, { withCredentials: true });
+                    localStorage.clear();
+                    setTimeout(() => {
+                        window.location.replace('/pages/login');
+                    }, 3000);
+                    return;
+                }
             } finally {
                 setIsLoading(false);
             }
@@ -63,7 +76,16 @@ const AdminWallet = () => {
     return (
         <>
             <div className="flex flex-col min-h-screen">
-            <AdminHeader />
+                <AdminHeader />
+
+                <ToastContainer
+                    autoClose={2000}
+                    pauseOnHover={false}
+                    transition={Slide}
+                    hideProgressBar={false}
+                    closeOnClick={false}
+                    pauseOnFocusLoss={true}
+                />
 
                 <main className="flex-grow px-8 py-4">
                     {wallet ? (
@@ -94,7 +116,7 @@ const AdminWallet = () => {
                                         'Course Name': transaction.courseName,
                                         Amount: `₹ ${transaction.amount.toFixed(2)}`,
                                         Date: new Date(transaction.date).toISOString().split('T')[0],
-                                        handler: () => {},
+                                        handler: () => { },
                                     }))}
                                     tableWidth="max-w-[750px]"
                                 />

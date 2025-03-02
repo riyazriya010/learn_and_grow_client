@@ -6,9 +6,10 @@ import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MentorFooter from '../mentors/footer';
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
 import { adminApis } from '@/app/api/adminApis';
 import AdminHeader from './header';
+import axios from 'axios';
+import { ADMIN_SERVICE_URL } from '@/utils/constant';
 
 export interface IBadgeForm {
     badgeName: string;
@@ -45,24 +46,14 @@ const AdminAddBadges = () => {
             }
         } catch (error: any) {
             console.log('error add badge error: ',error)
-            if (error?.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
+            if (error?.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                setTimeout(() => {
-                    router.push('/pages/mentor/profile');
-                }, 2000);
-                return;
-            }
-            if (error?.response?.status === 403 && error?.response?.data?.message === 'Mentor Blocked') {
-                toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken');
+                await axios.post(`${ADMIN_SERVICE_URL}/admin/logout`, {},{ withCredentials: true });
                 localStorage.clear();
                 setTimeout(() => {
-                    window.location.replace('/pages/mentor/login');
-                }, 3000);
+                    router.push('/pages/login');
+                }, 2000);
                 return;
-            }
-            if (error?.response?.status === 403) {
-                toast.warn('Question Already Exist');
             }
         }
     };

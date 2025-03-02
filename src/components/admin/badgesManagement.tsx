@@ -9,9 +9,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import AdminHeader from "./header";
 import Pagination from "../re-usable/pagination";
-import Cookies from "js-cookie";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ADMIN_SERVICE_URL } from "@/utils/constant";
+import axios from "axios";
 
 interface BadgeData {
   _id?: string;
@@ -43,7 +44,7 @@ const BadgeManagement = () => {
     } catch (error: any) {
       if (error && error.response?.status === 401) {
         toast.warn(error.response.data.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${ADMIN_SERVICE_URL}/admin/logout`, {},{ withCredentials: true });
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/login');

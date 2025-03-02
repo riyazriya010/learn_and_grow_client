@@ -8,7 +8,6 @@ import ReusableTable from "../re-usable/table";
 import Pagination from "../re-usable/pagination";
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Cookies from "js-cookie";
 import AdminHeader from "./header";
 import AdminFooter from "./footer";
 import axios from "axios";
@@ -47,7 +46,7 @@ const NotApprovedCourse = () => {
       } catch (error: any) {
         if (error && error.response?.status === 401) {
           toast.warn(error.response.data.message);
-          Cookies.remove('accessToken');
+          await axios.post(`${ADMIN_SERVICE_URL}/admin/logout`, {},{ withCredentials: true });
           localStorage.clear();
           setTimeout(() => {
             window.location.replace('/pages/login');
