@@ -69,13 +69,13 @@ const PurchasedCourse = () => {
         if (error && error.response?.status === 401) {
           console.log('401 error: ', error)
           toast.warn(error.response.data.message);
-          // Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
-          // Cookies.remove('refreshToken');
-          // localStorage.clear();
-          // dispatch(clearUserDetials());
-          // setTimeout(() => {
-          //   window.location.replace('/pages/student/login');
-          // }, 3000);
+          Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+          Cookies.remove('refreshToken');
+          localStorage.clear();
+          dispatch(clearUserDetials());
+          setTimeout(() => {
+            window.location.replace('/pages/student/login');
+          }, 3000);
           return;
         }
         console.log('last error: ',error)
