@@ -7,10 +7,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { studentApis } from "@/app/api/studentApi";
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Cookies from "js-cookie";
 import Footer from "../loggedoutNav/footer";
 import { clearUserDetials } from "@/redux/slices/userSlice";
 import { useDispatch } from "react-redux";
+import { USER_SERVICE_URL } from "@/utils/constant";
+import axios from "axios";
 
 interface Chapter {
     _id: string;
@@ -75,7 +76,7 @@ const CoursePlay = () => {
                 } catch (error: any) {
                     if (error && error.response?.status === 401) {
                         toast.warn(error.response.data.message);
-                        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                        await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                         dispatch(clearUserDetials());
                         localStorage.clear();
                         setTimeout(() => {
@@ -89,7 +90,7 @@ const CoursePlay = () => {
                         error?.response?.data?.message === 'Student Blocked'
                     ) {
                         toast.warn(error?.response?.data?.message);
-                        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                        await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                         dispatch(clearUserDetials());
                         localStorage.clear();
                         setTimeout(() => {
@@ -177,7 +178,7 @@ const CoursePlay = () => {
             } catch (error: any) {
                 if (error && error.response?.status === 401) {
                     toast.warn(error.response.data.message);
-                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                     dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
@@ -191,7 +192,7 @@ const CoursePlay = () => {
                     error?.response?.data?.message === 'Student Blocked'
                 ) {
                     toast.warn(error?.response?.data?.message);
-                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                     dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {

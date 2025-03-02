@@ -8,10 +8,11 @@ import { useRouter } from 'next/navigation';
 import Pagination from '../re-usable/pagination';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Cookies from 'js-cookie';
 import Footer from '../loggedoutNav/footer';
 import { clearUserDetials } from "@/redux/slices/userSlice";
 import { useDispatch } from "react-redux";
+import { USER_SERVICE_URL } from '@/utils/constant';
+import axios from 'axios';
 
 const CoursesPage = () => {
   const [courses, setCourses] = useState<any>([]);
@@ -52,7 +53,7 @@ const CoursesPage = () => {
         error?.response?.data?.message === 'Student Blocked'
       ) {
         toast.warn(error?.response?.data?.message);
-        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+        await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
         dispatch(clearUserDetials());
         localStorage.clear();
         setTimeout(() => {
@@ -142,7 +143,7 @@ const CoursesPage = () => {
             error?.response?.data?.message === 'Student Blocked'
           ) {
             toast.warn(error?.response?.data?.message);
-            Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+            await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
             dispatch(clearUserDetials());
             localStorage.clear();
             setTimeout(() => {
@@ -208,7 +209,7 @@ const CoursesPage = () => {
         error?.response?.data?.message === 'Student Blocked'
       ) {
         toast.warn(error?.response?.data?.message);
-        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+        await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
         dispatch(clearUserDetials());
         localStorage.clear();
         setTimeout(() => {

@@ -10,7 +10,8 @@ import { studentApis } from "@/app/api/studentApi";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import Cookies from "js-cookie";
+import { USER_SERVICE_URL } from "@/utils/constant";
+import axios from "axios";
 
 interface QuizzData {
     _id: string;
@@ -65,7 +66,7 @@ const StudentQuizz = () => {
                         error?.response?.data?.message === 'Student Blocked'
                       ) {
                         toast.warn(error?.response?.data?.message);
-                        Cookies.remove('accessToken');
+                        await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                         localStorage.clear();
                         setTimeout(() => {
                           window.location.replace('/pages/student/login');
@@ -74,7 +75,7 @@ const StudentQuizz = () => {
                       }
                     if (error && error.response?.status === 401) {
                         toast.warn(error.response.data.message);
-                        Cookies.remove('accessToken');
+                        await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                         localStorage.clear();
                         setTimeout(() => {
                             window.location.replace('/pages/student/login');
@@ -166,7 +167,7 @@ const StudentQuizz = () => {
                     error?.response?.data?.message === 'Student Blocked'
                   ) {
                     toast.warn(error?.response?.data?.message);
-                    Cookies.remove('accessToken');
+                    await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                     localStorage.clear();
                     setTimeout(() => {
                       window.location.replace('/pages/student/login');
@@ -182,7 +183,7 @@ const StudentQuizz = () => {
                   }
                 if (error && error.response?.status === 401) {
                     toast.warn(error.response.data.message);
-                    Cookies.remove('accessToken');
+                    await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                     localStorage.clear();
                     setTimeout(() => {
                       window.location.replace('/pages/student/login');

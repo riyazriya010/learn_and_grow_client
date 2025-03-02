@@ -10,7 +10,6 @@ import EmojiPicker from 'emoji-picker-react';
 import { MENTOR_SERVICE_URL, USER_SERVICE_URL } from "@/utils/constant";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Cookies from "js-cookie";
 import { clearUserDetials } from "@/redux/slices/userSlice";
 import { useDispatch } from "react-redux";
 
@@ -91,7 +90,7 @@ const StudentChat = () => {
             if (error && error.response?.status === 401) {
                 console.log('401 log', error.response.data.message)
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -105,7 +104,7 @@ const StudentChat = () => {
                 error?.response?.data?.message === 'Student Blocked'
             ) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -115,7 +114,7 @@ const StudentChat = () => {
             }
             if (error && error.response?.status === 403) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -125,7 +124,7 @@ const StudentChat = () => {
             }
             if (error && error.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -171,7 +170,7 @@ const StudentChat = () => {
                     if (error && error.response?.status === 401 && error.response.data.message === 'Student Not Verified') {
                         console.log('401 log', error.response.data.message)
                         toast.warn(error.response.data.message);
-                        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                        await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                         dispatch(clearUserDetials());
                         localStorage.clear();
                         setTimeout(() => {
@@ -185,7 +184,7 @@ const StudentChat = () => {
                         error?.response?.data?.message === 'Student Blocked'
                     ) {
                         toast.warn(error?.response?.data?.message);
-                        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                        await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                         dispatch(clearUserDetials());
                         localStorage.clear();
                         setTimeout(() => {
@@ -195,7 +194,7 @@ const StudentChat = () => {
                     }
                     if (error && error.response?.status === 403) {
                         toast.warn(error.response.data.message);
-                        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                        await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                         dispatch(clearUserDetials());
                         localStorage.clear();
                         setTimeout(() => {
@@ -205,7 +204,7 @@ const StudentChat = () => {
                     }
                     if (error && error.response?.status === 401) {
                         toast.warn(error.response.data.message);
-                        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                        await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                         dispatch(clearUserDetials());
                         localStorage.clear();
                         setTimeout(() => {
@@ -329,7 +328,7 @@ const StudentChat = () => {
             if (error && error.response?.status === 401 && error.response.data.message === 'Student Not Verified') {
                 console.log('401 log', error.response.data.message)
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -343,7 +342,7 @@ const StudentChat = () => {
                 error?.response?.data?.message === 'Student Blocked'
             ) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -353,7 +352,7 @@ const StudentChat = () => {
             }
             if (error && error.response?.status === 403) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -363,7 +362,7 @@ const StudentChat = () => {
             }
             if (error && error.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -468,7 +467,7 @@ const StudentChat = () => {
             if (error && error.response?.status === 401 && error.response.data.message === 'Student Not Verified') {
                 console.log('401 log', error.response.data.message)
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -482,7 +481,7 @@ const StudentChat = () => {
                 error?.response?.data?.message === 'Student Blocked'
             ) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -492,7 +491,7 @@ const StudentChat = () => {
             }
             if (error && error.response?.status === 403) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -502,7 +501,7 @@ const StudentChat = () => {
             }
             if (error && error.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -528,7 +527,7 @@ const StudentChat = () => {
             if (error && error.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
                 console.log('401 log', error.response.data.message)
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -538,7 +537,7 @@ const StudentChat = () => {
             }
             if (error && error.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -552,7 +551,7 @@ const StudentChat = () => {
                 error?.response?.data?.message === 'Mentor Blocked'
             ) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -563,7 +562,7 @@ const StudentChat = () => {
             if (error && error.response?.status === 403) {
                 console.log('403')
                 toast.warn(error.response?.data.message)
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear()
                 setTimeout(() => {
@@ -575,7 +574,7 @@ const StudentChat = () => {
             if (error && error.response?.status === 401) {
                 console.log('401')
                 toast.warn(error.response.data.message)
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear()
                 setTimeout(() => {
@@ -623,7 +622,7 @@ const StudentChat = () => {
             if (error && error.response?.status === 401 && error.response.data.message === 'Student Not Verified') {
                 console.log('401 log', error.response.data.message)
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear()
                 setTimeout(() => {
@@ -638,7 +637,7 @@ const StudentChat = () => {
                 error?.response?.data?.message === 'Student Blocked'
             ) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -648,7 +647,7 @@ const StudentChat = () => {
             }
             if (error && error.response?.status === 403) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -658,7 +657,7 @@ const StudentChat = () => {
             }
             if (error && error.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -729,7 +728,7 @@ const StudentChat = () => {
                 if (error && error.response?.status === 401 && error.response.data.message === 'Student Not Verified') {
                     console.log('401 log', error.response.data.message)
                     toast.warn(error.response.data.message);
-                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                     dispatch(clearUserDetials());
                     localStorage.clear()
                     setTimeout(() => {
@@ -744,7 +743,7 @@ const StudentChat = () => {
                     error?.response?.data?.message === 'Student Blocked'
                 ) {
                     toast.warn(error?.response?.data?.message);
-                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                     dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
@@ -754,7 +753,7 @@ const StudentChat = () => {
                 }
                 if (error && error.response?.status === 403) {
                     toast.warn(error.response.data.message);
-                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                     dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
@@ -764,7 +763,7 @@ const StudentChat = () => {
                 }
                 if (error && error.response?.status === 401) {
                     toast.warn(error.response.data.message);
-                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                     dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
@@ -797,7 +796,7 @@ const StudentChat = () => {
                 if (error && error.response?.status === 401 && error.response.data.message === 'Student Not Verified') {
                     console.log('401 log', error.response.data.message)
                     toast.warn(error.response.data.message);
-                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                     dispatch(clearUserDetials());
                     localStorage.clear()
                     setTimeout(() => {
@@ -812,7 +811,7 @@ const StudentChat = () => {
                     error?.response?.data?.message === 'Student Blocked'
                 ) {
                     toast.warn(error?.response?.data?.message);
-                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                     dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
@@ -822,7 +821,7 @@ const StudentChat = () => {
                 }
                 if (error && error.response?.status === 403) {
                     toast.warn(error.response.data.message);
-                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                     dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
@@ -832,7 +831,7 @@ const StudentChat = () => {
                 }
                 if (error && error.response?.status === 401) {
                     toast.warn(error.response.data.message);
-                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                     dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
@@ -864,7 +863,7 @@ const StudentChat = () => {
             if (error && error.response?.status === 401 && error.response.data.message === 'Student Not Verified') {
                 console.log('401 log', error.response.data.message)
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear()
                 setTimeout(() => {
@@ -879,7 +878,7 @@ const StudentChat = () => {
                 error?.response?.data?.message === 'Student Blocked'
             ) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -889,7 +888,7 @@ const StudentChat = () => {
             }
             if (error && error.response?.status === 403) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -899,7 +898,7 @@ const StudentChat = () => {
             }
             if (error && error.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {

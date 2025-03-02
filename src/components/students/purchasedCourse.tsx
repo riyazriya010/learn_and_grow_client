@@ -11,7 +11,6 @@ import ReusableTable from "../re-usable/table";
 import Pagination from "../re-usable/pagination";
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Cookies from "js-cookie";
 // import axios from "axios";
 // import { USER_SERVICE_URL } from "@/utils/constant";
 import { useDispatch } from "react-redux";
@@ -59,8 +58,8 @@ const PurchasedCourse = () => {
           error?.response?.data?.message === 'Student Blocked'
         ) {
           toast.warn(error?.response?.data?.message);
-          Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
-          Cookies.remove('refreshToken');
+          // Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+          await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
           localStorage.clear();
           dispatch(clearUserDetials());
           setTimeout(() => {
@@ -71,8 +70,8 @@ const PurchasedCourse = () => {
         if (error && error.response?.status === 401) {
           console.log('401 error: ', error)
           toast.warn(error.response.data.message);
-          await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
           // Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+          await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
           localStorage.clear();
           dispatch(clearUserDetials());
           setTimeout(() => {

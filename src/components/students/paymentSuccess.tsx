@@ -9,9 +9,10 @@ import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { studentApis } from '@/app/api/studentApi';
 import LoadingModal from '../re-usable/loadingModal';
-import Cookies from "js-cookie";
 import { clearUserDetials } from "@/redux/slices/userSlice";
 import { useDispatch } from "react-redux";
+import { USER_SERVICE_URL } from '@/utils/constant';
+import axios from 'axios';
 
 const PaymentSuccess = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -42,7 +43,7 @@ const PaymentSuccess = () => {
                 } catch (error: any) {
                     if (error && error.response?.status === 401) {
                         toast.warn(error.response.data.message);
-                        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                        await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                         dispatch(clearUserDetials());
                         localStorage.clear();
                         setTimeout(() => {
@@ -56,7 +57,7 @@ const PaymentSuccess = () => {
                         error?.response?.data?.message === 'Student Blocked'
                     ) {
                         toast.warn(error?.response?.data?.message);
-                        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                        await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                         dispatch(clearUserDetials());
                         localStorage.clear();
                         setTimeout(() => {

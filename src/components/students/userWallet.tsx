@@ -10,7 +10,6 @@ import ReusableTable from '../re-usable/table';
 import Pagination from '../re-usable/pagination';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Cookies from "js-cookie";
 import axios from 'axios';
 import { USER_SERVICE_URL } from '@/utils/constant';
 import { clearUserDetials } from "@/redux/slices/userSlice";
@@ -70,7 +69,7 @@ const StudentWallet = () => {
                 }
                 if (error && error.response?.status === 401) {
                     toast.warn(error.response.data.message);
-                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                     dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
@@ -84,7 +83,7 @@ const StudentWallet = () => {
                     error?.response?.data?.message === 'Mentor Blocked'
                 ) {
                     toast.warn(error?.response?.data?.message);
-                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                     dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {

@@ -15,6 +15,7 @@ import { setUser } from "@/redux/slices/userSlice";
 import Navbar from "../navbar";
 import axios from "axios";
 import { clearUserDetials } from "@/redux/slices/userSlice";
+import { USER_SERVICE_URL } from "@/utils/constant";
 
 
 export interface UserProfile {
@@ -83,7 +84,7 @@ const StudentsProfile = () => {
                 error?.response?.data?.message === 'Student Blocked'
               ) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -97,7 +98,7 @@ const StudentsProfile = () => {
               }
               if (error && error.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
@@ -107,7 +108,7 @@ const StudentsProfile = () => {
               }
               if (error && error?.response?.status === 403) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
                 dispatch(clearUserDetials());
                 localStorage.clear();
                 router.push('/');
@@ -158,7 +159,7 @@ const StudentsProfile = () => {
         error?.response?.data?.message === 'Student Blocked'
       ) {
         toast.warn(error?.response?.data?.message);
-        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+        await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
         dispatch(clearUserDetials());
         localStorage.clear();
         setTimeout(() => {
@@ -308,7 +309,7 @@ const StudentsProfile = () => {
         error?.response?.data?.message === 'Student Blocked'
       ) {
         toast.warn(error?.response?.data?.message);
-        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+        await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
         dispatch(clearUserDetials());
         localStorage.clear();
         setTimeout(() => {
@@ -318,7 +319,7 @@ const StudentsProfile = () => {
       }
       if (error && error.response?.status === 403) {
         toast.warn(error.response.data.message);
-        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+        await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
         dispatch(clearUserDetials());
         localStorage.clear();
         setTimeout(() => {
@@ -328,7 +329,7 @@ const StudentsProfile = () => {
       }
       if (error && error.response?.status === 401) {
         toast.warn(error.response.data.message);
-        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+        await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
         dispatch(clearUserDetials());
         localStorage.clear();
         setTimeout(() => {
