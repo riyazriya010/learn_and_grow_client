@@ -11,6 +11,8 @@ import ReusableTable from "../re-usable/table";
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Footer from "../loggedoutNav/footer";
+import { clearUserDetials } from "@/redux/slices/userSlice";
+import { useDispatch } from "react-redux";
 
 
 interface CertificateData {
@@ -26,6 +28,7 @@ const Certificates = () => {
   const [certificate, setCertificate] = useState<CertificateData[] | []>([])
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     setIsLoading(false)
@@ -39,7 +42,8 @@ const Certificates = () => {
       } catch (error: any) {
         if (error && error.response?.status === 401) {
           toast.warn(error.response.data.message);
-          Cookies.remove('accessToken');
+          Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+          dispatch(clearUserDetials());
           localStorage.clear();
           setTimeout(() => {
             window.location.replace('/pages/student/login');
@@ -52,7 +56,8 @@ const Certificates = () => {
           error?.response?.data?.message === 'Student Blocked'
         ) {
           toast.warn(error?.response?.data?.message);
-          Cookies.remove('accessToken');
+          Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+          dispatch(clearUserDetials());
           localStorage.clear();
           setTimeout(() => {
             window.location.replace('/pages/student/login');

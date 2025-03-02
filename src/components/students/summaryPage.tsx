@@ -10,13 +10,16 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import axios from "axios";
+import Cookies from "js-cookie";
 import { USER_SERVICE_URL } from "@/utils/constant";
+import { clearUserDetials } from "@/redux/slices/userSlice";
+import { useDispatch } from "react-redux";
 
 interface CourseDetails {
     courseName: string;
     level: string;
     category: string;
-    price:string;
+    price: string;
 }
 
 const SummaryPage = () => {
@@ -28,6 +31,7 @@ const SummaryPage = () => {
     const [walletBalance, setWalletBalance] = useState<number | 0>(0)
 
     const searchParams = useSearchParams()
+    const dispatch = useDispatch()
 
     const router = useRouter()
 
@@ -44,12 +48,12 @@ const SummaryPage = () => {
         setTxnid(generateTxnid());
 
         const getCourseDetails = localStorage.getItem('courseDetails')
-        if(getCourseDetails){
+        if (getCourseDetails) {
             setCourse(JSON.parse(getCourseDetails))
         }
         const getCourseId = searchParams.get('courseId')
 
-        if(getCourseId){
+        if (getCourseId) {
             setCourseId(String(getCourseId))
         }
     }, []);
@@ -57,18 +61,44 @@ const SummaryPage = () => {
     //Get Wallet Data
     useEffect(() => {
         const getWalletBalance = async () => {
-            try{
+            try {
+
                 const response = await axios.get(`${USER_SERVICE_URL}/get/wallet/balance`, {
                     withCredentials: true
                 })
+
                 console.log('summary wallet ', response)
                 setWalletBalance(Number(response?.data?.result))
-            }catch(error: unknown){
-                console.log(error)
+
+            } catch (error: any) {
+                if (error && error.response?.status === 401) {
+                    toast.warn(error.response.data.message);
+                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    dispatch(clearUserDetials());
+                    localStorage.clear();
+                    setTimeout(() => {
+                        window.location.replace('/pages/student/login');
+                    }, 3000);
+                    return;
+                }
+                if (
+                    error &&
+                    error?.response?.status === 403 &&
+                    error?.response?.data?.message === 'Student Blocked'
+                ) {
+                    toast.warn(error?.response?.data?.message);
+                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    dispatch(clearUserDetials());
+                    localStorage.clear();
+                    setTimeout(() => {
+                        window.location.replace('/pages/student/login');
+                    }, 3000);
+                    return;
+                }
             }
         }
         getWalletBalance()
-    },[])
+    }, [])
 
 
     useEffect(() => {
@@ -93,28 +123,28 @@ const SummaryPage = () => {
     }, [txnid]);
 
     const handleWalletPayment = async () => {
-        if(Number(course?.price) <= Number(walletBalance)){
+        if (Number(course?.price) <= Number(walletBalance)) {
             try {
                 const response = await axios.post(`${USER_SERVICE_URL}/buy/course/wallet`,
                     {
                         price: course?.price,
                         courseId: courseId
-                    },{ withCredentials: true}
+                    }, { withCredentials: true }
                 )
-                console.log('wallet buy res ',response)
-                if(response && response?.data?.success){
+                console.log('wallet buy res ', response)
+                if (response && response?.data?.success) {
                     toast.success('Course Buyed SuccessFully')
-    
-                setTimeout(() => {
-                    router.replace('/pages/student/purchased-course')
-                },2000)
-                return
+
+                    setTimeout(() => {
+                        router.replace('/pages/student/purchased-course')
+                    }, 2000)
+                    return
                 }
             } catch (error) {
                 console.error("Wallet payment error:", error);
                 toast.error("An error occurred during wallet payment.", { transition: Slide });
             }
-        }else{
+        } else {
             toast.error("Insufficient Amount in Wallet.", { transition: Slide });
         }
     };
@@ -151,143 +181,173 @@ const SummaryPage = () => {
     };
 
     const handlePayment = async () => {
-        //Check Already Buyed
-        const response = await axios.get(`${USER_SERVICE_URL}/already/buyed/course/${courseId}`,
-            {
-                withCredentials: true
-            }
-        )
-        console.log('already buyed: ',response?.data?.message)
-        if(response?.data?.message === 'Already Buyed'){
-            toast.warn('Course Already Buyed')
+        try {
+            // Check if the course is already purchased
+            const response = await axios.get(`${USER_SERVICE_URL}/already/buyed/course/${courseId}`, {
+                withCredentials: true,
+            });
 
-            setTimeout(() => {
-                router.replace('/pages/student/purchased-course')
-            },2000)
-            return
-        }
-        //If Not Buyed Continue to buy
-        if (paymentMethod === "Wallet") {
-            handleWalletPayment();
-        } else if (paymentMethod === "PayU") {
-            handlePayUPayment();
-        } else {
-            toast.error("Please select a valid payment method.", { transition: Slide });
+            console.log('Already Purchased: ', response?.data?.message);
+
+            if (response?.data?.message === 'Already Buyed') {  // Change API response to 'Already Purchased'
+                toast.warn('Course Already Purchased');
+                setTimeout(() => {
+                    router.replace('/pages/student/purchased-course');
+                }, 2000);
+                return;
+            }
+
+            // Proceed to payment
+            if (paymentMethod === 'Wallet') {
+                await handleWalletPayment();
+            } else if (paymentMethod === 'PayU') {
+                await handlePayUPayment();
+            } else {
+                toast.error('Please select a valid payment method.', { transition: Slide });
+            }
+        } catch (error: any) {
+            console.error('Payment Error:', error);
+
+            if (error?.response?.status === 401) {
+                toast.warn(error.response.data.message);
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
+                localStorage.clear();
+                setTimeout(() => {
+                    window.location.replace('/pages/student/login');
+                }, 3000);
+                return;
+            }
+
+            if (error?.response?.status === 403 && error?.response?.data?.message === 'Student Blocked') {
+                toast.warn(error?.response?.data?.message);
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
+                localStorage.clear();
+                setTimeout(() => {
+                    window.location.replace('/pages/student/login');
+                }, 3000);
+                return;
+            }
+
+            // Handle other errors
+            toast.error('Something went wrong. Please try again.');
         }
     };
 
+
     return (
         <div className="flex flex-col min-h-screen bg-white">
-    <Navbar />
+            <Navbar />
 
-    <ToastContainer
-        autoClose={2000}
-        pauseOnHover={false}
-        transition={Slide}
-        hideProgressBar={false}
-        closeOnClick={false}
-        pauseOnFocusLoss={true}
-      />
+            <ToastContainer
+                autoClose={2000}
+                pauseOnHover={false}
+                transition={Slide}
+                hideProgressBar={false}
+                closeOnClick={false}
+                pauseOnFocusLoss={true}
+            />
 
-    <div className="flex-1 bg-white-100 py-16 px-6">
+            <div className="flex-1 bg-white-100 py-16 px-6">
 
-        <div className="max-w-5xl mx-auto bg-gradient-to-r from-white rounded-lg shadow-lg overflow-hidden border border-gray-500">
-            <div className="md:flex">
-                {/* Combined Container */}
-                <div className="md:w-full p-8">
-                    <div className="md:flex rounded-[0px] shadow-[0_4px_10px_rgba(0,0,0,10)]">
-                        {/* Course Summary */}
-                        <div className="md:w-1/2 bg-[#22177A] text-white p-8 flex flex-col justify-between">
-                            <h3 className="text-2xl font-bold mb-4">Course Summary</h3>
-                            <div className="space-y-4">
-                                <div className="flex justify-between">
-                                    <span className="font-bold">Course Name:</span>
-                                    <span>{course?.courseName}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="font-bold">Category:</span>
-                                    <span>{course?.category}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="font-bold">Level:</span>
-                                    <span>{course?.level}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="font-bold">Price:</span>
-                                    <span>₹ {course?.price}.00</span>
-                                </div>
-                            </div>
-                            
-                            <div className="mt-6 text-center">
-                                <span className="text-lg font-semibold">Total Amount: ₹ {course?.price}.00</span>
-                            </div>
-                        </div>
+                <div className="max-w-5xl mx-auto bg-gradient-to-r from-white rounded-lg shadow-lg overflow-hidden border border-gray-500">
+                    <div className="md:flex">
+                        {/* Combined Container */}
+                        <div className="md:w-full p-8">
+                            <div className="md:flex rounded-[0px] shadow-[0_4px_10px_rgba(0,0,0,10)]">
+                                {/* Course Summary */}
+                                <div className="md:w-1/2 bg-[#22177A] text-white p-8 flex flex-col justify-between">
+                                    <h3 className="text-2xl font-bold mb-4">Course Summary</h3>
+                                    <div className="space-y-4">
+                                        <div className="flex justify-between">
+                                            <span className="font-bold">Course Name:</span>
+                                            <span>{course?.courseName}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="font-bold">Category:</span>
+                                            <span>{course?.category}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="font-bold">Level:</span>
+                                            <span>{course?.level}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="font-bold">Price:</span>
+                                            <span>₹ {course?.price}.00</span>
+                                        </div>
+                                    </div>
 
-                        {/* Payment Section */}
-                        <div className="md:w-1/2 p-8">
-                            {/* Wallet Balance */}
-                            <div className="bg-gray-100 rounded-lg shadow-md p-4 mb-6">
-                                <h4 className="text-lg font-semibold text-gray-800 mb-2">Your Wallet Details</h4>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-gray-600">Available Balance:</span>
-                                    <span className="text-[#22177A] font-bold">₹ {walletBalance || 0}</span>
-                                </div>
-                            </div>
-
-                            {/* Payment Details */}
-                            <h3 className="text-2xl font-semibold text-gray-800 mb-4">Payment Details</h3>
-                            <div className="space-y-4">
-
-                            <div className="flex justify-between">
-                                    <span className="font-bold">Total Amount:</span>
-                                    <span>₹ {course?.price}.00</span>
+                                    <div className="mt-6 text-center">
+                                        <span className="text-lg font-semibold">Total Amount: ₹ {course?.price}.00</span>
+                                    </div>
                                 </div>
 
-                                <div className="text-[15px] text-gray-400">
-                                    Select Payment Method:
-                                </div>
-                                <div className="flex items-center space-x-4">
-                                    <label className="flex items-center space-x-2">
-                                        <input
-                                            type="radio"
-                                            name="paymentMethod"
-                                            value="PayU"
-                                            checked={paymentMethod === "PayU"}
-                                            onChange={() => setPaymentMethod("PayU")}
-                                            className="w-5 h-5 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-                                        />
-                                        <span>PayU</span>
-                                    </label>
-                                    <label className="flex items-center space-x-2">
-                                        <input
-                                            type="radio"
-                                            name="paymentMethod"
-                                            value="Wallet"
-                                            checked={paymentMethod === "Wallet"}
-                                            onChange={() => setPaymentMethod("Wallet")}
-                                            className="w-5 h-5 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-                                        />
-                                        <span>Wallet</span>
-                                    </label>
-                                </div>
+                                {/* Payment Section */}
+                                <div className="md:w-1/2 p-8">
+                                    {/* Wallet Balance */}
+                                    <div className="bg-gray-100 rounded-lg shadow-md p-4 mb-6">
+                                        <h4 className="text-lg font-semibold text-gray-800 mb-2">Your Wallet Details</h4>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-gray-600">Available Balance:</span>
+                                            <span className="text-[#22177A] font-bold">₹ {walletBalance || 0}</span>
+                                        </div>
+                                    </div>
 
-                                <button
-                                    onClick={handlePayment}
-                                    className="mt-6 w-full bg-[#22177A] text-white py-3 rounded-[0px] shadow-lg"
-                                >
-                                    Pay Now
-                                </button>
+                                    {/* Payment Details */}
+                                    <h3 className="text-2xl font-semibold text-gray-800 mb-4">Payment Details</h3>
+                                    <div className="space-y-4">
+
+                                        <div className="flex justify-between">
+                                            <span className="font-bold">Total Amount:</span>
+                                            <span>₹ {course?.price}.00</span>
+                                        </div>
+
+                                        <div className="text-[15px] text-gray-400">
+                                            Select Payment Method:
+                                        </div>
+                                        <div className="flex items-center space-x-4">
+                                            <label className="flex items-center space-x-2">
+                                                <input
+                                                    type="radio"
+                                                    name="paymentMethod"
+                                                    value="PayU"
+                                                    checked={paymentMethod === "PayU"}
+                                                    onChange={() => setPaymentMethod("PayU")}
+                                                    className="w-5 h-5 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                                                />
+                                                <span>PayU</span>
+                                            </label>
+                                            <label className="flex items-center space-x-2">
+                                                <input
+                                                    type="radio"
+                                                    name="paymentMethod"
+                                                    value="Wallet"
+                                                    checked={paymentMethod === "Wallet"}
+                                                    onChange={() => setPaymentMethod("Wallet")}
+                                                    className="w-5 h-5 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                                                />
+                                                <span>Wallet</span>
+                                            </label>
+                                        </div>
+
+                                        <button
+                                            onClick={handlePayment}
+                                            className="mt-6 w-full bg-[#22177A] text-white py-3 rounded-[0px] shadow-lg"
+                                        >
+                                            Pay Now
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
+
+            <Footer />
         </div>
-
-    </div>
-
-    <Footer />
-</div>
 
     );
 };

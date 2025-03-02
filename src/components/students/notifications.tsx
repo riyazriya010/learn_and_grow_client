@@ -10,6 +10,8 @@ import { USER_SERVICE_URL } from "@/utils/constant";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
+import { clearUserDetials } from "@/redux/slices/userSlice";
+import { useDispatch } from "react-redux";
 
 // Notification Interface
 interface NotificationData {
@@ -24,6 +26,7 @@ interface NotificationData {
 const NotificationPage = () => {
     const [notifications, setNotifications] = useState<NotificationData[]>([]);
     const router = useRouter()
+    const dispatch = useDispatch()
 
     // Fetch Notifications from API
     const fetchNotifications = async () => {
@@ -77,7 +80,8 @@ const NotificationPage = () => {
             }
             if (error && error.response?.status === 403) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
                     window.location.replace('/pages/student/login');
@@ -86,7 +90,8 @@ const NotificationPage = () => {
             }
             if (error && error.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
                     window.location.replace('/pages/student/login');
@@ -128,7 +133,8 @@ const NotificationPage = () => {
                     error?.response?.data?.message === 'Student Blocked'
                 ) {
                     toast.warn(error?.response?.data?.message);
-                    Cookies.remove('accessToken');
+                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
                         window.location.replace('/pages/student/login');
@@ -137,7 +143,8 @@ const NotificationPage = () => {
                 }
                 if (error && error.response?.status === 403) {
                     toast.warn(error.response.data.message);
-                    Cookies.remove('accessToken');
+                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
                         window.location.replace('/pages/student/login');
@@ -146,7 +153,8 @@ const NotificationPage = () => {
                 }
                 if (error && error.response?.status === 401) {
                     toast.warn(error.response.data.message);
-                    Cookies.remove('accessToken');
+                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
                         window.location.replace('/pages/student/login');

@@ -9,6 +9,8 @@ import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from "js-cookie";
 import Footer from "../loggedoutNav/footer";
+import { clearUserDetials } from "@/redux/slices/userSlice";
+import { useDispatch } from "react-redux";
 
 interface Chapter {
     _id: string;
@@ -50,6 +52,7 @@ const CoursePlay = () => {
     const [currentChapterIndex, setCurrentChapterIndex] = useState<number>(0);
     const searchParams = useSearchParams();
     const router = useRouter()
+    const dispatch = useDispatch()
 
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [showControls, setShowControls] = useState<boolean>(false);
@@ -72,7 +75,8 @@ const CoursePlay = () => {
                 } catch (error: any) {
                     if (error && error.response?.status === 401) {
                         toast.warn(error.response.data.message);
-                        Cookies.remove('accessToken');
+                        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                        dispatch(clearUserDetials());
                         localStorage.clear();
                         setTimeout(() => {
                             window.location.replace('/pages/student/login');
@@ -85,7 +89,8 @@ const CoursePlay = () => {
                         error?.response?.data?.message === 'Student Blocked'
                     ) {
                         toast.warn(error?.response?.data?.message);
-                        Cookies.remove('accessToken');
+                        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                        dispatch(clearUserDetials());
                         localStorage.clear();
                         setTimeout(() => {
                             window.location.replace('/pages/student/login');
@@ -172,7 +177,8 @@ const CoursePlay = () => {
             } catch (error: any) {
                 if (error && error.response?.status === 401) {
                     toast.warn(error.response.data.message);
-                    Cookies.remove('accessToken');
+                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
                         window.location.replace('/pages/student/login');
@@ -185,7 +191,8 @@ const CoursePlay = () => {
                     error?.response?.data?.message === 'Student Blocked'
                 ) {
                     toast.warn(error?.response?.data?.message);
-                    Cookies.remove('accessToken');
+                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
                         window.location.replace('/pages/student/login');
@@ -279,10 +286,10 @@ const CoursePlay = () => {
                                     <div
                                         key={chapter._id}
                                         className={`p-4 rounded-lg border shadow-sm transition-colors cursor-pointer ${index === currentChapterIndex
-                                                ? "border-blue-500 text-blue-500 bg-blue-50"
-                                                : completedChapter?.isCompleted
-                                                    ? "border-green-500 text-green-500 bg-green-50"
-                                                    : "border-gray-300 bg-white"
+                                            ? "border-blue-500 text-blue-500 bg-blue-50"
+                                            : completedChapter?.isCompleted
+                                                ? "border-green-500 text-green-500 bg-green-50"
+                                                : "border-gray-300 bg-white"
                                             }`}
                                         onClick={() => handleChapterClick(index)}
                                     >

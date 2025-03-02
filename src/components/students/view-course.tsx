@@ -12,6 +12,8 @@ import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from "js-cookie";
 import Footer from "../loggedoutNav/footer";
+import { clearUserDetials } from "@/redux/slices/userSlice";
+import { useDispatch } from "react-redux";
 
 const StudentViewCourse = () => {
     const [courseId, setCourseId] = useState<string | null>(null);
@@ -23,6 +25,7 @@ const StudentViewCourse = () => {
     const searchParams = useSearchParams()
     const user = useSelector((state: RootState) => state.user)
     const router = useRouter()
+    const dispatch = useDispatch()
 
     useEffect(() => {
         const getCourseId = searchParams.get('courseId')
@@ -97,7 +100,8 @@ const StudentViewCourse = () => {
             if (error && error.response?.status === 401) {
                 console.log('401 log', error.response.data.message)
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
                     window.location.replace('/pages/student/login');
@@ -110,7 +114,8 @@ const StudentViewCourse = () => {
                 error?.response?.data?.message === 'Student Blocked'
             ) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
                     window.location.replace('/pages/student/login');
@@ -175,7 +180,7 @@ const StudentViewCourse = () => {
                             </div>
                             <div className="hidden md:block border-l border-gray-300 mx-6"></div>
                             <div className="w-full md:w-[40%] flex flex-col items-center md:items-start mt-6 md:mt-0">
-                            <div className="w-full h-[340px] md:w-[400px] lg:w-[500px] mb-4 rounded-[18px] shadow-[0_4px_10px_rgba(0,123,255,0.1)]">
+                                <div className="w-full h-[340px] md:w-[400px] lg:w-[500px] mb-4 rounded-[18px] shadow-[0_4px_10px_rgba(0,123,255,0.1)]">
                                     {course.thumbnailUrl && (
                                         <div className="relative w-full h-full">
                                             <video

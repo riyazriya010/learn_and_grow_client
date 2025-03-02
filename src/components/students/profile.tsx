@@ -14,6 +14,8 @@ import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/slices/userSlice";
 import Navbar from "../navbar";
 import axios from "axios";
+import { clearUserDetials } from "@/redux/slices/userSlice";
+
 
 export interface UserProfile {
   username: string;
@@ -38,7 +40,7 @@ const StudentsProfile = () => {
     { field: "Badge", link: "/pages/student/badge" },
     { field: "Wallet", link: "/pages/student/wallet" },
   ];
-  
+
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -66,7 +68,7 @@ const StudentsProfile = () => {
                   email: fetchedUser.email || "",
                   username: fetchedUser.username || "",
                   phone: fetchedUser.phone || "",
-                  profileImage: fetchedUser.profilePicUrl || "", 
+                  profileImage: fetchedUser.profilePicUrl || "",
                 });
                 setIsVerified(fetchedUser.isVerified);
 
@@ -81,16 +83,22 @@ const StudentsProfile = () => {
                 error?.response?.data?.message === 'Student Blocked'
               ) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
                   window.location.replace('/pages/student/login');
                 }, 3000);
                 return;
               }
+              if (error && error.response?.status === 401 && error.response.data.message === 'Student Not Verified') {
+                toast.warn(error.response.data.message);
+                return;
+              }
               if (error && error.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
                   window.location.replace('/pages/student/login');
@@ -99,7 +107,8 @@ const StudentsProfile = () => {
               }
               if (error && error?.response?.status === 403) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 router.push('/');
               }
@@ -149,7 +158,8 @@ const StudentsProfile = () => {
         error?.response?.data?.message === 'Student Blocked'
       ) {
         toast.warn(error?.response?.data?.message);
-        Cookies.remove('accessToken');
+        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+        dispatch(clearUserDetials());
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/student/login');
@@ -202,67 +212,67 @@ const StudentsProfile = () => {
 
       // let s3FileUrl = "";
       let profilePicUrl = "";
-if (data.profile.name && data.profile.type) {
-  fileRequests.push({ fileName: data.profile.name, fileType: data.profile.type })
-  
-  const presignedResponse = await studentApis.preSignedUrl(fileRequests)
+      if (data.profile.name && data.profile.type) {
+        fileRequests.push({ fileName: data.profile.name, fileType: data.profile.type })
 
-  // const presignedResponse = await axios.post(
-  //   `${USER_SERVICE_URL}/student/generate-presigned-url`,
-  //   // {
-  //   //   fileName: data.profile.name,
-  //   //   fileType: data.profile.type,
-  //   // },
-  //   {
-  //     files: fileRequests
-  //   },
-  //   {
-  //     headers: { "Content-Type": "application/json" },
-  //     withCredentials: true,
-  //   }
-  // );
+        const presignedResponse = await studentApis.preSignedUrl(fileRequests)
 
-  console.log("profile update: ", presignedResponse);
+        // const presignedResponse = await axios.post(
+        //   `${USER_SERVICE_URL}/student/generate-presigned-url`,
+        //   // {
+        //   //   fileName: data.profile.name,
+        //   //   fileType: data.profile.type,
+        //   // },
+        //   {
+        //     files: fileRequests
+        //   },
+        //   {
+        //     headers: { "Content-Type": "application/json" },
+        //     withCredentials: true,
+        //   }
+        // );
 
-  const urls = presignedResponse.data.urls;
-  console.log('urls ',urls)
+        console.log("profile update: ", presignedResponse);
 
-  for (let i = 0; i < urls.length; i++) {
-    const fileToUpload = i === 0 && data.profile;
+        const urls = presignedResponse.data.urls;
+        console.log('urls ', urls)
 
-    const s3Upload = await axios.put(urls[i].presignedUrl, fileToUpload, {
-      headers: { "Content-Type": fileToUpload.type },
-    });
-    console.log('s3Upload: ', s3Upload)
+        for (let i = 0; i < urls.length; i++) {
+          const fileToUpload = i === 0 && data.profile;
 
-    if (i === 0) profilePicUrl = `https://learnandgrow.s3.amazonaws.com/${urls[i].fileKey}`;
-  }
-}
+          const s3Upload = await axios.put(urls[i].presignedUrl, fileToUpload, {
+            headers: { "Content-Type": fileToUpload.type },
+          });
+          console.log('s3Upload: ', s3Upload)
 
-// ✅ s3FileUrl is now always defined before use
-const response = await studentApis.profile({
-  username: data.username,
-  phone: data.phone,
-  profilePicUrl,
-})
+          if (i === 0) profilePicUrl = `https://learnandgrow.s3.amazonaws.com/${urls[i].fileKey}`;
+        }
+      }
 
-// const response = await axios.patch(
-//   `${USER_SERVICE_URL}/student/profile-update`,
-//   {
-//     username: data.username,
-//     phone: data.phone,
-//     profilePicUrl,
-//   },
-//   {
-//     headers: { "Content-Type": "application/json" },
-//     withCredentials: true,
-//   }
-// );
+      // ✅ s3FileUrl is now always defined before use
+      const response = await studentApis.profile({
+        username: data.username,
+        phone: data.phone,
+        profilePicUrl,
+      })
+
+      // const response = await axios.patch(
+      //   `${USER_SERVICE_URL}/student/profile-update`,
+      //   {
+      //     username: data.username,
+      //     phone: data.phone,
+      //     profilePicUrl,
+      //   },
+      //   {
+      //     headers: { "Content-Type": "application/json" },
+      //     withCredentials: true,
+      //   }
+      // );
 
 
-console.log('resss: ', response)
+      console.log('resss: ', response)
 
- if (response && response.data && response.data.success) {
+      if (response && response.data && response.data.success) {
         toast.success('Profile Updated');
 
         dispatch(setUser({
@@ -278,7 +288,7 @@ console.log('resss: ', response)
           phone: response.data.result.phone,
           profileImage: response.data.result.profilePicUrl, // Update the profile picture
         });
-        console.log('local: ',localUser)
+        console.log('local: ', localUser)
 
         reset({
           username: response.data.result.username,
@@ -291,14 +301,15 @@ console.log('resss: ', response)
         console.log('401 log', error.response.data.message)
         toast.warn(error.response.data.message);
         return;
-    }
+      }
       if (
         error &&
         error?.response?.status === 403 &&
         error?.response?.data?.message === 'Student Blocked'
       ) {
         toast.warn(error?.response?.data?.message);
-        Cookies.remove('accessToken');
+        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+        dispatch(clearUserDetials());
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/student/login');
@@ -307,7 +318,8 @@ console.log('resss: ', response)
       }
       if (error && error.response?.status === 403) {
         toast.warn(error.response.data.message);
-        Cookies.remove('accessToken');
+        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+        dispatch(clearUserDetials());
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/student/login');
@@ -316,7 +328,8 @@ console.log('resss: ', response)
       }
       if (error && error.response?.status === 401) {
         toast.warn(error.response.data.message);
-        Cookies.remove('accessToken');
+        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+        dispatch(clearUserDetials());
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/student/login');
@@ -326,7 +339,7 @@ console.log('resss: ', response)
     }
   };
 
-  
+
   // Handle profile image change
   const handleProfileImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]; // Get the selected file
@@ -372,10 +385,10 @@ console.log('resss: ', response)
               >
                 {localUser.profileImage || "" ? (
                   <img
-                    src={localUser.profileImage || ""} 
+                    src={localUser.profileImage || ""}
                     alt="Profile"
                     className="w-full h-full rounded-full object-cover"
-                    width={96}  
+                    width={96}
                     height={96}
                   />
                 ) : (
@@ -438,7 +451,7 @@ console.log('resss: ', response)
                   {...register("phone", {
                     required: "Phone number is required",
                     pattern: {
-                      value: /^[0-9]{10}$/, 
+                      value: /^[0-9]{10}$/,
                       message: "Please enter a valid phone number (10 digits)",
                     },
                   })}
@@ -473,7 +486,7 @@ console.log('resss: ', response)
         </div>
       </div>
 
-      <Footer/>
+      <Footer />
 
     </div>
   );

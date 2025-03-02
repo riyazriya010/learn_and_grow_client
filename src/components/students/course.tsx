@@ -10,6 +10,8 @@ import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from 'js-cookie';
 import Footer from '../loggedoutNav/footer';
+import { clearUserDetials } from "@/redux/slices/userSlice";
+import { useDispatch } from "react-redux";
 
 const CoursesPage = () => {
   const [courses, setCourses] = useState<any>([]);
@@ -20,6 +22,7 @@ const CoursesPage = () => {
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filter, setFliter] = useState<boolean>(true)
+  const dispatch = useDispatch()
 
   const router = useRouter();
 
@@ -49,7 +52,8 @@ const CoursesPage = () => {
         error?.response?.data?.message === 'Student Blocked'
       ) {
         toast.warn(error?.response?.data?.message);
-        Cookies.remove('accessToken');
+        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+        dispatch(clearUserDetials());
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/student/login');
@@ -138,7 +142,8 @@ const CoursesPage = () => {
             error?.response?.data?.message === 'Student Blocked'
           ) {
             toast.warn(error?.response?.data?.message);
-            Cookies.remove('accessToken');
+            Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+            dispatch(clearUserDetials());
             localStorage.clear();
             setTimeout(() => {
               window.location.replace('/pages/student/login');
@@ -203,7 +208,8 @@ const CoursesPage = () => {
         error?.response?.data?.message === 'Student Blocked'
       ) {
         toast.warn(error?.response?.data?.message);
-        Cookies.remove('accessToken');
+        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+        dispatch(clearUserDetials());
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/student/login');

@@ -14,6 +14,8 @@ import axios from "axios";
 import { USER_SERVICE_URL } from "@/utils/constant";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import { clearUserDetials } from "@/redux/slices/userSlice";
+import { useDispatch } from "react-redux";
 
 
 interface BadgeData {
@@ -36,6 +38,7 @@ const StudentBadge = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [count, setCount] = useState(0)
   const router = useRouter()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     setIsLoading(false)
@@ -49,7 +52,8 @@ const StudentBadge = () => {
       } catch (error: any) {
         if (error && error.response?.status === 401) {
           toast.warn(error.response.data.message);
-          Cookies.remove('accessToken');
+          Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+          dispatch(clearUserDetials());
           localStorage.clear();
           setTimeout(() => {
             window.location.replace('/pages/student/login');
@@ -62,7 +66,8 @@ const StudentBadge = () => {
           error?.response?.data?.message === 'Student Blocked'
         ) {
           toast.warn(error?.response?.data?.message);
-          Cookies.remove('accessToken');
+          Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+          dispatch(clearUserDetials());
           localStorage.clear();
           setTimeout(() => {
             window.location.replace('/pages/student/login');
@@ -78,18 +83,18 @@ const StudentBadge = () => {
 
 
   const exchangeBadge = async (id: string) => {
-    try {
 
-      const confirmResult = await Swal.fire({
-        title: "Are you sure?",
-        text: "Do you want to exchange this badge for money?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes, exchange it!",
-        cancelButtonText: "Cancel",
-      });
+    const confirmResult = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to exchange this badge for money?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, exchange it!",
+      cancelButtonText: "Cancel",
+    });
 
-      if (confirmResult.isConfirmed) {
+    if (confirmResult.isConfirmed) {
+      try {
         console.log('badgeId to exchange: ', id)
         const response = await axios.get(`${USER_SERVICE_URL}/convert-badge/money/${id}`, {
           withCredentials: true
@@ -108,11 +113,34 @@ const StudentBadge = () => {
 
           router.push('/pages/student/wallet')
         }
+      } catch (error: any) {
+        console.log(error)
+        if (error && error.response?.status === 401) {
+          toast.warn(error.response.data.message);
+          Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+          dispatch(clearUserDetials());
+          localStorage.clear();
+          setTimeout(() => {
+            window.location.replace('/pages/student/login');
+          }, 3000);
+          return;
+        }
+        if (
+          error &&
+          error?.response?.status === 403 &&
+          error?.response?.data?.message === 'Student Blocked'
+        ) {
+          toast.warn(error?.response?.data?.message);
+          Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+          dispatch(clearUserDetials());
+          localStorage.clear();
+          setTimeout(() => {
+            window.location.replace('/pages/student/login');
+          }, 3000);
+          return;
+        }
       }
 
-
-    } catch (error: unknown) {
-      console.log(error)
     }
 
   }

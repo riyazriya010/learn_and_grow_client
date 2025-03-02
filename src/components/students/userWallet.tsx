@@ -13,6 +13,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import Cookies from "js-cookie";
 import axios from 'axios';
 import { USER_SERVICE_URL } from '@/utils/constant';
+import { clearUserDetials } from "@/redux/slices/userSlice";
+import { useDispatch } from "react-redux";
 
 interface WalletData {
     _id?: string;
@@ -32,16 +34,17 @@ const StudentWallet = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const router = useRouter();
+    const dispatch = useDispatch()
 
     useEffect(() => {
         const fetchData = async (page: number) => {
             setIsLoading(true);
             try {
                 const filters = { page, limit: 1 };
-                const response = await axios.get(`${USER_SERVICE_URL}/get/student/wallet?filters=${filters}`,{
+                const response = await axios.get(`${USER_SERVICE_URL}/get/student/wallet?filters=${filters}`, {
                     withCredentials: true
                 });
-                console.log('wallet ',response)
+                console.log('wallet ', response)
                 if (response) {
                     const wallets = response.data?.result?.wallets;
                     console.log(response)
@@ -57,20 +60,21 @@ const StudentWallet = () => {
                     }
                 }
             } catch (error: any) {
-                if (error && error.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
+                if (error && error.response?.status === 401 && error.response.data.message === 'Student Not Verified') {
                     console.log('401 log', error.response.data.message)
                     toast.warn(error.response.data.message);
                     setTimeout(() => {
-                        router.push('/pages/mentor/profile')
+                        router.push('/pages/student/profile')
                     }, 2000)
                     return;
                 }
                 if (error && error.response?.status === 401) {
                     toast.warn(error.response.data.message);
-                    Cookies.remove('accessToken');
+                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
-                        window.location.replace('/pages/mentor/login');
+                        window.location.replace('/pages/student/login');
                     }, 3000);
                     return;
                 }
@@ -80,10 +84,11 @@ const StudentWallet = () => {
                     error?.response?.data?.message === 'Mentor Blocked'
                 ) {
                     toast.warn(error?.response?.data?.message);
-                    Cookies.remove('accessToken');
+                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
-                        window.location.replace('/pages/mentor/login');
+                        window.location.replace('/pages/student/login');
                     }, 3000);
                     return;
                 }

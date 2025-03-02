@@ -11,6 +11,8 @@ import { useSearchParams } from 'next/navigation';
 import { studentApis } from '@/app/api/studentApi';
 import LoadingModal from '../re-usable/loadingModal';
 import Cookies from "js-cookie";
+import { clearUserDetials } from "@/redux/slices/userSlice";
+import { useDispatch } from "react-redux";
 
 interface CertificateData {
     _id: string;
@@ -25,6 +27,7 @@ const CertificatePage = () => {
     const [isloading, setIsLoading] = useState<boolean>(true);
     const [certificate, setCertificate] = useState<CertificateData>();
     const certificateRef = useRef<HTMLDivElement>(null);
+    const dispatch = useDispatch()
 
     useEffect(() => {
         const certificateId = searchParams.get('certificateId')
@@ -41,7 +44,8 @@ const CertificatePage = () => {
                 } catch (error: any) {
                     if (error && error.response?.status === 401) {
                         toast.warn(error.response.data.message);
-                        Cookies.remove('accessToken');
+                        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                        dispatch(clearUserDetials());
                         localStorage.clear();
                         setTimeout(() => {
                             window.location.replace('/pages/student/login');
@@ -54,7 +58,8 @@ const CertificatePage = () => {
                         error?.response?.data?.message === 'Student Blocked'
                     ) {
                         toast.warn(error?.response?.data?.message);
-                        Cookies.remove('accessToken');
+                        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                        dispatch(clearUserDetials());
                         localStorage.clear();
                         setTimeout(() => {
                             window.location.replace('/pages/student/login');

@@ -10,11 +10,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import { studentApis } from '@/app/api/studentApi';
 import LoadingModal from '../re-usable/loadingModal';
 import Cookies from "js-cookie";
+import { clearUserDetials } from "@/redux/slices/userSlice";
+import { useDispatch } from "react-redux";
 
 const PaymentSuccess = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const searchParams = useSearchParams();
     const router = useRouter();
+    const dispatch = useDispatch()
 
     const txnid = searchParams.get('txnid');
     const amountPaid = searchParams.get('amountPaid');
@@ -31,7 +34,7 @@ const PaymentSuccess = () => {
             // setCourseId(getCourseId)
             const payment = async () => {
                 try {
-                    const response = await studentApis.payment(String(getCourseId), String(txnid) , Number(amountPaid), String(courseName))
+                    const response = await studentApis.payment(String(getCourseId), String(txnid), Number(amountPaid), String(courseName))
                     if (response) {
                         console.log('res ', response)
                         toast.success('You Have Purchased the course')
@@ -39,26 +42,28 @@ const PaymentSuccess = () => {
                 } catch (error: any) {
                     if (error && error.response?.status === 401) {
                         toast.warn(error.response.data.message);
-                        Cookies.remove('accessToken');
+                        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                        dispatch(clearUserDetials());
                         localStorage.clear();
                         setTimeout(() => {
-                          window.location.replace('/pages/student/login');
+                            window.location.replace('/pages/student/login');
                         }, 3000);
                         return;
-                      }
-                      if (
+                    }
+                    if (
                         error &&
                         error?.response?.status === 403 &&
                         error?.response?.data?.message === 'Student Blocked'
-                      ) {
+                    ) {
                         toast.warn(error?.response?.data?.message);
-                        Cookies.remove('accessToken');
+                        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                        dispatch(clearUserDetials());
                         localStorage.clear();
                         setTimeout(() => {
-                          window.location.replace('/pages/student/login');
+                            window.location.replace('/pages/student/login');
                         }, 3000);
                         return;
-                      }
+                    }
                 } finally {
                     setIsLoading(false)
                 }
@@ -70,7 +75,7 @@ const PaymentSuccess = () => {
     }, [searchParams])
 
 
-    if(isLoading) return <LoadingModal isOpen={isLoading} message='please wait for payment success...'/>
+    if (isLoading) return <LoadingModal isOpen={isLoading} message='please wait for payment success...' />
 
     return (
         <div className="flex flex-col min-h-screen bg-white">

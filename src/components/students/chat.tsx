@@ -1,6 +1,6 @@
 "use client";
 import axios from "axios";
-import {  useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import socket from "@/utils/socket";
 import Swal from "sweetalert2";
 import Navbar from "../navbar";
@@ -11,6 +11,8 @@ import { MENTOR_SERVICE_URL, USER_SERVICE_URL } from "@/utils/constant";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
+import { clearUserDetials } from "@/redux/slices/userSlice";
+import { useDispatch } from "react-redux";
 
 interface MentorsData {
     _id: string;
@@ -54,6 +56,7 @@ const StudentChat = () => {
     const pathname = usePathname();
     const router = useRouter()
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const dispatch = useDispatch()
 
 
     const [isTyping, setIsTyping] = useState(false); // State to track typing status
@@ -85,9 +88,15 @@ const StudentChat = () => {
                 setMentors(mentorData)
             }
         } catch (error: any) {
-            if (error && error.response?.status === 401 && error.response.data.message === 'Student Not Verified') {
+            if (error && error.response?.status === 401) {
                 console.log('401 log', error.response.data.message)
                 toast.warn(error.response.data.message);
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
+                localStorage.clear();
+                setTimeout(() => {
+                    window.location.replace('/pages/student/login');
+                }, 3000);
                 return;
             }
             if (
@@ -96,7 +105,8 @@ const StudentChat = () => {
                 error?.response?.data?.message === 'Student Blocked'
             ) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
                     window.location.replace('/pages/student/login');
@@ -105,7 +115,8 @@ const StudentChat = () => {
             }
             if (error && error.response?.status === 403) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
                     window.location.replace('/pages/student/login');
@@ -114,7 +125,8 @@ const StudentChat = () => {
             }
             if (error && error.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
                     window.location.replace('/pages/student/login');
@@ -159,6 +171,12 @@ const StudentChat = () => {
                     if (error && error.response?.status === 401 && error.response.data.message === 'Student Not Verified') {
                         console.log('401 log', error.response.data.message)
                         toast.warn(error.response.data.message);
+                        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                        dispatch(clearUserDetials());
+                        localStorage.clear();
+                        setTimeout(() => {
+                            window.location.replace('/pages/student/login');
+                        }, 3000);
                         return;
                     }
                     if (
@@ -167,7 +185,8 @@ const StudentChat = () => {
                         error?.response?.data?.message === 'Student Blocked'
                     ) {
                         toast.warn(error?.response?.data?.message);
-                        Cookies.remove('accessToken');
+                        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                        dispatch(clearUserDetials());
                         localStorage.clear();
                         setTimeout(() => {
                             window.location.replace('/pages/student/login');
@@ -176,7 +195,8 @@ const StudentChat = () => {
                     }
                     if (error && error.response?.status === 403) {
                         toast.warn(error.response.data.message);
-                        Cookies.remove('accessToken');
+                        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                        dispatch(clearUserDetials());
                         localStorage.clear();
                         setTimeout(() => {
                             window.location.replace('/pages/student/login');
@@ -185,7 +205,8 @@ const StudentChat = () => {
                     }
                     if (error && error.response?.status === 401) {
                         toast.warn(error.response.data.message);
-                        Cookies.remove('accessToken');
+                        Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                        dispatch(clearUserDetials());
                         localStorage.clear();
                         setTimeout(() => {
                             window.location.replace('/pages/student/login');
@@ -294,7 +315,7 @@ const StudentChat = () => {
                 const filteredMsg = response?.data?.result?.filter((msg: any) => {
                     return !msg.deletedForReceiver || (!msg.deletedForSender && msg.senderId === selectedMentor?._id);
                 }).pop();
-                
+
                 const lstMsg = filteredMsg?.message
                 setLastMessage(lstMsg || "")
 
@@ -308,39 +329,48 @@ const StudentChat = () => {
             if (error && error.response?.status === 401 && error.response.data.message === 'Student Not Verified') {
                 console.log('401 log', error.response.data.message)
                 toast.warn(error.response.data.message);
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
+                localStorage.clear();
+                setTimeout(() => {
+                    window.location.replace('/pages/student/login');
+                }, 3000);
                 return;
             }
-              if (
+            if (
                 error &&
                 error?.response?.status === 403 &&
                 error?.response?.data?.message === 'Student Blocked'
-              ) {
+            ) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
-                  window.location.replace('/pages/student/login');
+                    window.location.replace('/pages/student/login');
                 }, 3000);
                 return;
-              }
-              if (error && error.response?.status === 403) {
+            }
+            if (error && error.response?.status === 403) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
-                  window.location.replace('/pages/student/login');
+                    window.location.replace('/pages/student/login');
                 }, 3000);
                 return;
-              }
-              if (error && error.response?.status === 401) {
+            }
+            if (error && error.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
-                  window.location.replace('/pages/student/login');
+                    window.location.replace('/pages/student/login');
                 }, 3000);
                 return;
-              }
+            }
 
         }
     }
@@ -438,39 +468,48 @@ const StudentChat = () => {
             if (error && error.response?.status === 401 && error.response.data.message === 'Student Not Verified') {
                 console.log('401 log', error.response.data.message)
                 toast.warn(error.response.data.message);
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
+                localStorage.clear();
+                setTimeout(() => {
+                    window.location.replace('/pages/student/login');
+                }, 3000);
                 return;
             }
-              if (
+            if (
                 error &&
                 error?.response?.status === 403 &&
                 error?.response?.data?.message === 'Student Blocked'
-              ) {
+            ) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
-                  window.location.replace('/pages/student/login');
+                    window.location.replace('/pages/student/login');
                 }, 3000);
                 return;
-              }
-              if (error && error.response?.status === 403) {
+            }
+            if (error && error.response?.status === 403) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
-                  window.location.replace('/pages/student/login');
+                    window.location.replace('/pages/student/login');
                 }, 3000);
                 return;
-              }
-              if (error && error.response?.status === 401) {
+            }
+            if (error && error.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
-                  window.location.replace('/pages/student/login');
+                    window.location.replace('/pages/student/login');
                 }, 3000);
                 return;
-              }
+            }
         }
     }
 
@@ -489,46 +528,62 @@ const StudentChat = () => {
             if (error && error.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
                 console.log('401 log', error.response.data.message)
                 toast.warn(error.response.data.message);
-                return;
-            }
-              if (error && error.response?.status === 401) {
-                toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
-                  window.location.replace('/pages/mentor/login');
+                    window.location.replace('/pages/student/login');
                 }, 3000);
                 return;
-              }
-              if (
+            }
+            if (error && error.response?.status === 401) {
+                toast.warn(error.response.data.message);
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
+                localStorage.clear();
+                setTimeout(() => {
+                    window.location.replace('/pages/student/login');
+                }, 3000);
+                return;
+            }
+            if (
                 error &&
                 error?.response?.status === 403 &&
                 error?.response?.data?.message === 'Mentor Blocked'
-              ) {
+            ) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
-                  window.location.replace('/pages/mentor/login');
+                    window.location.replace('/pages/student/login');
                 }, 3000);
                 return;
-              }
-              if (error && error.response?.status === 403) {
+            }
+            if (error && error.response?.status === 403) {
                 console.log('403')
                 toast.warn(error.response?.data.message)
-                Cookies.remove('accessToken')
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear()
                 setTimeout(() => {
-                  // router.push('/pages/mentor/login')
-                  window.location.replace('/pages/mentor/login')
-                },3000)
+                    // router.push('/pages/mentor/login')
+                    window.location.replace('/pages/student/login')
+                }, 3000)
                 return
-              }
-              if (error && error.response?.status === 401) {
+            }
+            if (error && error.response?.status === 401) {
                 console.log('401')
                 toast.warn(error.response.data.message)
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
+                localStorage.clear()
+                setTimeout(() => {
+                    // router.push('/pages/mentor/login')
+                    window.location.replace('/pages/student/login')
+                }, 3000)
                 return
-              }
+            }
         }
     }
 
@@ -568,39 +623,49 @@ const StudentChat = () => {
             if (error && error.response?.status === 401 && error.response.data.message === 'Student Not Verified') {
                 console.log('401 log', error.response.data.message)
                 toast.warn(error.response.data.message);
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
+                localStorage.clear()
+                setTimeout(() => {
+                    // router.push('/pages/mentor/login')
+                    window.location.replace('/pages/student/login')
+                }, 3000)
                 return;
             }
-              if (
+            if (
                 error &&
                 error?.response?.status === 403 &&
                 error?.response?.data?.message === 'Student Blocked'
-              ) {
+            ) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
-                  window.location.replace('/pages/student/login');
+                    window.location.replace('/pages/student/login');
                 }, 3000);
                 return;
-              }
-              if (error && error.response?.status === 403) {
+            }
+            if (error && error.response?.status === 403) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
-                  window.location.replace('/pages/student/login');
+                    window.location.replace('/pages/student/login');
                 }, 3000);
                 return;
-              }
-              if (error && error.response?.status === 401) {
+            }
+            if (error && error.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
-                  window.location.replace('/pages/student/login');
+                    window.location.replace('/pages/student/login');
                 }, 3000);
                 return;
-              }
+            }
         }
     }
 
@@ -664,39 +729,49 @@ const StudentChat = () => {
                 if (error && error.response?.status === 401 && error.response.data.message === 'Student Not Verified') {
                     console.log('401 log', error.response.data.message)
                     toast.warn(error.response.data.message);
+                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    dispatch(clearUserDetials());
+                    localStorage.clear()
+                    setTimeout(() => {
+                        // router.push('/pages/mentor/login')
+                        window.location.replace('/pages/student/login')
+                    }, 3000)
                     return;
                 }
-                  if (
+                if (
                     error &&
                     error?.response?.status === 403 &&
                     error?.response?.data?.message === 'Student Blocked'
-                  ) {
+                ) {
                     toast.warn(error?.response?.data?.message);
-                    Cookies.remove('accessToken');
+                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
-                      window.location.replace('/pages/student/login');
+                        window.location.replace('/pages/student/login');
                     }, 3000);
                     return;
-                  }
-                  if (error && error.response?.status === 403) {
+                }
+                if (error && error.response?.status === 403) {
                     toast.warn(error.response.data.message);
-                    Cookies.remove('accessToken');
+                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
-                      window.location.replace('/pages/student/login');
+                        window.location.replace('/pages/student/login');
                     }, 3000);
                     return;
-                  }
-                  if (error && error.response?.status === 401) {
+                }
+                if (error && error.response?.status === 401) {
                     toast.warn(error.response.data.message);
-                    Cookies.remove('accessToken');
+                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
-                      window.location.replace('/pages/student/login');
+                        window.location.replace('/pages/student/login');
                     }, 3000);
                     return;
-                  }
+                }
             }
         } else if (result.isDenied) {
             try {
@@ -722,39 +797,49 @@ const StudentChat = () => {
                 if (error && error.response?.status === 401 && error.response.data.message === 'Student Not Verified') {
                     console.log('401 log', error.response.data.message)
                     toast.warn(error.response.data.message);
+                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    dispatch(clearUserDetials());
+                    localStorage.clear()
+                    setTimeout(() => {
+                        // router.push('/pages/mentor/login')
+                        window.location.replace('/pages/student/login')
+                    }, 3000)
                     return;
                 }
-                  if (
+                if (
                     error &&
                     error?.response?.status === 403 &&
                     error?.response?.data?.message === 'Student Blocked'
-                  ) {
+                ) {
                     toast.warn(error?.response?.data?.message);
-                    Cookies.remove('accessToken');
+                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
-                      window.location.replace('/pages/student/login');
+                        window.location.replace('/pages/student/login');
                     }, 3000);
                     return;
-                  }
-                  if (error && error.response?.status === 403) {
+                }
+                if (error && error.response?.status === 403) {
                     toast.warn(error.response.data.message);
-                    Cookies.remove('accessToken');
+                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
-                      window.location.replace('/pages/student/login');
+                        window.location.replace('/pages/student/login');
                     }, 3000);
                     return;
-                  }
-                  if (error && error.response?.status === 401) {
+                }
+                if (error && error.response?.status === 401) {
                     toast.warn(error.response.data.message);
-                    Cookies.remove('accessToken');
+                    Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                    dispatch(clearUserDetials());
                     localStorage.clear();
                     setTimeout(() => {
-                      window.location.replace('/pages/student/login');
+                        window.location.replace('/pages/student/login');
                     }, 3000);
                     return;
-                  }
+                }
             }
         } else {
             console.log("Delete action canceled.");
@@ -779,39 +864,49 @@ const StudentChat = () => {
             if (error && error.response?.status === 401 && error.response.data.message === 'Student Not Verified') {
                 console.log('401 log', error.response.data.message)
                 toast.warn(error.response.data.message);
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
+                localStorage.clear()
+                setTimeout(() => {
+                    // router.push('/pages/mentor/login')
+                    window.location.replace('/pages/student/login')
+                }, 3000)
                 return;
             }
-              if (
+            if (
                 error &&
                 error?.response?.status === 403 &&
                 error?.response?.data?.message === 'Student Blocked'
-              ) {
+            ) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
-                  window.location.replace('/pages/student/login');
+                    window.location.replace('/pages/student/login');
                 }, 3000);
                 return;
-              }
-              if (error && error.response?.status === 403) {
+            }
+            if (error && error.response?.status === 403) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
-                  window.location.replace('/pages/student/login');
+                    window.location.replace('/pages/student/login');
                 }, 3000);
                 return;
-              }
-              if (error && error.response?.status === 401) {
+            }
+            if (error && error.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+                dispatch(clearUserDetials());
                 localStorage.clear();
                 setTimeout(() => {
-                  window.location.replace('/pages/student/login');
+                    window.location.replace('/pages/student/login');
                 }, 3000);
                 return;
-              }
+            }
         }
     }
 
