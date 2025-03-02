@@ -16,8 +16,8 @@ import Cookies from "js-cookie";
 // import { USER_SERVICE_URL } from "@/utils/constant";
 import { useDispatch } from "react-redux";
 import { clearUserDetials } from "@/redux/slices/userSlice";
-import axios from "axios";
-import { USER_SERVICE_URL } from "@/utils/constant";
+// import axios from "axios";
+// import { USER_SERVICE_URL } from "@/utils/constant";
 
 interface CourseData {
   _id?: string;
