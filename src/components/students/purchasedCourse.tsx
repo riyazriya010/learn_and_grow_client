@@ -16,8 +16,8 @@ import Cookies from "js-cookie";
 // import { USER_SERVICE_URL } from "@/utils/constant";
 import { useDispatch } from "react-redux";
 import { clearUserDetials } from "@/redux/slices/userSlice";
-// import axios from "axios";
-// import { USER_SERVICE_URL } from "@/utils/constant";
+import axios from "axios";
+import { USER_SERVICE_URL } from "@/utils/constant";
 
 interface CourseData {
   _id?: string;
@@ -70,14 +70,14 @@ const PurchasedCourse = () => {
         }
         if (error && error.response?.status === 401) {
           console.log('401 error: ', error)
-          // toast.warn(error.response.data.message);
-          // await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
-          // // Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
-          // localStorage.clear();
-          // dispatch(clearUserDetials());
-          // setTimeout(() => {
-          //   window.location.replace('/pages/student/login');
-          // }, 3000);
+          toast.warn(error.response.data.message);
+          await axios.post(`${USER_SERVICE_URL}/student/logout`,{},{ withCredentials: true }); // logout api
+          // Cookies.remove('accessToken', { domain: '.learngrow.live', path: '/' });
+          localStorage.clear();
+          dispatch(clearUserDetials());
+          setTimeout(() => {
+            window.location.replace('/pages/student/login');
+          }, 3000);
           return;
         }
         console.log('last error: ',error)
