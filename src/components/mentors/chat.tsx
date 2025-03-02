@@ -12,7 +12,6 @@ import EmojiPicker from 'emoji-picker-react';
 import { MENTOR_SERVICE_URL, USER_SERVICE_URL } from "@/utils/constant";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Cookies from "js-cookie";
 
 interface StudentData {
   _id: string;
@@ -86,11 +85,14 @@ const MentoChat = () => {
       if (error && error.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
         console.log('401 log', error.response.data.message)
         toast.warn(error.response.data.message);
+        setTimeout(() => {
+          window.location.replace('/pages/mentor/profile');
+        }, 3000);
         return;
       }
       if (error && error.response?.status === 401) {
         toast.warn(error.response.data.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/mentor/login');
@@ -103,7 +105,7 @@ const MentoChat = () => {
         error?.response?.data?.message === 'Mentor Blocked'
       ) {
         toast.warn(error?.response?.data?.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/mentor/login');
@@ -113,7 +115,7 @@ const MentoChat = () => {
       if (error && error.response?.status === 403) {
         console.log('403')
         toast.warn(error.response?.data.message)
-        Cookies.remove('accessToken')
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear()
         setTimeout(() => {
           // router.push('/pages/mentor/login')
@@ -124,6 +126,12 @@ const MentoChat = () => {
       if (error && error.response?.status === 401) {
         console.log('401')
         toast.warn(error.response.data.message)
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
+        localStorage.clear()
+        setTimeout(() => {
+          // router.push('/pages/mentor/login')
+          window.location.replace('/pages/mentor/login')
+        }, 3000)
         return
       }
     }
@@ -168,7 +176,7 @@ const MentoChat = () => {
           }
           if (error && error.response?.status === 401) {
             toast.warn(error.response.data.message);
-            Cookies.remove('accessToken');
+            await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
             localStorage.clear();
             setTimeout(() => {
               window.location.replace('/pages/mentor/login');
@@ -181,7 +189,7 @@ const MentoChat = () => {
             error?.response?.data?.message === 'Mentor Blocked'
           ) {
             toast.warn(error?.response?.data?.message);
-            Cookies.remove('accessToken');
+            await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
             localStorage.clear();
             setTimeout(() => {
               window.location.replace('/pages/mentor/login');
@@ -191,7 +199,7 @@ const MentoChat = () => {
           if (error && error.response?.status === 403) {
             console.log('403')
             toast.warn(error.response?.data.message)
-            Cookies.remove('accessToken')
+            await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
             localStorage.clear()
             setTimeout(() => {
               // router.push('/pages/mentor/login')
@@ -202,6 +210,12 @@ const MentoChat = () => {
           if (error && error.response?.status === 401) {
             console.log('401')
             toast.warn(error.response.data.message)
+            await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
+            localStorage.clear()
+            setTimeout(() => {
+              // router.push('/pages/mentor/login')
+              window.location.replace('/pages/mentor/login')
+            }, 3000)
             return
           }
         }
@@ -323,7 +337,7 @@ const MentoChat = () => {
       }
       if (error && error.response?.status === 401) {
         toast.warn(error.response.data.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/mentor/login');
@@ -336,7 +350,7 @@ const MentoChat = () => {
         error?.response?.data?.message === 'Mentor Blocked'
       ) {
         toast.warn(error?.response?.data?.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/mentor/login');
@@ -346,7 +360,7 @@ const MentoChat = () => {
       if (error && error.response?.status === 403) {
         console.log('403')
         toast.warn(error.response?.data.message)
-        Cookies.remove('accessToken')
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear()
         setTimeout(() => {
           // router.push('/pages/mentor/login')
@@ -357,6 +371,12 @@ const MentoChat = () => {
       if (error && error.response?.status === 401) {
         console.log('401')
         toast.warn(error.response.data.message)
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
+        localStorage.clear()
+        setTimeout(() => {
+          // router.push('/pages/mentor/login')
+          window.location.replace('/pages/mentor/login')
+        }, 3000)
         return
       }
     }
@@ -417,7 +437,7 @@ const MentoChat = () => {
       }
       if (error && error.response?.status === 401) {
         toast.warn(error.response.data.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/mentor/login');
@@ -430,7 +450,7 @@ const MentoChat = () => {
         error?.response?.data?.message === 'Mentor Blocked'
       ) {
         toast.warn(error?.response?.data?.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/mentor/login');
@@ -440,7 +460,7 @@ const MentoChat = () => {
       if (error && error.response?.status === 403) {
         console.log('403')
         toast.warn(error.response?.data.message)
-        Cookies.remove('accessToken')
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear()
         setTimeout(() => {
           // router.push('/pages/mentor/login')
@@ -512,7 +532,7 @@ const MentoChat = () => {
         error?.response?.data?.message === 'Student Blocked'
       ) {
         toast.warn(error?.response?.data?.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/student/login');
@@ -521,7 +541,7 @@ const MentoChat = () => {
       }
       if (error && error.response?.status === 403) {
         toast.warn(error.response.data.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/student/login');
@@ -530,7 +550,7 @@ const MentoChat = () => {
       }
       if (error && error.response?.status === 401) {
         toast.warn(error.response.data.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/student/login');
@@ -581,7 +601,7 @@ const MentoChat = () => {
       }
       if (error && error.response?.status === 401) {
         toast.warn(error.response.data.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/mentor/login');
@@ -594,7 +614,7 @@ const MentoChat = () => {
         error?.response?.data?.message === 'Mentor Blocked'
       ) {
         toast.warn(error?.response?.data?.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/mentor/login');
@@ -604,7 +624,7 @@ const MentoChat = () => {
       if (error && error.response?.status === 403) {
         console.log('403')
         toast.warn(error.response?.data.message)
-        Cookies.remove('accessToken')
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear()
         setTimeout(() => {
           // router.push('/pages/mentor/login')
@@ -679,7 +699,7 @@ const MentoChat = () => {
         }
         if (error && error.response?.status === 401) {
           toast.warn(error.response.data.message);
-          Cookies.remove('accessToken');
+          await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
           localStorage.clear();
           setTimeout(() => {
             window.location.replace('/pages/mentor/login');
@@ -692,7 +712,7 @@ const MentoChat = () => {
           error?.response?.data?.message === 'Mentor Blocked'
         ) {
           toast.warn(error?.response?.data?.message);
-          Cookies.remove('accessToken');
+          await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
           localStorage.clear();
           setTimeout(() => {
             window.location.replace('/pages/mentor/login');
@@ -702,7 +722,7 @@ const MentoChat = () => {
         if (error && error.response?.status === 403) {
           console.log('403')
           toast.warn(error.response?.data.message)
-          Cookies.remove('accessToken')
+          await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
           localStorage.clear()
           setTimeout(() => {
             // router.push('/pages/mentor/login')
@@ -740,7 +760,7 @@ const MentoChat = () => {
         }
         if (error && error.response?.status === 401) {
           toast.warn(error.response.data.message);
-          Cookies.remove('accessToken');
+          await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
           localStorage.clear();
           setTimeout(() => {
             window.location.replace('/pages/mentor/login');
@@ -753,7 +773,7 @@ const MentoChat = () => {
           error?.response?.data?.message === 'Mentor Blocked'
         ) {
           toast.warn(error?.response?.data?.message);
-          Cookies.remove('accessToken');
+          await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
           localStorage.clear();
           setTimeout(() => {
             window.location.replace('/pages/mentor/login');
@@ -763,7 +783,7 @@ const MentoChat = () => {
         if (error && error.response?.status === 403) {
           console.log('403')
           toast.warn(error.response?.data.message)
-          Cookies.remove('accessToken')
+          await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
           localStorage.clear()
           setTimeout(() => {
             // router.push('/pages/mentor/login')
@@ -803,7 +823,7 @@ const MentoChat = () => {
       }
       if (error && error.response?.status === 401) {
         toast.warn(error.response.data.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/mentor/login');
@@ -816,7 +836,7 @@ const MentoChat = () => {
         error?.response?.data?.message === 'Mentor Blocked'
       ) {
         toast.warn(error?.response?.data?.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/mentor/login');
@@ -826,7 +846,7 @@ const MentoChat = () => {
       if (error && error.response?.status === 403) {
         console.log('403')
         toast.warn(error.response?.data.message)
-        Cookies.remove('accessToken')
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear()
         setTimeout(() => {
           // router.push('/pages/mentor/login')
@@ -873,10 +893,10 @@ const MentoChat = () => {
                   onClick={() => createRoom(student)}
                 >
                   <img
-          src={student?.profilePicUrl}
-          alt={`profile`}
-          className="w-14 h-14 rounded-full mr-4 object-cover border border-gray-200"
-        />
+                    src={student?.profilePicUrl}
+                    alt={`profile`}
+                    className="w-14 h-14 rounded-full mr-4 object-cover border border-gray-200"
+                  />
                   {/* <Image
                     src={student?.profilePicUrl || "/default-profile.png"} // Provide a fallback image
                     alt="profile"
@@ -911,10 +931,10 @@ const MentoChat = () => {
               <div className="flex items-center justify-between mb-4 p-4 bg-gray-50 rounded-lg shadow-sm">
                 <div className="flex items-center">
                   <img
-          src={selectedStudent.profilePicUrl}
-          alt="profile"
-          className="w-14 h-14 rounded-full mr-4 object-cover border border-gray-200"
-        />
+                    src={selectedStudent.profilePicUrl}
+                    alt="profile"
+                    className="w-14 h-14 rounded-full mr-4 object-cover border border-gray-200"
+                  />
 
                   {/* <Image
                     src={selectedStudent.profilePicUrl}

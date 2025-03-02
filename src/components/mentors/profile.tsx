@@ -12,6 +12,8 @@ import Navbar from "../navbar";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/slices/mentorSlice";
 import Footer from "../loggedoutNav/footer";
+import { MENTOR_SERVICE_URL } from "@/utils/constant";
+import axios from "axios";
 
 
 export interface MentorProfile {
@@ -56,7 +58,7 @@ const MentorProfile = () => {
                   email: fetchedUser.email || "",
                   username: fetchedUser.username || "",
                   phone: fetchedUser.phone || "",
-                  profileImage: fetchedUser.profilePicUrl || "", 
+                  profileImage: fetchedUser.profilePicUrl || "",
                 });
                 setIsVerified(fetchedUser.isVerified);
 
@@ -65,9 +67,16 @@ const MentorProfile = () => {
                 setValue("phone", fetchedUser.phone || "");
               }
             } catch (error: any) {
+              if (error && error?.response?.status === 401 && error.response?.data?.message === 'Mentor Not Verified') {
+                toast.warn(error?.response?.data?.message);
+                setTimeout(() => {
+                  window.location.replace('/pages/mentor/profile');
+                }, 3000);
+                return;
+              }
               if (error && error.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
                 localStorage.clear();
                 setTimeout(() => {
                   window.location.replace('/pages/mentor/login');
@@ -80,7 +89,7 @@ const MentorProfile = () => {
                 error?.response?.data?.message === 'Mentor Blocked'
               ) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken');
+                await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
                 localStorage.clear();
                 setTimeout(() => {
                   window.location.replace('/pages/mentor/login');
@@ -89,7 +98,7 @@ const MentorProfile = () => {
               }
               if (error && error.response.status === 403) {
                 toast.warn(error.response.data.message)
-                Cookies.remove('accessToken')
+                await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
                 localStorage.clear()
                 router.push('/')
               }
@@ -138,7 +147,7 @@ const MentorProfile = () => {
       }
       if (error && error.response?.status === 401) {
         toast.warn(error.response.data.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/mentor/login');
@@ -151,7 +160,7 @@ const MentorProfile = () => {
         error?.response?.data?.message === 'Mentor Blocked'
       ) {
         toast.warn(error?.response?.data?.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/mentor/login');
@@ -188,7 +197,7 @@ const MentorProfile = () => {
 
 
       const response = await mentorApis.profileUpdate(formData)
-      
+
       console.log('profile update: ', response)
 
       if (response && response.data && response.data.success) {
@@ -218,10 +227,10 @@ const MentorProfile = () => {
         console.log('401 log', error.response.data.message)
         toast.warn(error.response.data.message);
         return;
-    }
+      }
       if (error && error.response?.status === 401) {
         toast.warn(error.response.data.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/mentor/login');
@@ -234,7 +243,7 @@ const MentorProfile = () => {
         error?.response?.data?.message === 'Mentor Blocked'
       ) {
         toast.warn(error?.response?.data?.message);
-        Cookies.remove('accessToken');
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear();
         setTimeout(() => {
           window.location.replace('/pages/mentor/login');
@@ -244,12 +253,12 @@ const MentorProfile = () => {
       if (error && error.response?.status === 403) {
         console.log('403')
         toast.warn(error.response?.data.message)
-        Cookies.remove('accessToken')
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
         localStorage.clear()
         setTimeout(() => {
           // router.push('/pages/mentor/login')
           window.location.replace('/pages/mentor/login')
-        },3000)
+        }, 3000)
         return
       }
       if (error && error.response?.status === 401) {
@@ -261,8 +270,8 @@ const MentorProfile = () => {
   }
 
 
-   // Handle profile image change
-   const handleProfileImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle profile image change
+  const handleProfileImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]; // Get the selected file
     if (file) {
       // Create a URL for the selected image
@@ -302,17 +311,17 @@ const MentorProfile = () => {
             className="bg-white border-2 border-[#D6D1F0] shadow-lg w-[500px] p-6 rounded-lg"
             onSubmit={handleSubmit(onSubmit)}
           >
-           <div className="flex flex-col items-center mb-6 relative">
+            <div className="flex flex-col items-center mb-6 relative">
               <div
                 className={`w-24 h-24 rounded-full flex items-center justify-center ${isVerified ? "border-4 border-[#22177A]" : "bg-gray-300"}`}
                 onClick={() => document.getElementById('profile-input')?.click()}
               >
                 {localUser.profileImage || "" ? (
                   <img
-                    src={localUser.profileImage || ""} 
+                    src={localUser.profileImage || ""}
                     alt="Profile"
                     className="w-full h-full rounded-full object-cover"
-                    width={96}  
+                    width={96}
                     height={96}
                   />
                 ) : (

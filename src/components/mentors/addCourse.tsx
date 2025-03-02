@@ -8,7 +8,6 @@ import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from "next/navigation";
 import LoadingModal from "../re-usable/loadingModal";
-import Cookies from "js-cookie";
 import socket from "@/utils/socket";
 import axios from "axios";
 import { MENTOR_SERVICE_URL } from "@/utils/constant";
@@ -56,13 +55,20 @@ const AddCourse = () => {
         console.log('cat : ', categoryResponse)
         setCategories(categoryResponse?.data?.result || []);
       } catch (error: any) {
+        if(error && error?.response?.status === 401 && error.response?.data?.message === 'Mentor Not Verified'){
+          toast.warn(error?.response?.data?.message);
+          setTimeout(() => {
+            window.location.replace('/pages/mentor/profile');
+          }, 3000);
+          return;
+        }
         if (
           error &&
           error?.response?.status === 403 &&
           error?.response?.data?.message === 'Mentor Blocked'
         ) {
           toast.warn(error?.response?.data?.message);
-          Cookies.remove('accessToken');
+          await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
           localStorage.clear();
           setTimeout(() => {
             window.location.replace('/pages/mentor/login');
@@ -71,7 +77,7 @@ const AddCourse = () => {
         }
         if (error && error.response?.status === 401) {
           toast.warn(error.response.data.message);
-          Cookies.remove('accessToken');
+          await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
           localStorage.clear();
           setTimeout(() => {
             window.location.replace('/pages/mentor/login');
@@ -244,6 +250,36 @@ const AddCourse = () => {
       }
     } catch (error: any) {
       console.error("Error uploading course:", error);
+      if(error && error?.response?.status === 401 && error.response?.data?.message === 'Mentor Not Verified'){
+        toast.warn(error?.response?.data?.message);
+        setTimeout(() => {
+          window.location.replace('/pages/mentor/profile');
+        }, 3000);
+        return;
+      }
+      if (
+        error &&
+        error?.response?.status === 403 &&
+        error?.response?.data?.message === 'Mentor Blocked'
+      ) {
+        toast.warn(error?.response?.data?.message);
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
+        localStorage.clear();
+        setTimeout(() => {
+          window.location.replace('/pages/mentor/login');
+        }, 3000);
+        return;
+      }
+      if (error && error.response?.status === 401) {
+        toast.warn(error.response.data.message);
+        await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
+        localStorage.clear();
+        setTimeout(() => {
+          window.location.replace('/pages/mentor/login');
+        }, 3000);
+        return;
+      }
+
     }
   };
 

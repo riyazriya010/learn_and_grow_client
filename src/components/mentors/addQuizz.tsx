@@ -8,7 +8,8 @@ import Navbar from '../navbar';
 import MentorFooter from './footer';
 import { mentorApis } from '@/app/api/mentorApi';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Cookies from 'js-cookie';
+import { MENTOR_SERVICE_URL } from '@/utils/constant';
+import axios from 'axios';
 
 export interface IQuizForm {
     question: string;
@@ -67,7 +68,7 @@ const AddQuiz = () => {
                 error?.response?.data?.message === 'Mentor Blocked'
             ) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken');
+                await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
                 localStorage.clear();
                 setTimeout(() => {
                     window.location.replace('/pages/mentor/login');
@@ -77,7 +78,7 @@ const AddQuiz = () => {
             if (
                 error && error?.response?.status === 401) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken');
+                await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
                 localStorage.clear();
                 setTimeout(() => {
                     window.location.replace('/pages/mentor/login');

@@ -10,6 +10,8 @@ import { mentorApis } from "@/app/api/mentorApi";
 import Cookies from "js-cookie";
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { MENTOR_SERVICE_URL } from "@/utils/constant";
+import axios from "axios";
 
 interface ChapterData {
   _id?: string;
@@ -37,13 +39,20 @@ const Chapters = () => {
             setChapters(response?.data?.result)
           }
         } catch (error: any) {
+          if (error && error?.response?.status === 401 && error.response?.data?.message === 'Mentor Not Verified') {
+            toast.warn(error?.response?.data?.message);
+            setTimeout(() => {
+              window.location.replace('/pages/mentor/profile');
+            }, 3000);
+            return;
+          }
           if (
             error &&
             error?.response?.status === 403 &&
             error?.response?.data?.message === 'Mentor Blocked'
           ) {
             toast.warn(error?.response?.data?.message);
-            Cookies.remove('accessToken');
+            await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
             localStorage.clear();
             setTimeout(() => {
               window.location.replace('/pages/mentor/login');
@@ -52,14 +61,14 @@ const Chapters = () => {
           }
           if (error && error.response?.status === 401) {
             toast.warn(error.response.data.message);
-            Cookies.remove('accessToken');
+            await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
             localStorage.clear();
             setTimeout(() => {
               window.location.replace('/pages/mentor/login');
             }, 3000);
             return;
           }
-        } 
+        }
       }
       fetchData(courseId)
     }
@@ -105,7 +114,7 @@ const Chapters = () => {
         return;
       }
       if (
-        error && error?.response?.status === 401 ) {
+        error && error?.response?.status === 401) {
         toast.warn(error?.response?.data?.message);
         Cookies.remove('accessToken');
         localStorage.clear();

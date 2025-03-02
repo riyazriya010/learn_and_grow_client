@@ -9,7 +9,6 @@ import Swal from 'sweetalert2';
 import { MENTOR_SERVICE_URL } from "@/utils/constant";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Cookies from "js-cookie";
 
 // Notification Interface
 interface NotificationData {
@@ -61,11 +60,14 @@ const MentorNotification = () => {
             if (error && error.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
                 console.log('401 log', error.response.data.message)
                 toast.warn(error.response.data.message);
+                setTimeout(() => {
+                    window.location.replace('/pages/mentor/profile');
+                }, 3000);
                 return;
             }
             if (error && error.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
                 localStorage.clear();
                 setTimeout(() => {
                     window.location.replace('/pages/mentor/login');
@@ -78,7 +80,7 @@ const MentorNotification = () => {
                 error?.response?.data?.message === 'Mentor Blocked'
             ) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken');
+                await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
                 localStorage.clear();
                 setTimeout(() => {
                     window.location.replace('/pages/mentor/login');
@@ -88,7 +90,7 @@ const MentorNotification = () => {
             if (error && error.response?.status === 403) {
                 console.log('403')
                 toast.warn(error.response?.data.message)
-                Cookies.remove('accessToken')
+                await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
                 localStorage.clear()
                 setTimeout(() => {
                     // router.push('/pages/mentor/login')
@@ -128,11 +130,14 @@ const MentorNotification = () => {
                 if (error && error.response?.status === 401 && error.response.data.message === 'Mentor Not Verified') {
                     console.log('401 log', error.response.data.message)
                     toast.warn(error.response.data.message);
+                    setTimeout(() => {
+                        window.location.replace('/pages/mentor/profile');
+                      }, 3000);
                     return;
                 }
                 if (error && error.response?.status === 401) {
                     toast.warn(error.response.data.message);
-                    Cookies.remove('accessToken');
+                    await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
                     localStorage.clear();
                     setTimeout(() => {
                         window.location.replace('/pages/mentor/login');
@@ -145,7 +150,7 @@ const MentorNotification = () => {
                     error?.response?.data?.message === 'Mentor Blocked'
                 ) {
                     toast.warn(error?.response?.data?.message);
-                    Cookies.remove('accessToken');
+                    await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
                     localStorage.clear();
                     setTimeout(() => {
                         window.location.replace('/pages/mentor/login');
@@ -155,7 +160,7 @@ const MentorNotification = () => {
                 if (error && error.response?.status === 403) {
                     console.log('403')
                     toast.warn(error.response?.data.message)
-                    Cookies.remove('accessToken')
+                    await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`, {}, { withCredentials: true }); //mentor logout api
                     localStorage.clear()
                     setTimeout(() => {
                         // router.push('/pages/mentor/login')

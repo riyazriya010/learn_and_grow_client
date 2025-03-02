@@ -7,7 +7,6 @@ import MentorFooter from './footer';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Cookies from "js-cookie";
 import LoadingModal from '../re-usable/loadingModal';
 import { MENTOR_SERVICE_URL } from '@/utils/constant';
 import axios from 'axios';
@@ -196,7 +195,7 @@ const AddChapter: React.FC = () => {
                 error?.response?.data?.message === 'Mentor Blocked'
             ) {
                 toast.warn(error?.response?.data?.message);
-                Cookies.remove('accessToken');
+                await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`,{},{ withCredentials: true }); //mentor logout api
                 localStorage.clear();
                 setTimeout(() => {
                     window.location.replace('/pages/mentor/login');
@@ -205,7 +204,7 @@ const AddChapter: React.FC = () => {
             }
             if (error && error.response?.status === 401) {
                 toast.warn(error.response.data.message);
-                Cookies.remove('accessToken');
+                await axios.post(`${MENTOR_SERVICE_URL}/mentor/logout`,{},{ withCredentials: true }); //mentor logout api
                 localStorage.clear();
                 setTimeout(() => {
                     window.location.replace('/pages/mentor/login');
